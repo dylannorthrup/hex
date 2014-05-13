@@ -1,0 +1,97 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "3dc5c512-e575-4f10-94a1-1a84ab848625"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C349",
+"m_Name" : "Stargazer",
+"m_CardNumber" : 327,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Wild",
+"m_ResourceCost" : 1,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Wild"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\HEX000370.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Coyotle Mage",
+"m_BaseAttackValue" : 1,
+"m_BaseHealthValue" : 1,
+"m_FlavorText" : "<i>After the arrival of Hex, coyotle mages began integrating Hexing gems into their Wild Magic rituals.</i>",
+"m_CardRarity" : "Uncommon",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "1816b481-e8eb-4b0a-aaf7-4558e1af9068"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "523475ed-7bdc-4916-93ff-790cb80023d4"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Space Goat Productions",
+"m_GameText" : "[DIAMOND]: [(1)], [ACT] [ARROWR] Gain 2 health.<p><p>[SAPPHIRE]: [(1)], [ACT] [ARROWR] Draw a card, then choose and discard a card.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "327e26b8-d2f3-4a8e-abd1-662652bb966b"}    ,
+    {
+        "m_Guid" : "99ce858a-e7d0-402e-b12f-c1e460fae8fc"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "5bf44c82-d5f3-4587-99fc-371beec99d5d"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.0556640625    ,
+    "m_PortraitBottom" : 0.7363281    ,
+    "m_PortraitRight" : 0.9048489    ,
+    "m_PortraitTop" : 0.01171875},
+"m_HasExtendedLayout" : 0,
+"m_ExtendedLayout" : null,
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 364,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Wild\\Aud_FX_Card_Play_Cloudwatcher.wav"
+}

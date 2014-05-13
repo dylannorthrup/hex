@@ -1,0 +1,101 @@
+{
+"_v":[{ "CardTemplate": 39 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "84e8e149-e562-448c-a892-bee0ab1f66d1"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C181",
+"m_Name" : "Daring Swordsman",
+"m_CardNumber" : 176,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Ruby",
+"m_ResourceCost" : 4,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Ruby"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C334.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Rogue",
+"m_BaseAttackValue" : 2,
+"m_BaseHealthValue" : 2,
+"m_FlavorText" : "<i>\"If you can't attack your foe by doing a double-somersault off a third story roof, then why bother?\"</i>",
+"m_CardRarity" : "Uncommon",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "1f0f7b3b-e13e-4af1-92b0-00bc863dc6bf"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Steven Stahl",
+"m_GameText" : "This troop deals double damage.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "86efe674-366c-4692-b18a-a77d444bc06f"}    ,
+    {
+        "m_Guid" : "92e20329-35b6-4998-a8e9-480cdec7e9bb"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "36e2771e-5875-42ff-a654-7d130e2b8ba0"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06738281    ,
+    "m_PortraitBottom" : 0.772159457    ,
+    "m_PortraitRight" : 0.9082031    ,
+    "m_PortraitTop" : 0.0546875},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.9086358    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 2,
+"m_DesignerNumber" : 233,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Ruby\\Aud_FX_Card_Play_Daring_Swordsman.wav",
+"m_SerializedTAC" : null
+}

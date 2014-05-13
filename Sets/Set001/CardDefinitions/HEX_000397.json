@@ -1,0 +1,108 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "b767da50-d694-4aeb-9197-e04be089befd"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C394",
+"m_Name" : "Wrathwood Colossus",
+"m_CardNumber" : 341,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Juggernaught|Steadfast",
+"m_ColorFlags" : "Wild",
+"m_ResourceCost" : 9,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Wild"        ,
+        "m_ThresholdColorRequirement" : 3    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C228.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Elemental",
+"m_BaseAttackValue" : 9,
+"m_BaseHealthValue" : 9,
+"m_FlavorText" : "<i>The first lesson an elf child is taught: Never play in the Wrathwood. Never.</i>",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "213b1d27-026d-41ed-957c-bd246968f6a2"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "7ec6b03b-4276-4ccb-ab4c-92977e871330"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Tim McBurnie",
+"m_GameText" : "<b>Crush</b>, <b>Steadfast</b><p><p>When this troop enters play, gain 9 health. <p>When this troop dies, put it into your hand. ",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "f0522e6a-fcd2-45ef-aae9-3a801c02c16e"}    ,
+    {
+        "m_Guid" : "b2bb0252-0728-486c-8fa3-46f0a90c10c9"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "Need support for limiting the number of attackers and blockers. KM 9/26",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.0576171875    ,
+    "m_PortraitBottom" : 0.7578125    ,
+    "m_PortraitRight" : 0.9090909    ,
+    "m_PortraitTop" : 0.03125},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09082031    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.90588516    ,
+    "m_PortraitTop" : 0.001953125},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 394,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Wild\\Aud_FX_Card_Play_Wrathwood_Colossus.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}

@@ -1,0 +1,102 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "bef9b56d-b511-456f-98c3-b0755183ef89"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C080",
+"m_Name" : "Sliver of the Immortal Spear",
+"m_CardNumber" : 35,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Colorless",
+"m_ResourceCost" : 2,
+"m_Threshold" : null,
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C074.jpg",
+"m_CardType" : "Artifact",
+"m_CardSubtype" : "",
+"m_BaseAttackValue" : 0,
+"m_BaseHealthValue" : 0,
+"m_FlavorText" : "<i>The 50-ft tall Immortal Spear rises from the lake of blood at the bottom of Mazat Crater.</i>",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "26eb5f0a-40a0-48e6-a30d-305bca45338a"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "8d284714-6bcd-46be-a943-305f0336a98e"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Ekey",
+"m_GameText" : "[ACT] [ARROWR] Create a <b>Sliver of the Immortal Spear</b> and shuffle it into your deck. <p><p>Exhaust five Slivers of the Immortal Spear you control [ARROWR] Deal 5,000 damage to target champion.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "d13e2dd1-8a2f-4824-8bc9-b52f0c30fc34"}    ,
+    {
+        "m_Guid" : "fc008f48-0889-45d9-bd08-ba11f3375d32"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "392660b5-9812-4fe1-b328-0e77767b94ca"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.084375    ,
+    "m_PortraitBottom" : 0.7625    ,
+    "m_PortraitRight" : 0.9111285    ,
+    "m_PortraitTop" : 0.05703125},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 0.99609375    ,
+    "m_PortraitRight" : 0.904648244    ,
+    "m_PortraitTop" : 0.001953125},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 52,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Artifact\\Aud_FX_Card_Play_Sliver_Immortal_Spear.wav"
+}

@@ -1,0 +1,103 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "522ac1ea-cd6a-427d-a9b5-86fb6743456a"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C279",
+"m_Name" : "Cerulean Mirror Knight",
+"m_CardNumber" : 230,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Inspire",
+"m_ColorFlags" : "Sapphire",
+"m_ResourceCost" : 2,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Sapphire"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C438.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Warrior",
+"m_BaseAttackValue" : 1,
+"m_BaseHealthValue" : 2,
+"m_FlavorText" : "<i>The mirror knight forces his foe to confront their own depraved reflection.</i>",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "58471407-cbb4-4399-8290-64cdd3e81dde"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Michael Penn",
+"m_GameText" : "<b>Inspire</b> - As another troop with cost equal to or greater than this troop's cost enters play under your control, it gets permanent \"When this troop dies, draw a card.\"",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "f991fe24-83c7-413b-860c-9032bddd2b5f"}    ,
+    {
+        "m_Guid" : "59e82c76-c5f3-4448-8746-86085b4cbef4"}    ,
+    {
+        "m_Guid" : "1c40ea92-4bad-42ec-b70f-6ceaf75666dc"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "Need cost modification based on the card that is being tareted.",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06640625    ,
+    "m_PortraitBottom" : 0.756391168    ,
+    "m_PortraitRight" : 0.9082031    ,
+    "m_PortraitTop" : 0.0380859375},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.095703125    ,
+    "m_PortraitBottom" : 0.99588275    ,
+    "m_PortraitRight" : 0.9082031    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 275,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Sapphire\\Aud_FX_Card_Play_Cerulean_Mirror_Kinght.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}

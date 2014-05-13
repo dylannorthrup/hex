@@ -1,0 +1,98 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "cd9c0159-d52a-44ad-94be-63fdc335e3c5"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C407",
+"m_Name" : "Fist of Briggadon",
+"m_CardNumber" : 297,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Juggernaught|Immortal|ForceAttack",
+"m_ColorFlags" : "Wild",
+"m_ResourceCost" : 6,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Wild"        ,
+        "m_ThresholdColorRequirement" : 6    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C237.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Avatar of Might",
+"m_BaseAttackValue" : 6,
+"m_BaseHealthValue" : 6,
+"m_FlavorText" : "<i>Briggadon is the Primal of Might. His avatars are indestructable paragons of physical power.</i>",
+"m_CardRarity" : "Legendary",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Zoltan Boros",
+"m_GameText" : "<b>Invincible</b>, <b>Crush</b><p><p>This troop attacks each turn if able.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "9c6b7174-08ea-4804-96c1-e1a2c3a64d30"}    ,
+    {
+        "m_Guid" : "952aaaba-8de4-474b-b809-7515fdcca6fc"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.076171875    ,
+    "m_PortraitBottom" : 0.7193869    ,
+    "m_PortraitRight" : 0.890625    ,
+    "m_PortraitTop" : 0.0244140625},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.116210938    ,
+    "m_PortraitBottom" : 0.9432675    ,
+    "m_PortraitRight" : 0.8857422    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 411,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Wild\\Aud_FX_Card_Play_Fist_Briggadon.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}

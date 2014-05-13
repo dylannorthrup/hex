@@ -1,0 +1,110 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "91475dae-5b28-40a2-8d40-b9ac55ffc4a4"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C436",
+"m_Name" : "Rose Lion",
+"m_CardNumber" : 150,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Diamond",
+"m_ResourceCost" : 2,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Diamond"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C271.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Plant",
+"m_BaseAttackValue" : 0,
+"m_BaseHealthValue" : 1,
+"m_FlavorText" : "<i>\"Did that topiary lion just move?\"<p>\"Of course not, topiaries don't move.\"</i>",
+"m_CardRarity" : "Uncommon",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "23edc5b4-8e3f-497c-a4ab-303c8f808d02"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "82c5ac06-2f84-4eb4-a65d-7726783c8c9d"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "be6ad833-8002-412a-b468-fb529f5f9086"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Kieran Yanner",
+"m_GameText" : "At the start of your turn, this troop gets permanent +1[ATK]/+1[DEF]. When this troop attacks or blocks, it permanently loses this power.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "af0c21ba-5253-48bd-940f-150728292536"}    ,
+    {
+        "m_Guid" : "d5929598-710d-4305-b561-e99f44fe2043"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "f32a0daf-e7d8-470e-ba66-b091a15d1cfb"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.064453125    ,
+    "m_PortraitBottom" : 0.7643207    ,
+    "m_PortraitRight" : 0.9121094    ,
+    "m_PortraitTop" : 0.041015625},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.9070408    ,
+    "m_PortraitTop" : 0.0029296875},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 153,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Diamond\\Aud_FX_Card_Play_Rose_Lion.wav"
+}

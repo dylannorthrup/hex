@@ -1,0 +1,101 @@
+{
+"_v":[{ "CardTemplate": 39 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "2f07d3ba-1eb4-40b2-b114-dd2f36f6211b"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C283",
+"m_Name" : "Phoenix Guard Trainer",
+"m_CardNumber" : 257,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Inspire",
+"m_ColorFlags" : "Sapphire",
+"m_ResourceCost" : 3,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Sapphire"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C443 (2).jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Ranger",
+"m_BaseAttackValue" : 2,
+"m_BaseHealthValue" : 2,
+"m_FlavorText" : "<i>The bird trainers of Cerulea emphasize discipline and maneuverability.</i>",
+"m_CardRarity" : "Common",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "6776fc1d-dcb4-4e96-a4dc-8b83e5ade767"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Jim Nelson",
+"m_GameText" : "<b>Inspire</b> - As another troop with cost equal to or greater than this troop's cost enters play under your control, it gets permanent <b>Flight</b>.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "38b1fa72-fc8c-4f2f-8fc8-d918293cd5c5"}    ,
+    {
+        "m_Guid" : "fd772789-2baa-4280-ac7c-ea9910dc289f"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "538d96ad-c8e6-48f1-ac5d-5463e13cc829"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.07    ,
+    "m_PortraitBottom" : 0.72    ,
+    "m_PortraitRight" : 0.91    ,
+    "m_PortraitTop" : 0},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 0.999023438    ,
+    "m_PortraitRight" : 0.9078383    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 300,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Sapphire\\Aud_FX_Card_Play_Phoenix_Guard_Trainer.wav",
+"m_SerializedTAC" : null
+}

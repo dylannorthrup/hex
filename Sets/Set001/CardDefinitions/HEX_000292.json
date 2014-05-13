@@ -1,0 +1,101 @@
+{
+"_v":[{ "CardTemplate": 39 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "1946b13b-0434-4359-8d6e-010d2bd7d62b"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C296",
+"m_Name" : "Mutate",
+"m_CardNumber" : 252,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Sapphire",
+"m_ResourceCost" : 2,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Sapphire"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C431.jpg",
+"m_CardType" : "QuickAction",
+"m_CardSubtype" : "",
+"m_BaseAttackValue" : 0,
+"m_BaseHealthValue" : 0,
+"m_FlavorText" : "<i>\"Your foe knows your weaknesses. This fact is potentially your greatest strength.\" <p>-Walks With The Soil</i>",
+"m_CardRarity" : "Common",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "29f48399-a9d1-4938-ac41-e5f642933d1b"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Ludo Lullabi",
+"m_GameText" : "Target troop gets permanent -1[ATK]/+1[DEF].. <p><p>Draw a card.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "a1ba0482-a98d-4a21-94ce-8c8254e3c7bf"}    ,
+    {
+        "m_Guid" : "a2eb1d43-970e-4d70-8ba7-6ec7e9d51ac3"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "75b2330f-5398-4939-9b03-42ed1480f57c"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.07910156    ,
+    "m_PortraitBottom" : 0.8531234    ,
+    "m_PortraitRight" : 0.907226563    ,
+    "m_PortraitTop" : 0.146484375},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 0.9980469    ,
+    "m_PortraitRight" : 0.9078383    ,
+    "m_PortraitTop" : 0},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 285,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Sapphire\\Aud_FX_Card_Play_Mutate.wav",
+"m_SerializedTAC" : null
+}

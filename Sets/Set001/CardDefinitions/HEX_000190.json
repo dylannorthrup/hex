@@ -1,0 +1,106 @@
+{
+"_v":[{ "CardTemplate": 39 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "90f4defb-3692-4404-8589-bd66cae704e1"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C441",
+"m_Name" : "Trial of Faith",
+"m_CardNumber" : 160,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Diamond",
+"m_ResourceCost" : 5,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Diamond"        ,
+        "m_ThresholdColorRequirement" : 2    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C278.jpg",
+"m_CardType" : "Constant",
+"m_CardSubtype" : "",
+"m_BaseAttackValue" : 0,
+"m_BaseHealthValue" : 0,
+"m_FlavorText" : "",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "21866167-c026-4a43-b247-8602d33370b5"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "43204bd7-74cf-4941-9fe2-fd295db5e329"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Helen Rusovich",
+"m_GameText" : "When this constant enters play, void all other cards you control and all cards in your hand.<p>At the start of your turn, add a faith counter to this constant. Then, if there are three or more, remove all faith counters from this constant and sacrifice it. If you do, transform each card voided with this constant into an <b>Angel</b> and put them into play.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "543642a0-210c-4490-8a26-5cabddae4691"}    ,
+    {
+        "m_Guid" : "3b7a2aea-a6b8-4994-aacf-194337dcf76b"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "a1e57135-f8c1-447b-86c0-8f299091d15b"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09863281    ,
+    "m_PortraitBottom" : 0.728971064    ,
+    "m_PortraitRight" : 0.8876953    ,
+    "m_PortraitTop" : 0.0556640625},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.112304688    ,
+    "m_PortraitBottom" : 0.9504423    ,
+    "m_PortraitRight" : 0.8876953    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 184,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Diamond\\Aud_FX_Card_Play_Trial_Faith.wav",
+"m_SerializedTAC" : null
+}

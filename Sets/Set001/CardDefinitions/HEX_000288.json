@@ -1,0 +1,107 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "6e63690a-b58b-43c9-bb23-a0f2c188f616"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C261",
+"m_Name" : "Mistborn Wendigo",
+"m_CardNumber" : 250,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 1,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Sapphire",
+"m_ResourceCost" : 5,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Sapphire"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C421.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Spirit",
+"m_BaseAttackValue" : 1,
+"m_BaseHealthValue" : 5,
+"m_FlavorText" : "<i>The wendigo is a cannibalistic, evil spirit that is able to occupy the body of a sentient creature.</i>",
+"m_CardRarity" : "Uncommon",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "e282b898-4aec-4f7b-b968-0fb50aa17f8e"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "f9d60541-bde0-4e39-8f0e-8c713e5d73a9"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Mark Tarrisse",
+"m_GameText" : "<b>SOCKETABLE MINOR</b><p><p>[(1)] [ARROWR] This troop gets +2[ATK]/-2[DEF] this turn.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "ae1478ff-1440-412c-a823-cb06aae57647"}    ,
+    {
+        "m_Guid" : "bae7e577-1c72-4f07-8f7b-0e023f5b33bf"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "9bfc50c0-1861-4c6a-83bb-d14062bc9306"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06640625    ,
+    "m_PortraitBottom" : 0.73769325    ,
+    "m_PortraitRight" : 0.9091797    ,
+    "m_PortraitTop" : 0.0185546875},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09277344    ,
+    "m_PortraitBottom" : 0.997078538    ,
+    "m_PortraitRight" : 0.90625    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 281,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Sapphire\\Aud_FX_Card_Play_Mistborn_Wendigo.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}

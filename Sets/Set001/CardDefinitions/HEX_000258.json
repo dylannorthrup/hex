@@ -1,0 +1,100 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "19bbbcfe-2768-494a-b5a3-d97ca0ddb801"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C234",
+"m_Name" : "Legionnaire of Gawaine",
+"m_CardNumber" : 193,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Ruby",
+"m_ResourceCost" : 5,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Ruby"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C394.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Warrior",
+"m_BaseAttackValue" : 4,
+"m_BaseHealthValue" : 4,
+"m_FlavorText" : "<i>Gawaine is the most militaristic of the three human counties. It is currently ruled by Prince Talysen, brother of His Majesty, King Gabriel.</i>",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "200ad2e8-ede0-409d-9864-7b61cf878332"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Michael Penn",
+"m_GameText" : "When this troop enters play, for each card that inspired it, it deals 1 damage to each opposing champion and troop.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "352c4776-d6bf-4140-bfc2-89f2b6660fe7"}    ,
+    {
+        "m_Guid" : "81d59a80-f0ce-45c9-b1be-035f86093f80"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06542969    ,
+    "m_PortraitBottom" : 0.7446724    ,
+    "m_PortraitRight" : 0.907226563    ,
+    "m_PortraitTop" : 0.0263671875},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 1    ,
+    "m_PortraitTop" : 0},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 250,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Ruby\\Aud_FX_Card_Play_Legionnaire_Gawaine.wav"
+}

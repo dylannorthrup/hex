@@ -1,0 +1,96 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "95e3096e-15fa-4bff-a3af-a44df6dc7c2c"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "KS1_012",
+"m_Name" : "Replicator's Gambit",
+"m_CardNumber" : 0,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Sapphire",
+"m_ResourceCost" : 1,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Sapphire"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C477_Alternate.jpg",
+"m_CardType" : "BasicAction",
+"m_CardSubtype" : "",
+"m_BaseAttackValue" : 0,
+"m_BaseHealthValue" : 0,
+"m_FlavorText" : "",
+"m_CardRarity" : "Epic",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "99955a7a-4874-48b1-a5aa-ffbd03c6417a"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "",
+"m_GameText" : "Shuffle target troop you control into your deck. It gets permanent \"When this troop enters play, create six replicas of it and put them into play.\"<p><p>Draw a card.",
+"m_SetIconImagePath" : "",
+"m_ArtistNotes" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "71eb5577-5dc8-449b-94e7-e7f71924ca96"}    ,
+    {
+        "m_Guid" : "ace635ae-55b0-4eb9-8eec-fbdaf857f263"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.0595703125    ,
+    "m_PortraitBottom" : 0.7998047    ,
+    "m_PortraitRight" : 0.9087551    ,
+    "m_PortraitTop" : 0.07519531},
+"m_HasExtendedLayout" : 0,
+"m_ExtendedLayout" : null,
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 0,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Sapphire\\Aud_FX_Card_Play_Replicators_Gambit.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}

@@ -1,0 +1,95 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "45ee5b86-a1da-42bb-b077-94be811435c7"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C420",
+"m_Name" : "Sky'le Griffin",
+"m_CardNumber" : 153,
+"m_Tradeable" : 1,
+"m_Faction" : "None",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Flight",
+"m_ColorFlags" : "Diamond",
+"m_ResourceCost" : 4,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Diamond"        ,
+        "m_ThresholdColorRequirement" : 2    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C255.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Griffin",
+"m_BaseAttackValue" : 2,
+"m_BaseHealthValue" : 4,
+"m_FlavorText" : "<i>The griffins that live atop the majestic Sky'le tepui fiercely defend their domain.</i> ",
+"m_CardRarity" : "Common",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Kieran Yanner",
+"m_GameText" : "<b>Flight</b>",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "a326e601-6591-4644-8a0b-78169a8c0687"}    ,
+    {
+        "m_Guid" : "92dbe768-8d48-455d-b464-da8bf265fee4"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "57185119-f161-4dfe-a3da-217f0088917c"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.0615234375    ,
+    "m_PortraitBottom" : 0.7272113    ,
+    "m_PortraitRight" : 0.9091797    ,
+    "m_PortraitTop" : 0.00390625},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09375    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.908814847    ,
+    "m_PortraitTop" : 0.001953125},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 142,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Diamond\\Aud_FX_Card_Play_Skyle_Griffin.wav"
+}

@@ -1,0 +1,100 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "e09f7b29-1a8e-4661-8b07-c979a829046c"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C207",
+"m_Name" : "Sniper of Gawaine",
+"m_CardNumber" : 212,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Ruby",
+"m_ResourceCost" : 5,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Ruby"        ,
+        "m_ThresholdColorRequirement" : 2    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C345.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Ranger",
+"m_BaseAttackValue" : 2,
+"m_BaseHealthValue" : 2,
+"m_FlavorText" : "<i>The rangers of Gawaine combine wilderness expertise with highly disciplined, military precision.</i>",
+"m_CardRarity" : "Common",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "ad8292b1-06c5-482d-a70a-8a5420f6d83a"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Kieran Yanner",
+"m_GameText" : "When this troop enters play, it deals damage equal to its [ATK] to target champion or troop. ",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "23cc36f2-158b-4bfe-ab3d-0f98a68810df"}    ,
+    {
+        "m_Guid" : "ba8241a8-6844-4a94-b5dc-870783471150"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "14a279af-5dd7-46a2-ab3d-99c13f5c4ded"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06738281    ,
+    "m_PortraitBottom" : 0.766013563    ,
+    "m_PortraitRight" : 0.91015625    ,
+    "m_PortraitTop" : 0.046875},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.09375    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.909612358    ,
+    "m_PortraitTop" : 0.0009765625},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 214,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Ruby\\Aud_FX_Card_Play_Sniper_Gawaine.wav"
+}

@@ -1,0 +1,100 @@
+{
+"_v":[{ "CardTemplate": 38 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "0e604f66-874e-44af-8333-26129621fe3e"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "S1_C131",
+"m_Name" : "Claw of the Mountain God",
+"m_CardNumber" : 52,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Unknown",
+"m_ColorFlags" : "Blood",
+"m_ResourceCost" : 3,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Blood"        ,
+        "m_ThresholdColorRequirement" : 2    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C129.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Orc Warrior",
+"m_BaseAttackValue" : 5,
+"m_BaseHealthValue" : 4,
+"m_FlavorText" : "<i>\"The blood of the unworthy that drips from my claws shall feed you, Kog'Tepetl.\"</i>",
+"m_CardRarity" : "Rare",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "31a7e477-93ad-4c76-9f18-de28a65fe155"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 0,
+"m_ArtistName" : "Rogier van de Beek",
+"m_GameText" : "At the start of your turn, this troop deals 2 damage to you.",
+"m_SetIconImagePath" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "19717bac-ed76-497f-be13-a03c881e1762"}    ,
+    {
+        "m_Guid" : "4fe98ca3-28e1-440b-b40e-da64c3c2622e"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 1,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "9fe1bf74-531d-4fd4-8f15-edd9ae005cb4"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.0625    ,
+    "m_PortraitBottom" : 0.845375359    ,
+    "m_PortraitRight" : 0.91015625    ,
+    "m_PortraitTop" : 0.122070313},
+"m_HasExtendedLayout" : 1,
+"m_ExtendedLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.091796875    ,
+    "m_PortraitBottom" : 1    ,
+    "m_PortraitRight" : 0.9060642    ,
+    "m_PortraitTop" : 0.0029296875},
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 90,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Blood\\Aud_FX_Card_Play_Claw_Mountain_God.wav"
+}

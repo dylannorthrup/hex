@@ -1,0 +1,101 @@
+{
+"_v":[{ "CardTemplate": 40 },{ "CardAbilityContainer": 1 },{ "TemplateOverrideValues": 1 },{ "CardTemplateLayout": 4 }],
+"_t":"Reckoning.Game.CardTemplate", "m_Id" : {
+    "m_Guid" : "c87b17fc-f80b-48b7-9314-3646b9cbcc34"},
+"m_SetId" : {
+    "m_Guid" : "0382f729-7710-432b-b761-13677982dcd2"},
+"m_DesignerCardId" : "KS1_013",
+"m_Name" : "Princess Victoria",
+"m_CardNumber" : 0,
+"m_Tradeable" : 1,
+"m_Faction" : "Aria",
+"m_SocketCount" : 0,
+"m_AttributeFlags" : "Inspire",
+"m_ColorFlags" : "Diamond",
+"m_ResourceCost" : 3,
+"m_Threshold" : [
+    {
+        "m_ColorFlags" : "Diamond"        ,
+        "m_ThresholdColorRequirement" : 1    }],
+"m_CardImagePath" : "Sets\\Set001\\Portraits\\S1_C297_Alternate.jpg",
+"m_CardType" : "Troop",
+"m_CardSubtype" : "Human Princess",
+"m_BaseAttackValue" : 1,
+"m_BaseHealthValue" : 2,
+"m_FlavorText" : "",
+"m_CardRarity" : "Epic",
+"m_LineageId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_ResourceSymbolImagePath" : "",
+"m_CardAbilities" : [
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "d4911e14-e6c9-4354-9114-29c6d5111c2a"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }    ,
+    {
+        "m_CardAbilityId" : {
+            "m_Guid" : "c12271c9-037a-48b4-9e21-79b09ad94710"}        ,
+        "m_CardAbilityOverrides" : {
+            "m_OverrideValues" : []        }    }],
+"m_VariableCost" : 0,
+"m_VariableAttack" : 0,
+"m_VariableHealth" : 0,
+"m_CardLayoutId" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_Unlimited" : 0,
+"m_Unique" : 1,
+"m_ArtistName" : "",
+"m_GameText" : "If Victoria is in your opening hand she gets permanent cost -[(3)].<p><p><b>Inspire</b> - As another troop with cost equal to or greater than Victoria's cost enters play under your control, it gets permanent <b>Lifedrain</b>.",
+"m_SetIconImagePath" : "",
+"m_ArtistNotes" : "",
+"m_EquipmentSlots" : [
+    {
+        "m_Guid" : "3df072c4-6ec2-43ad-a4cb-df729974cf48"}    ,
+    {
+        "m_Guid" : "1a14b722-fd98-4578-8509-7f791b4669f4"}    ,
+    {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}],
+"m_DesignNotes" : "",
+"m_OverrideStateEffects" : null,
+"m_OverrideEventEffects" : null,
+"m_ResourceThresholdGranted" : null,
+"m_CurrentResourcesGranted" : 0,
+"m_MaxResourcesGranted" : 0,
+"m_ImplNotes" : "",
+"m_SacrificeTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_LifeCost" : 0,
+"m_ArtStatus" : "None",
+"m_RageValue" : 0,
+"m_ExhaustTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DefaultLayout" : {
+    "m_Id" : {
+        "m_Guid" : "00000000-0000-0000-0000-000000000000"}    ,
+    "m_Name" : ""    ,
+    "m_PortraitRotation" : 0    ,
+    "m_PortraitLeft" : 0.06738281    ,
+    "m_PortraitBottom" : 0.8213911    ,
+    "m_PortraitRight" : 0.9121094    ,
+    "m_PortraitTop" : 0.100585938},
+"m_HasExtendedLayout" : 0,
+"m_ExtendedLayout" : null,
+"m_EntersPlayExhausted" : 0,
+"m_ImplStage" : "Done",
+"m_VoidTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_DiscardTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostType" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_CounterCostAmount" : 0,
+"m_CombatDamageMultiplier" : 1,
+"m_DesignerNumber" : 0,
+"m_ShuffleIntoDeckTarget" : {
+    "m_Guid" : "00000000-0000-0000-0000-000000000000"},
+"m_SoundEventOnSpawn" : "Sets\\Set001\\SFX\\Troop\\Diamond\\Aud_FX_Card_Play_Princess_Victoria.wav",
+"m_SerializedTAC" : null,
+"m_HasExtendedArt" : 0,
+"m_HasAlternateArt" : 0
+}
