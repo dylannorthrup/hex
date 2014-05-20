@@ -6,18 +6,10 @@
 puts "Content-type: text/html"
 puts ""
 
-require 'pry'
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
-require "mysql"
-#results = con.query("Select distinct set_id from cards")
-#results.each do |row|
-#  puts row
-#end
-
 foo = Hex::Collection.new
-con = foo.get_db_con
-foo.load_collection(con)
+foo.load_set('Set001')
 
 puts "<head>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/tables.css">'

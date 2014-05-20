@@ -10,7 +10,8 @@ puts ""
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
 foo = Hex::Collection.new
-foo.load_set('Set001')
+con = foo.get_db_con
+foo.load_collection(con)
 
 puts "My collection has #{foo.size} cards in it"
 puts "Here's what it looks like:"

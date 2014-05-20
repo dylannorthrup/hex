@@ -10,7 +10,9 @@ require "pry"
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
 foo = Hex::Collection.new
-foo.load_set('Set001')
+#foo.load_set('Set001')
+con = foo.get_db_con
+foo.load_collection(con)
 
 view = Hex::CardView.new()
 
