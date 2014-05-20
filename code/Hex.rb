@@ -235,6 +235,12 @@ module Hex
       require 'mysql'
       string = "INSERT INTO cards values ('#{Mysql.escape_string @set}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @unlimited}','#{Mysql.escape_string @unique}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}');"
     end
+
+    # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
+    # this)
+    def dump_sql_table_format
+      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(15), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost INT, atk INT, health INT, text VARCHAR(120), flavor VARCHAR(120), unlimited_card INT, unique_card INT, artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY);"
+    end
   end
 
   class Collection
