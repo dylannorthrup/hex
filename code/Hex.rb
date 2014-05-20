@@ -230,6 +230,11 @@ module Hex
     def to_html_table
       string = "<tr>\n<td>#{@set}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@unlimited}</td>\n<td>#{@unique}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@uuid}</td>\n</tr>"
     end
+
+    def to_sql
+      require 'mysql'
+      string = "INSERT INTO cards values ('#{Mysql.escape_string @set}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @unlimited}','#{Mysql.escape_string @unique}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}');"
+    end
   end
 
   class Collection
@@ -280,6 +285,7 @@ module Hex
     def load_collection
       path = File.join(@@base_dir, @@set_dir)
       Dir.entries(path).each do |set|
+        next if set =~ /^\./
         load_set(set)
       end
     end
