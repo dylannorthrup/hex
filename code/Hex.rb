@@ -137,25 +137,6 @@ module Hex
     # Perhaps use action_template here?
     #@@constant_template = ""
 
-    def get_binding
-      binding
-    end
-
-    def fill_template
-      temp_string = ""
-      case @type
-      when /Troop/
-        temp_string = @@troop_template
-      when /Action|Constant/
-        temp_string = @@action_template
-      when /Artifact/
-        temp_string = @@artifact_template
-      when /Resource/
-        temp_string = @@resource_template
-      end
-      ERB.new(temp_string).result(get_binding)
-    end
-
     def initialize(path=nil)
       return if path.nil?
       if path.instance_of? String
@@ -175,17 +156,36 @@ module Hex
         @health = path[11]
         @text = path[12]
         @flavor = path[13]
-        @restriction = determine_card_restrictions(path[14], path[15])
-        @artist = path[16]
-        @enters_exhausted = path[17]
-        @uuid = path[18]
-        @image_path = path[19]
+        @restriction = path[14]
+        @artist = path[15]
+        @enters_exhausted = path[16]
+        @uuid = path[17]
+        @image_path = path[18]
         @htmlcolor = gem_to_htmlcolor(@color)
       elsif path.instance_of? Mysql
         load_card_from_mysql(path)
       else
         throw Exception("CANNOT INITIALIZE CARD FROM WHAT WE WERE GIVEN")
       end
+    end
+
+    def get_binding
+      binding
+    end
+
+    def fill_template
+      temp_string = ""
+      case @type
+      when /Troop/
+        temp_string = @@troop_template
+      when /Action|Constant/
+        temp_string = @@action_template
+      when /Artifact/
+        temp_string = @@artifact_template
+      when /Resource/
+        temp_string = @@resource_template
+      end
+      ERB.new(temp_string).result(get_binding)
     end
 
     def determine_card_restrictions(unl=nil, unq=nil)
