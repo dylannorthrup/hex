@@ -16,7 +16,7 @@ foo.load_collection(con)
 
 view = Hex::CardView.new()
 
-#puts "SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|UNLIMITED|UNIQUE|ARTIST|ENTERS PLAY EXHAUSTED"
+#puts "SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED"
 foo.cards.sort {|a, b| a.card_number <=> b.card_number}.each do |card|
   #next unless card.name =~ /Time Bug|Replicator's Gambit|Hex Engine/
   next unless card.type =~ /Action|Constant/
