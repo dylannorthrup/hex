@@ -55,9 +55,9 @@ module Hex
   </tr>
   <tr>
     <td colspan=2><%= @type %> 
-      <%= " -- " unless @sub_type.nil? and @restriction.nil?%>
+      <%= " -- " unless @sub_type.nil? and @restriction == ''%>
       <%= @sub_type %> 
-      <%= print @restriction unless @restriction.nil? %> 
+      <%= print @restriction unless @restriction == '' %> 
     </td>
     <td><%= @rarity %></td>
   </tr>
@@ -117,9 +117,9 @@ module Hex
   </tr>
   <tr>
     <td colspan=2><%= @type %> 
-      <%= " -- " unless @sub_type.nil? and @restriction.nil?%>
+      <%= " -- " unless @sub_type.nil? and @restriction == ''%>
       <%= @sub_type %> 
-      <%= print @restriction unless @restriction.nil? %> 
+      <%= print @restriction unless @restriction == '' %> 
     </td>
     <td><%= @rarity %></td>
   </tr>
@@ -189,9 +189,9 @@ module Hex
     end
 
     def determine_card_restrictions(unl=nil, unq=nil)
-      return 'Unlimited' if unl == 1
-      return 'Unique' if unq == 1
-      return nil
+      return 'Unlimited' if unl == "1"
+      return 'Unique' if unq == "1"
+      return ''
     end
 
     def setuid_to_setname(uid=nil)
@@ -296,11 +296,6 @@ module Hex
     # This is stuff you do when you first create a collection
     def initialize()
       @cards = Array.new
-#      puts "Collection size: #{self.size}"
-#      puts "Base directory: #{@@base_dir}"
-#      puts "Set directory: #{@@set_dir}"
-#      puts "Card Definition directory: #{@@card_def_dir}"
-#      puts "Pictures directory: #{@@pic_dir}"
     end
 
     # Get all the card files for a particular directory
@@ -320,7 +315,6 @@ module Hex
 
     # Load information for a specific set
     def load_set(set_name = nil, sql_con = nil)
-#      puts "Set name: #{set_name}"
       return if set_name.nil?
       if sql_con.nil?   # If we don't have a SQL connection, load from JSON files
         path = File.join(@@base_dir, @@set_dir, set_name, @@card_def_dir)
@@ -332,11 +326,9 @@ module Hex
         end
       else  # If we DO have a sql connection, load from that
         query = "SELECT * FROM cards where set_id = '#{set_name}'"
-#        puts "Requesting the following from SQL server: #{query}"
         results = sql_con.query(query)
         results.each do |row|
           new_card = Card.new(row)
-#          puts row
           @cards << new_card
         end
       end
@@ -345,11 +337,9 @@ module Hex
     # Go into all set directories and load their cards
     def load_collection_from_search(sql_con = nil, search_query = nil)
       query = "SELECT * FROM cards where #{search_query}"
-#      puts "Requesting the following from SQL server: #{query}"
       results = sql_con.query(query)
       results.each do |row|
         new_card = Card.new(row)
-#        puts row
         @cards << new_card
       end
     end
@@ -366,7 +356,6 @@ module Hex
         results = sql_con.query("SELECT DISTINCT set_id FROM cards");
         results.each do |set|
           set_name = set[0]
-#          puts "Loading Set #{set_name} from SQL"
           load_set(set_name, sql_con)
         end
       end
