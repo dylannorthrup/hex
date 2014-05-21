@@ -25,27 +25,7 @@ puts "</head>"
 
 puts '<div class="CSSTableGenerator" > '
 puts '<table>'
-puts '  <tr>'
-puts '    <td>SET NUMBER</td>'
-puts '    <td>CARD NUMBER</td>'
-puts '    <td>NAME</td>'
-puts '    <td>RARITY</td>'
-puts '    <td>COLOR</td>'
-puts '    <td>TYPE</td>'
-puts '    <td>SUB TYPE</td>'
-puts '    <td>FACTION</td>'
-puts '    <td>SOCKET COUNT</td>'
-puts '    <td>COST</td>'
-puts '    <td>ATK</td>'
-puts '    <td>HEALTH</td>'
-puts '    <td>TEXT</td>'
-puts '    <td>FLAVOR</td>'
-puts '    <td>UNLIMITED</td>'
-puts '    <td>UNIQUE</td>'
-puts '    <td>ARTIST</td>'
-puts '    <td>ENTERS PLAY EXHAUSTED</td>'
-puts '    <td>UUID</td>'
-puts '  <tr>'
+puts Hex::Card.dump_html_table_header
 foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
   puts "#{card.to_html_table}"
 end
