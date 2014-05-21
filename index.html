@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>Hex Card Search Engine</title>
+</head>
+<body>
+<h1>Hex Card Search Engine</h1>
+
+<form method="post" action="search.rb">
+<table border=0>
+<tr valign="center" align=left>
+  <th align=right width="132">Name: </th>
+  <td><input name="name" type="text" size=40>
+  <th>Cost: <input name="cost" type="text" size=3>
+  </td>
+  <th>Restriction: <select name="unique_card" size=1>
+    <option value="-Any-" selected>None
+    <option>Unique
+    <option>Unlimited
+</tr>
+<tr valign="center" align="left">
+  <th align=right>Effects Text: </th>
+  <td><input name="text" type="text" size=40></td>
+  <th>Type: 
+    <select name="type" SIZE=1>
+    <option value="-Any-" selected>- Any -
+    <option>Troop
+    <option>Artifact
+    <option>Action
+    <option>Quick Action
+    <option>Basic Action
+    <option>Resource
+    <option>Constant
+    </select>
+  </th>
+  <th> 
+	Color: <select name="color" size=1>
+    <option value="-Any-" selected>- Any -
+    <option>Ruby
+    <option>Sapphire
+    <option>Diamond
+    <option>Wild
+    <option>Blood
+    </select>
+  </th>
+</tr>
+<tr valign="center" align=left>
+  <th align=right>Attack:</th>
+  <th><input name="atk" type="text" size=3>
+      Health: <input name="health" type="text" size=3></th>
+  <th>Rarity:
+    <select name="rarity" SIZE=1>
+    <option value="-Any-" selected>- Any -
+    <option>Land
+    <option>Common
+    <option>Uncommon
+    <option>Rare
+    <option>Legendary
+    <option>Epic
+    </select> </th>
+  <th>Threshold: <input name="threshold_cost" type=text size=2><select name="threshold_color" size=1>
+    <option value="-Any-" selected>- Any -
+    <option>Ruby
+    <option>Sapphire
+    <option>Diamond
+    <option>Wild
+    <option>Blood
+    </select>
+  </th>
+</tr>
+<tr valign="center" align=left>
+  <th align=right>Type: </th>
+  <th><input name="type" type="text" size=40>
+  </td>
+  <th colspan=2>Traits: <input name="sub_type" type="text" size=40></th>
+</tr>
+<tr valign="center" align=left>
+  <th align=right>Artist:</th>
+  <td><input name="artist" type="text" size=40></td>
+  <th align=left>Set
+  <select name="set_id" SIZE=1>
+    <option value="-Any-" selected>- Any -
+    <option value="001">Set 001
+    </select>
+  </th>
+</tr>
+<tr valign="center" align=left>
+  <th align=right> </th>
+  <td>
+<input type=submit value="Find">
+<input type="reset" value="Reset Form">
+  </td>
+</tr>
+</table>
+</FORM>
+
+</body>
