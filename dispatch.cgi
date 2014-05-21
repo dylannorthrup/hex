@@ -12,4 +12,12 @@ err_log_file="${this_dir}/log/dispatch_err.log"
 export LC_CTYPE=en_US.UTF-8
 #echo "Content-type: text/html"
 #echo ""
-exec ~/.rbenv/shims/ruby "${this_dir}/code${PATH_INFO}" 2>>"${err_log_file}"
+if [ -f "${this_dir}/code${PATH_INFO}" ]; then
+  exec ~/.rbenv/shims/ruby "${this_dir}/code${PATH_INFO}" 2>>"${err_log_file}"
+else
+  echo "Status: 404 Not Found"
+  echo "Content-Type: text/html"
+  echo ""
+  echo "<title>404 Not Found</title>"
+  echo "<h1>404 Not Found</h1>"
+fi
