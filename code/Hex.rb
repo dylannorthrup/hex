@@ -6,6 +6,7 @@ module Hex
   require "json"
   require "erb"
   require "mysql"
+  require 'pry'
 
   class CardView
     attr_accessor :card, :html
@@ -21,7 +22,7 @@ module Hex
   class Card
     attr_accessor :name, :card_number, :set_id, :faction, :socket_count, :color, :cost, :threshold_color, :threshold_number
     attr_accessor :image_path, :type, :sub_type, :atk, :health, :text, :flavor, :rarity, :restriction, :artist
-    attr_accessor :equipment, :enters_exhausted, :card_json, :uuid, :htmlcolor
+    attr_accessor :equipment, :equipment_string, :enters_exhausted, :card_json, :uuid, :htmlcolor
     # Mapping of sets to set names/numbers
     @@uid_to_set = {
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
@@ -161,6 +162,9 @@ module Hex
         @enters_exhausted = path[16]
         @uuid = path[17]
         @image_path = path[18]
+        @threshold_color = path[19]
+        @threshold_number = path[20]
+        @equipment_string = path[21]
         @htmlcolor = gem_to_htmlcolor(@color)
       elsif path.instance_of? Mysql
         load_card_from_mysql(path)
@@ -237,8 +241,11 @@ module Hex
       @rarity           = get_json_value(@card_json, 'm_CardRarity')
       @restriction      = determine_card_restrictions(get_json_value(@card_json, 'm_Unlimited'), get_json_value(@card_json, 'm_Unique'))
       @artist           = get_json_value(@card_json, 'm_ArtistName')
-      @equipment        = get_json_value(@card_json, 'm_EquipmentSlots')
       @enters_exhausted = get_json_value(@card_json, 'm_EntersPlayExhausted')
+      unless @card_json['m_EquipmentSlots'].nil?
+        @equipment        = @card_json['m_EquipmentSlots']
+        @equipment_string = equipment_string_from_array(@equipment)
+      end
       # Do it this way to double check things exist before trying to access them
       @threshold_color  = ""
       @threshold_number = ""
@@ -257,28 +264,43 @@ module Hex
     end
 
     def to_csv
-      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@uuid}"
+      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@uuid}"
     end
 
     def to_html_table
-      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@uuid}</td>\n</tr>"
+      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@uuid}</td>\n</tr>"
     end
 
     # Put this here so we can keep the table header formate in the same location as the to_html_table method (immediately previous
     # to this)
     def self.dump_html_table_header
-      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>UUID</td> </tr> '
+      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT</td> <td>UUID</td> </tr> '
+    end
+
+    def equipment_string_from_array(equip)
+      equipment_string = ""
+      if equip.instance_of? Array
+        equip.each { |hash|
+#          puts hash
+          next if hash['m_Guid'].nil?
+          next if hash['m_Guid'].match('00000000-0000-0000-0000-000000000000')
+          equipment_string += "#{hash['m_Guid']}, "
+#        binding.pry
+        }
+      end
+      equipment_string.gsub!(/, $/, '')
+      return equipment_string
     end
 
     def to_sql
       require 'mysql'
-      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}');"
+      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}','#{Mysql.escape_string @equipment_string}');"
     end
 
     # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
     # this)
     def self.dump_sql_table_format
-      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2));"
+      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2), equipment_string VARCHAR(90));"
     end
   end
 
