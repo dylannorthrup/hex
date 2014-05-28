@@ -7,6 +7,15 @@ require 'cgi'
 cgi = CGI.new
 params = cgi.params
 
+# Set default for output format
+output_format = 'html_table'
+# See if we were specifically told to use an output_format If so, change output_format variable to that and remove 
+# the parameter from the params hash (so we don't try to use it as a search parameter)
+unless params['output_format'].empty?
+  output_format = params['output_format'][0]
+  params.delete('output_format')
+end
+
 # If we didn't get any search parameters, redirect to the search page
 if params.empty?
   target_url = "http://doc-x.net/hex/"
@@ -38,8 +47,8 @@ query += ";"
 
 # Print out HTTP headers
 puts "Content-type: text/html"
-#puts "X-Search-Params: #{params}"
 puts "X-Search-Query: #{query}"
+puts "X-Output-Format: #{output_format}"
 puts ""
 
 #require "pry"
@@ -54,16 +63,24 @@ puts "<head>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/tables.css">'
 puts "</head>"
 puts '<h1>Search Results</h1>'
-#puts "Here's the search query: #{query}"
 puts '<a href="/hex/">Search Again?</a>'
-puts '<div class="CSSTableGenerator" > '
-puts '<table>'
-puts Hex::Card.dump_html_table_header
+if output_format =~ /html/
+  puts '<div class="CSSTableGenerator" > '
+  puts '<table>'
+else
+  puts '<pre>'
+end
+#puts Hex::Card.dump_html_table_header
+puts Hex::Card.send("dump_#{output_format}_header")
 foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
-  puts "#{card.to_html_table}"
+  puts card.send("to_#{output_format}")
 end
 
-puts '</table>'
+if output_format =~ /html/
+  puts '</table>'
+else
+  puts '</pre>'
+end
 
 puts '<a href="/hex/">Search Again?</a>'
 
