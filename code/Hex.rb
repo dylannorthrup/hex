@@ -339,6 +339,35 @@ module Hex
       @cards
     end
 
+    # Something to get groupings based on card values inside the Collection
+    def card_trait_list(attribute=nil, split_character=nil)
+      return if attribute.nil?
+      trait = attribute.downcase
+#      puts "Looking for trait: '#{trait}'"
+      entries = Hash.new(0)
+      @cards.each do |card|
+        key = card.send("#{trait}".to_sym)
+#        puts card, key
+        if split_character.nil?
+          entries[key] += 1
+        else
+          key.split(/#{split_character}/).each do |thing|
+            # Skip uncapitalized non-numeric strings as a quick heuristing way to filter meaningless terms (of, the, for, etc)
+            next if thing == thing.downcase unless thing.match(/^\d+$/)  
+            entries[thing] += 1
+          end
+        end
+      end
+#      puts entries.keys
+      return entries.keys.sort {|a, b| 
+        if a =~ /^\d+/ and b =~ /^\d+/
+          a.to_i <=> b.to_i
+        else
+          a <=> b
+        end 
+        }
+    end
+
     # Load information for a specific set
     def load_set(set_name = nil, sql_con = nil)
       return if set_name.nil?
