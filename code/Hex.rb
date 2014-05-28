@@ -303,7 +303,7 @@ module Hex
 
     # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
     # this)
-    def self.dump_sql_table_format
+    def self.dump_sql_header
       string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2), equipment_string VARCHAR(90));"
     end
   end
