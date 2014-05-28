@@ -22,7 +22,7 @@
 "m_CardSubtype" : "Human Cleric",
 "m_BaseAttackValue" : 3,
 "m_BaseHealthValue" : 2,
-"m_FlavorText" : "<i>The Protectorate are elite defenders of the human realm of Carloth. The clergy provide divine inspiration to the knights that follow them onto the battlefield.<i>",
+"m_FlavorText" : "<i>The Protectorate are elite defenders of the human realm of Carloth. The clergy provide divine inspiration to the knights that follow them onto the battlefield.</i>",
 "m_CardRarity" : "Uncommon",
 "m_LineageId" : {
     "m_Guid" : "00000000-0000-0000-0000-000000000000"},

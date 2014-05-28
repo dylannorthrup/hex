@@ -22,7 +22,7 @@
 "m_CardSubtype" : "Elf Warlock",
 "m_BaseAttackValue" : 1,
 "m_BaseHealthValue" : 2,
-"m_FlavorText" : "<i>Elf warlocks are wildshapers who can repurpose decaying organic matter into useful magic.<i>",
+"m_FlavorText" : "<i>Elf warlocks are wildshapers who can repurpose decaying organic matter into useful magic.</i>",
 "m_CardRarity" : "Rare",
 "m_LineageId" : {
     "m_Guid" : "00000000-0000-0000-0000-000000000000"},

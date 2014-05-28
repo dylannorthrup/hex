@@ -22,7 +22,7 @@
 "m_CardSubtype" : "Human",
 "m_BaseAttackValue" : 2,
 "m_BaseHealthValue" : 3,
-"m_FlavorText" : "<i>The human kingdom is divided into three counties: Adamanth, Cerulea, and Gawaine. Relations between the counties are historically peaceful, with most major conflicts coming from outside sources.<i>",
+"m_FlavorText" : "<i>The human kingdom is divided into three counties: Adamanth, Cerulea, and Gawaine. Relations between the counties are historically peaceful, with most major conflicts coming from outside sources.</i>",
 "m_CardRarity" : "Common",
 "m_LineageId" : {
     "m_Guid" : "00000000-0000-0000-0000-000000000000"},
