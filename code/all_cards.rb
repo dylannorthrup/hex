@@ -12,7 +12,7 @@ require "Hex"
 foo = Hex::Collection.new
 foo.load_set('Set001')
 
-puts "SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED"
+puts Hex::Card.dump_csv_header
 foo.cards.sort {|a, b| a.card_number <=> b.card_number}.each do |card|
   puts "#{card.to_csv}"
 end

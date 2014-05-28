@@ -13,7 +13,7 @@ foo = Hex::Collection.new
 con = foo.get_db_con
 foo.load_collection(con)
 
-puts "SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED"
+puts Hex::Card.dump_csv_header
 foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
   # Skip non collectible cards (which all have card_number of 0)
   next if card.card_number == "0"

@@ -15,10 +15,9 @@ foo.load_collection(con)
 
 puts "My collection has #{foo.size} cards in it"
 puts "Here's what it looks like:"
-foo.cards.sort {|a, b| a.card_number <=> b.card_number}.each do |card|
+foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
   # Skip non collectible cards (which all have card_number of 0)
-  next if card.card_number == 0
-#  puts "Card: #{card}"
+  next if card.card_number == "0"
   puts "#{card.to_csv}"
 end
 

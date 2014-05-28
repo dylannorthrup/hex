@@ -267,6 +267,12 @@ module Hex
       string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@uuid}"
     end
 
+    # Put this here so we can keep the table header formate in the same location as the to_csv method (immediately previous
+    # to this)
+    def self.dump_csv_header
+      string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|UUID'
+    end
+
     def to_html_table
       string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@uuid}</td>\n</tr>"
     end
@@ -281,11 +287,9 @@ module Hex
       equipment_string = ""
       if equip.instance_of? Array
         equip.each { |hash|
-#          puts hash
           next if hash['m_Guid'].nil?
           next if hash['m_Guid'].match('00000000-0000-0000-0000-000000000000')
           equipment_string += "#{hash['m_Guid']}, "
-#        binding.pry
         }
       end
       equipment_string.gsub!(/, $/, '')
