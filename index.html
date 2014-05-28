@@ -76,7 +76,7 @@
 <tr valign="center" align=left>
   <th align=right>Artist:</th>
   <td><input name="artist" type="text" size=40></td>
-  <th align=left>Set
+  <th align=left>Set:
   <select name="set_id" SIZE=1>
     <option value="-Any-" selected>- Any -
     <option value="001">Set 001
@@ -86,9 +86,16 @@
 <tr valign="center" align=left>
   <th align=right> </th>
   <td>
-<input type=submit value="Find">
+<input type=submit value="Search">
 <input type="reset" value="Reset Form">
   </td>
+  <th colspan=2>
+  Output Format:
+  <select name="output_format" SIZE=1>
+    <option value="html_table" selected>Tabular HTML (default)
+    <option value="csv">Character Separated Values
+    <option value="sql">SQL
+  </select>
 </tr>
 </table>
 </FORM>
