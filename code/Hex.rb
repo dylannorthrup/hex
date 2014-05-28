@@ -274,7 +274,7 @@ module Hex
     # Put this here so we can keep the table header formate in the same location as the to_html_table method (immediately previous
     # to this)
     def self.dump_html_table_header
-      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT</td> <td>UUID</td> </tr> '
+      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT UUIDS</td> <td>UUID</td> </tr> '
     end
 
     def equipment_string_from_array(equip)
