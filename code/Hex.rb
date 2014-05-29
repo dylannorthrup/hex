@@ -228,7 +228,7 @@ module Hex
       @uuid             = chomp_string(@card_json['m_Id']['m_Guid'])
       @faction          = get_json_value(@card_json, 'm_Faction')
       @socket_count     = get_json_value(@card_json, 'm_SocketCount')
-      @color            = get_json_value(@card_json, 'm_ColorFlags')
+      @color            = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
       @htmlcolor        = gem_to_htmlcolor(@color)
       @cost             = get_json_value(@card_json, 'm_ResourceCost')
       @image_path       = get_json_value(@card_json, 'm_CardImagePath').gsub(/\\/, '/')
