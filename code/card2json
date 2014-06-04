@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# Take card definitions from Hex and turn them into proper JSON
+
+usage() {
+  echo "Usage: card2json SRCDIR DESTDIR"
+  echo "  card2json will parse all foo.card files in SRCDIR and transform them"
+  echo "  into properly formatted JSON files in DESTDIR with a name of foo.json"
+  echo "  For some reason, this command was not called properly, so I'm showing"
+  echo "  you the usage and exiting.  Goodbye."
+  exit 1
+}
+
+# Make sure we have at least two arguments
+if [ "X" == "$2X" ]; then
+  usage
+fi
+
+# So far, so good
+SRCDIR="$1"
+DESTDIR="$2"
+
+# Make sure they're both directories
+if [ ! -d "$SRCDIR" ] || [ ! -d "$DESTDIR" ]; then
+  usage
+fi
+
+# Now, let's do some utility functions
+#
+# cat *.card file and do the following:
+# - replace specific single quotes with double quotes (required for proper JSON)
+# - fix missing closing italics tags on flavor text (bungs up output display)
+# - combine the whole thing into a single line (so multi-line values don't hork us over)
+hextojson () {
+  cat "$@" | perl -pe "s/: '/: \"/g; s/' *}/\"}/g;" | sed -e 's/\(m_FlavorText.*\)<i>",/\1<\/i>",/' | tr '\n' ' '
+}
+
+# Take name of *.card file and turn it into *.json (without any preceeding path that
+# might have been in there)
+cardfiletojsonfile () {
+  basename "$@" | sed -e 's/card$/json/'
+}
+
+for i in $(ls $SRCDIR/*.card); do
+  JNAME=$(cardfiletojsonfile $i)
+  hextojson "$i" > "$DESTDIR/$JNAME"
+  echo $i processed
+done
