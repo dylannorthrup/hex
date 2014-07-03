@@ -41,7 +41,7 @@ def make_urls_absolute(page)
       end
     end
   rescue Exception => e
-    puts "*** Error in trying to massage post URLs: #{e.message}"
+#    puts "*** Error in trying to massage post URLs: #{e.message}"
   end
   return page
 end
@@ -53,7 +53,7 @@ def retrieve_post(url="")
 
   post_id = url[/p=(\d+)/, 1]
   title = page.css("span[class='threadtitle'] > a").text
-  contents = page.css("blockquote[class='postcontent restore ']").to_s
+  contents = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div.postdetails div.postbody div.content").to_s
   date = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div span span[class='date']").text
   # Check for 'yesterday' or 'today' in the date output
   if date =~ /(Yester|To)day/
@@ -64,6 +64,7 @@ def retrieve_post(url="")
   else
     date.gsub!(/^(\d\d)-(\d\d)-(\d\d\d\d)/, '\3-\1-\2')
   end
+#  binding.pry
 
   return [ title, contents, date ]
 end
@@ -106,7 +107,7 @@ def store_post(con = nil, thread_id = nil, post_id = nil, title = nil, orange_id
   contents = Mysql.escape_string contents
   query = "insert into orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}' on duplicate key update thread_id='#{thread_id}', post_date='#{post_date}', title='#{title}', orange_id='#{orange_id}', url='#{url}', contents='#{contents}'"
   con.query(query)
-  puts "Stored data for post #{post_id} in thread #{thread_id}"
+#  puts "Stored data for post #{post_id} in thread #{thread_id}"
 end
 
 # Given a userid and a sql connection, get all of the user's posts and stuff them into the table
@@ -114,7 +115,7 @@ def get_user_posts(orange_id=nil, sql_con=nil)
   return if sql_con.nil?
   return if orange_id.nil?
   get_user_post_list(orange_id).each do |url|
-    puts "Retrieving #{url}"
+#    puts "Retrieving #{url}"
     thread_id = url[/t=(\d+)/, 1]
     post_id = url[/p=(\d+)/, 1]
     title, contents, post_date = retrieve_post(url)
@@ -135,7 +136,9 @@ end
 #### MAIN STARTING
 sql_con = get_db_con
 userids = get_orange_ids(sql_con)
+#userids = [ 190 ]      # Testing grabbing Chark's posts
 userids.each do |uid|
+#  puts uid
   get_user_posts(uid, sql_con)
   sleep 1;
 end
