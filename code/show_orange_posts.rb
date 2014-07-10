@@ -33,7 +33,8 @@ def print_post(row=nil)
   contents.gsub!(/\\\'/, "'")
   contents.gsub!(/\\"/, '')
   puts "<p><hr><p><center><table border=1 width=80%>"
-  puts "<tr><th align=left><a href='#{@user_info_url}#{orange_id}'><span style='color: #FF5522; font-weight: bold;'>#{name}</span></a> posted in thread <span class='threadtitle'><a href='#{url}'>#{title}</a></span> on #{post_date} </th></tr>"
+  puts "<tr><td class='orange_poster' align=left><a href='#{@user_info_url}#{orange_id}'>#{name}</a></td></tr>"
+  puts "<tr><th class='thread_title'>posted in thread <a class='thread_title' href='#{url}'>#{title}</a> on #{post_date} </th></tr>"
   puts "<tr><td align=left><blockquote>#{contents}</td></tr></table></center>"
 end
 
