@@ -27,11 +27,11 @@ def read_file(fname=nil)
   return lines
 end
 
-def read_db(sqlcon=nil)
+def read_db(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity FROM ah_data ah, cards c where c.name = ah.name and c.rarity regexp 'Legendary|Rare'"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity FROM ah_data ah, cards c where c.name = ah.name #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
     line = "#{row[0]},#{row[1]},#{row[2]},#{row[3]}"
@@ -45,11 +45,10 @@ def parse_lines(lines=nil)
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(Legendary|Rare)$/)
-      name = "#{$4} - #{$1}"
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(.*)$/)
+      name = "'#{$1}' [#{$4}]"
       currency = $2
       price = $3
-#      rarity = $4
       # Do replacements afterward so we don't mess up match variables
       name.gsub!(/"/, '')   # Get rid of any double quotes
       # Add price onto hash for access later
@@ -133,10 +132,3 @@ def print_filtered_output(array=nil, filter='.*')
 end
 
 
-####### MAIN SECTION
-foo = Hex::Collection.new
-con = foo.get_db_con
-lines = read_db(con)                      # Get data from database
-parse_lines(lines)                        # Compile that data into a useable form
-print_filtered_output(@card_names, '^Legendary - ')
-print_filtered_output(@card_names, '^Rare - ')
