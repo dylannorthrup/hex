@@ -10,6 +10,5 @@ foo = Hex::Collection.new
 con = foo.get_db_con
 lines = read_db(con, "and c.rarity regexp 'Legendary|Rare'")                      # Get data from database
 parse_lines(lines)                        # Compile that data into a useable form
-puts @card_names.size
 print_filtered_output(@card_names, '\[Legendary\]')
 print_filtered_output(@card_names, '\[Rare\]')
