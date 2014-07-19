@@ -126,7 +126,7 @@ end
 # Return an array of all of the Orange userids
 def get_orange_ids(sql_con=nil)
   return if sql_con.nil?
-  query = "select userid from orange;"
+  query = "select userid from orange where inactive is NULL;"
   # Some kung fu here. Take the Mysql result, turn it into an Enumerable, then collect that and
   # grab the first bit of each row (which is the userid we asked for before). All of this becomes
   # an array that gets passed out of the method
