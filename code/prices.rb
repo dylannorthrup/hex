@@ -131,4 +131,13 @@ def print_filtered_output(array=nil, filter='.*')
   end
 end
 
+# Print out cards in CSV format
+def print_csv_output(array=nil, filter='.*')
+  return if array.nil?
+  array.each_pair do |name, currencies|
+    next unless name.match(/#{filter}/)
+    puts "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}|#{(get_average_price(currencies['PLATINUM']))[0]}|#{(get_average_price(currencies['GOLD']))[0]}"
+  end
+end
+
 
