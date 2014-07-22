@@ -2,10 +2,6 @@
 #
 # get prices for rare and legendary cards for both gold and platinum from Hex price data
 
-# Print out HTTP headers
-puts "Content-type: text/plain"
-puts ""
-
 $: << "/home/docxstudios/web/hex/code"
 require 'mysql'
 require 'Hex'
@@ -40,8 +36,18 @@ def read_db(sqlcon=nil, filter='')
   return lines
 end
 
-def parse_lines(lines=nil)
+def parse_lines(lines=nil, html=false)
   return if lines.nil?
+  # Do this here because I wasn't smart enough to do this before...
+  # Print out HTTP headers
+  if html
+    puts "Content-type: text/html"
+    puts ""
+  else
+    puts "Content-type: text/plain"
+    puts ""
+  end
+  #
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
@@ -80,14 +86,23 @@ end
 
 # Get the average price of an array ignoring outliers
 def get_average_price(prices=nil?)
+  avg_price, size = get_full_price_details(prices)
+  return avg_price, size
+end
+
+# Method to get all details and distribution info about a set.
+def get_full_price_details(prices=nil)
   # If we didn't get a proper array, set average to 0 and sample size to 0
   return 0, 0 if prices.nil?
   # if we have a small number of sales, just average and return the result
   if prices.size < 9
     avg_price = array_int_avg(prices)
-    return avg_price, prices.size
+    return avg_price, prices.size, avg_price
   end
+  true_average = array_int_avg(prices)    # Get an initial average for the entire, pre-filtered array
   prices.sort!                            # Sort array numerically
+  min = prices[0]                         # Store min and max for returning later
+  max = prices[-1]
   median = (prices.size / 2).to_i         # Find median
   lq = (median / 2).to_i                  # Find lower quartile array index
   uq = ((median + prices.size) / 2).to_i  # Find upper quartile array index
@@ -96,11 +111,14 @@ def get_average_price(prices=nil?)
   lower_cutoff = prices[median] - (iqr * 1.5).to_i
   upper_cutoff = prices[median] + (iqr * 1.5).to_i
   # exclude outlier values below lower - (IQR * 1.5)
+  excluded = Array.new
   p2 = Array.new                          # Create new Array
   prices.each {|value|                    # Iterate through values in prices
     next if value.nil?                    # Skip if this value somehow got set to nil
     if value >= lower_cutoff              # If the value is greater than or equal to the lower of the cutoff values
       p2 << value                         # add it to p2
+    else                                  # Otherwise
+      excluded << value                   # Add it to our excluded array
     end
   } 
   prices = p2                             # Then make prices into p2
@@ -110,11 +128,14 @@ def get_average_price(prices=nil?)
     next if value.nil?                    # Skip if this value somehow got set to nil
     if value <= upper_cutoff              # If the value is less than or equal to the higher of the cutoff values
       p2 << value                         # add it to p2
+    else                                  # Otherwise
+      excluded << value                   # Add it to our excluded array
     end
   } 
   prices = p2                             # Then make prices into p2
   avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
-  return avg_price, prices.size           # And return the average and sample size
+  # Return all the appropriate values
+  return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
 end
 
 # Print out requested cards
@@ -129,6 +150,36 @@ def print_filtered_output(array=nil, filter='.*')
     end
     puts str
   end
+end
+
+# Print out full details of requested cards
+def print_filtered_detailed_output(array=nil, filter='.*')
+  return if array.nil?
+  array.each_pair do |name, currencies|
+    next unless name.match(/#{filter}/)
+    str = "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
+    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['PLATINUM'])
+    str << "|PLATINUM|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
+    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['GOLD'])
+    str << "|GOLD|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
+    puts str
+  end
+end
+
+# Print out full details of requested cards
+def print_filtered_detailed_output(array=nil, filter='.*')
+  return if array.nil?
+  puts "<div class='CSSTableGenerator'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"
+  array.each_pair do |name, currencies|
+    next unless name.match(/#{filter}/)
+    str = "<tr><td>#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
+    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['PLATINUM'])
+    str << "</td><td>PLATINUM</td><td>#{avg}</td><td>#{sample_size} auctions</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}"
+    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['GOLD'])
+    str << "</td><td>GOLD</td><td>#{avg}</td><td>#{sample_size} auctions</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td></tr>"
+    puts str
+  end
+  puts "</table></div>"
 end
 
 # Print out cards in CSV format
