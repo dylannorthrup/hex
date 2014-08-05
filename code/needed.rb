@@ -31,24 +31,37 @@ rows = data_json['table']['rows']
 
 # Go through each row.  If we don't have at least four, add the card info to the needed array
 needed = Array.new
+surplus = Array.new
 rows.each do |row|
   name = row['c'][0]['v']
   count = row['c'][1]['f'].to_i
   rarity = row['c'][2]['v']
   shard = "[#{row['c'][3]['v']}]"
   price = "NO DATA"
-  price = row['c'][7]['v'] unless row['c'][7].nil?
+  price = row['c'][6]['v'] unless row['c'][6].nil?
+  gprice = "NO DATA"
+  gprice = row['c'][7]['v'] unless row['c'][7].nil?
   next unless rarity =~ /Legendary|Rare/
 #  puts "Testing #{name} with count of #{count}"
   if count < 4
-    value = "#{'%-9.9s' % rarity} - #{'%-20.20s' % name} #{4 - count} #{'%-10.10s' % shard} -> need #{4 - count} w/ price of #{price}"
+    value = "#{'%-9.9s' % rarity} - #{'%-20.20s' % name} #{4 - count} #{'%-10.10s' % shard} -> need #{4 - count} w/ price of #{price.to_i} plat [#{gprice.to_i} gold]"
     needed << value
+  end
+  if count > 4
+    value = "#{'%-9.9s' % rarity} - #{'%-20.20s' % name} #{count - 4} #{'%-10.10s' % shard} -> have #{count - 4} extra w/ price of #{price.to_i} plat [#{gprice.to_i} gold]"
+    surplus << value
   end
 end
 
 #puts "Extracted rows into needed array"
 
+puts "========== NEEDS =========================================================================================="
 needed.sort.each do |row|
+  puts row
+end
+
+puts "\n\n========== EXTRAS =========================================================================================="
+surplus.sort.each do |row|
   puts row
 end
 
