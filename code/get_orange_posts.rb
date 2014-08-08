@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Test process for retrieving a URL
+# Get the orange posts and stuff them in a database
 
 require 'open-uri'
 require 'nokogiri'
@@ -8,6 +8,7 @@ require 'pry'
 require 'uri'
 require 'mysql'
 require 'date'  # For modifying 'Yesterday' and 'Today' into dates from post information
+require 'fileutils'
 
 @url_prefix = 'http://forums.cryptozoic.com/'
 @url_scheme = "http"
@@ -134,6 +135,7 @@ def get_orange_ids(sql_con=nil)
 end
 
 #### MAIN STARTING
+FileUtils.touch('/home/docxstudios/web/hex/get_orange_start')
 sql_con = get_db_con
 userids = get_orange_ids(sql_con)
 #userids = [ 190 ]      # Testing grabbing Chark's posts
@@ -142,3 +144,4 @@ userids.each do |uid|
   get_user_posts(uid, sql_con)
   sleep 1;
 end
+FileUtils.touch('/home/docxstudios/web/hex/get_orange_end')
