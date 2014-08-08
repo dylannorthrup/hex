@@ -48,7 +48,7 @@ rows.each do |row|
     needed << value
   end
   if count > 4
-    value = "#{'%-9.9s' % rarity} - #{'%-20.20s' % name} #{count - 4} #{'%-10.10s' % shard} -> have #{count - 4} extra w/ price of #{price.to_i} plat [#{gprice.to_i} gold]"
+    value = "#{'%-9.9s' % rarity} - #{'%-20.20s' % name} #{count} #{'%-10.10s' % shard} -> have #{count - 4} extra w/ price of #{price.to_i} plat [#{gprice.to_i} gold]"
     surplus << value
   end
 end
