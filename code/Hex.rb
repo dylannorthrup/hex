@@ -8,17 +8,6 @@ module Hex
   require "mysql"
   require 'pry'
 
-  class CardView
-    attr_accessor :card, :html
-
-    def to_s
-      if @html.nil?
-        fill_template
-      end
-      @html
-    end
-  end
-
   class Card
     attr_accessor :name, :card_number, :set_id, :faction, :socket_count, :color, :cost, :threshold_color, :threshold_number
     attr_accessor :image_path, :type, :sub_type, :atk, :health, :text, :flavor, :rarity, :restriction, :artist
@@ -33,110 +22,11 @@ module Hex
     @@gem_to_color = {
       'Colorless' => 'Burlywood',
       'Sapphire'  => 'LightSkyBlue',
-      'Ruby'      => 'Crimson',
+      'Ruby'      => '#FF2217',
       'Diamond'   => 'White',
       'Wild'      => 'OliveDrab',
-      'Blood'     => 'Dark Orchid'
+      'Blood'     => '#CD65A2'
     }
-
-    @@troop_template = %q{
-  <table border=1 cellpadding=2 cellspacing=2 bgcolor='<%= @htmlcolor %>'>
-  <tr>
-    <td>Cost: <%= @cost %></td>
-    <td colspan=2><%= @name %></td>
-  </tr>
-  <tr>
-    <td> <% 1.upto(@threshold_number.to_i) do %>
-     <%= @threshold_color %>
-     <% end %>
-    </td>
-    <td colspan=2><img src='/hex/<%= @image_path %>' width=256 height=256><br>
-    <% if @artist != "" %> Illustrator: <i><%= @artist %></i> <% end %>
-    </td>
-  </tr>
-  <tr>
-    <td colspan=2><%= @type %> 
-      <%= " -- " unless @sub_type.nil? and @restriction == ''%>
-      <%= @sub_type %> 
-      <%= print @restriction unless @restriction == '' %> 
-    </td>
-    <td><%= @rarity %></td>
-  </tr>
-  <tr>
-    <td colspan=3><%= @text %></td>
-  </tr>
-  <tr>
-    <td>ATK: <%= @atk %></td>
-    <td><%= @flavor %></td>
-    <td>Health: <%= @health %></td>
-  </tr>
-  </table> 
-}
-    @@action_template = %q{
-  <table border=1 cellpadding=2 cellspacing=2 bgcolor='<%= @htmlcolor %>'>
-  <tr>
-    <td>Cost: <%= @cost %></td>
-    <td colspan=2><%= @name %></td>
-  </tr>
-  <tr>
-    <td> <% 1.upto(@threshold_number.to_i) do %>
-     <%= @threshold_color %>
-     <% end %>
-    </td>
-    <td colspan=2><img src='/hex/<%= @image_path %>' width=256 height=256><br>
-    <% if @artist != "" %> Illustrator: <i><%= @artist %></i> <% end %>
-    </td>
-  </tr>
-  <tr>
-    <td colspan=2><%= @type %></td>
-    <td><%= @rarity %></td>
-  </tr>
-  <tr>
-    <td colspan=3><%= @text %></td>
-  </tr>
-  <% if @flavor != "" %>
-  <tr>
-    <td colspan=3><%= @flavor %></td>
-  </tr>
-  <% end %>
-  </table> 
-}
-    @@artifact_template = %q{
-  <table border=1 cellpadding=2 cellspacing=2 bgcolor='<%= @htmlcolor %>'>
-  <tr>
-    <td>Cost: <%= @cost %></td>
-    <td colspan=2><%= @name %></td>
-  </tr>
-  <tr>
-    <td> <% 1.upto(@threshold_number.to_i) do %>
-     <%= @threshold_color %>
-     <% end %>
-    </td>
-    <td colspan=2><img src='/hex/<%= @image_path %>' width=256 height=256><br>
-    <% if @artist != "" %> Illustrator: <i><%= @artist %></i> <% end %>
-    </td>
-  </tr>
-  <tr>
-    <td colspan=2><%= @type %> 
-      <%= " -- " unless @sub_type.nil? and @restriction == ''%>
-      <%= @sub_type %> 
-      <%= print @restriction unless @restriction == '' %> 
-    </td>
-    <td><%= @rarity %></td>
-  </tr>
-  <tr>
-    <td colspan=3><%= @text %></td>
-  </tr>
-  <% if @flavor != "" %>
-  <tr>
-    <td colspan=3><%= @flavor %></td>
-  </tr>
-  <% end %>
-  </table> 
-}
-    @@resource_template = ""
-    # Perhaps use action_template here?
-    #@@constant_template = ""
 
     def initialize(path=nil)
       return if path.nil?
@@ -146,7 +36,7 @@ module Hex
         @set_id = path[0]
         @card_number = path[1]
         @name = path[2]
-        @rarity = path[3]
+        @rarity = path[3].gsub(/Land/, 'Non-Collectible')
         @color = path[4]
         @type = path[5]
         @sub_type = path[6]
@@ -175,21 +65,6 @@ module Hex
 
     def get_binding
       binding
-    end
-
-    def fill_template
-      temp_string = ""
-      case @type
-      when /Troop/
-        temp_string = @@troop_template
-      when /Action|Constant/
-        temp_string = @@action_template
-      when /Artifact/
-        temp_string = @@artifact_template
-      when /Resource/
-        temp_string = @@resource_template
-      end
-      ERB.new(temp_string).result(get_binding)
     end
 
     def determine_card_restrictions(unl=nil, unq=nil)
@@ -238,7 +113,7 @@ module Hex
       @health           = get_json_value(@card_json, 'm_BaseHealthValue')
       @text             = get_json_value(@card_json, 'm_GameText')
       @flavor           = get_json_value(@card_json, 'm_FlavorText')
-      @rarity           = get_json_value(@card_json, 'm_CardRarity')
+      @rarity           = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
       @restriction      = determine_card_restrictions(get_json_value(@card_json, 'm_Unlimited'), get_json_value(@card_json, 'm_Unique'))
       @artist           = get_json_value(@card_json, 'm_ArtistName')
       @enters_exhausted = get_json_value(@card_json, 'm_EntersPlayExhausted')
@@ -261,6 +136,62 @@ module Hex
     # Quick print out of card information
     def to_s
       string = "#{@name} [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
+    end
+
+    def to_card_table
+      # Set up some quick things here that'll get substituted as appropriate later on
+      # By default, the image will span 6 rows
+      info_rows = 6
+      # If it's a troop, we'll add ATK and Health
+      if @type =~ /Troop/
+        health_info = "<tr>\n<td>ATK: #{@atk} - Health: #{@health}</td>\n</tr>"
+        info_rows += 1
+      else
+        health_info = ""
+      end
+      # If it's a Resource, we remove the cost line
+      if @type =~ /Resource/
+        cost_info = ""
+        info_rows -= 1
+      else
+        cost_info = "<tr>\n<td>Cost: #{@cost}<br>\nThreshold: #{@threshold_number} #{@threshold_color} </td>\n</tr>"
+      end
+      # If the flavor's blank, don't print the extra, blank row in the table
+      if @flavor =~ /^\s*$/
+        flavor_info = ""
+        info_rows -= 1
+      else
+        flavor_info = "<tr>\n<td valign=top>#{@flavor}</td>\n</tr>"
+      end
+      # Fill up type_info with each bit of info as needed
+      type_info = "<tr>\n<td valign=top>\n#{@type}<br>\n"
+      if sub_type !~ /^\s*$/
+        type_info += "#{@sub_type}<br>\n"
+      end
+      if restriction !~ /^\s*$/
+        type_info += "#{@restriction}<br>\n"
+      end
+      type_info += "<p>#{@rarity}</td>\n</tr>"
+
+      # Now that we've set that up, fill up 'string' with what we want it to have
+      string = <<EOCARD
+<center>
+<table width=80% border=1 cellpadding=2 cellspacing=2 bgcolor="#{@htmlcolor}"> 
+<tr>
+  <td valign=top>#{@name}</td>
+  <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="/hex/images/#{@uuid}.png" width=400 height=560></td>
+</tr>
+#{cost_info}
+#{type_info}
+<tr>
+  <td valign=top><b>Effects Text:</b><p>#{@text}</td>
+</tr>
+#{health_info}
+#{flavor_info}
+</table>
+</center>
+<br>
+EOCARD
     end
 
     def to_csv
