@@ -5,7 +5,6 @@
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
 foo = Hex::Collection.new
-#foo.load_set('Set001')
 foo.load_collection
 
 puts Hex::Card.dump_sql_header
