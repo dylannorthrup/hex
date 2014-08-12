@@ -64,7 +64,9 @@ puts '<link rel="stylesheet" type="text/css" href="/hex/tables.css">'
 puts "</head>"
 puts '<h1>Search Results</h1>'
 puts '<a href="/hex/">Search Again?</a>'
-if output_format =~ /html/
+if output_format =~ /html_card/
+  puts ''
+elsif output_format =~ /html/
   puts '<div class="CSSTableGenerator" > '
   puts '<table>'
 else
@@ -76,7 +78,9 @@ foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
   puts card.send("to_#{output_format}")
 end
 
-if output_format =~ /html/
+if output_format =~ /html_card/
+  puts ''
+elsif output_format =~ /html/
   puts '</table>'
 else
   puts '</pre>'
