@@ -10,7 +10,8 @@ puts ""
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
 foo = Hex::Collection.new
-foo.load_set('Set001')
+con = foo.get_db_con
+foo.load_set('001', con)
 
 puts Hex::Card.dump_csv_header
 foo.cards.sort {|a, b| a.card_number <=> b.card_number}.each do |card|
