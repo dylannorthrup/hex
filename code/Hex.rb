@@ -55,6 +55,8 @@ module Hex
         @threshold_color = path[19]
         @threshold_number = path[20]
         @equipment_string = path[21]
+        @curr_resources = path[22]
+        @max_resources = path[23]
         @htmlcolor = gem_to_htmlcolor(@color)
       elsif path.instance_of? Mysql
         load_card_from_mysql(path)
@@ -106,6 +108,9 @@ module Hex
       @color            = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
       @htmlcolor        = gem_to_htmlcolor(@color)
       @cost             = get_json_value(@card_json, 'm_ResourceCost')
+      if get_json_value(@card_json, 'm_VariableCost') =~ /1/
+        @cost = "#{@cost}X"
+      end
       @image_path       = get_json_value(@card_json, 'm_CardImagePath').gsub(/\\/, '/')
       @type             = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
       @sub_type         = get_json_value(@card_json, 'm_CardSubtype')
@@ -117,6 +122,8 @@ module Hex
       @restriction      = determine_card_restrictions(get_json_value(@card_json, 'm_Unlimited'), get_json_value(@card_json, 'm_Unique'))
       @artist           = get_json_value(@card_json, 'm_ArtistName')
       @enters_exhausted = get_json_value(@card_json, 'm_EntersPlayExhausted')
+      @curr_resources   = get_json_value(@card_json, 'm_CurrentResourcesGranted')
+      @max_resources    = get_json_value(@card_json, 'm_MaxResourcesGranted')
       unless @card_json['m_EquipmentSlots'].nil?
         @equipment        = @card_json['m_EquipmentSlots']
         @equipment_string = equipment_string_from_array(@equipment)
@@ -138,7 +145,11 @@ module Hex
       string = "#{@name} [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
     end
 
-    def to_card_table
+    def self.dump_html_card_table_header
+      string = ''
+    end
+
+    def to_html_card_table
       # Set up some quick things here that'll get substituted as appropriate later on
       # By default, the image will span 6 rows
       info_rows = 6
@@ -151,7 +162,7 @@ module Hex
       end
       # If it's a Resource, we remove the cost line
       if @type =~ /Resource/
-        cost_info = ""
+        cost_info = "<tr>\n<td>[#{@curr_resources}/#{@max_resources}]\n</tr>"
         info_rows -= 1
       else
         cost_info = "<tr>\n<td>Cost: #{@cost}<br>\nThreshold: #{@threshold_number} #{@threshold_color} </td>\n</tr>"
@@ -175,8 +186,7 @@ module Hex
 
       # Now that we've set that up, fill up 'string' with what we want it to have
       string = <<EOCARD
-<center>
-<table width=80% border=1 cellpadding=2 cellspacing=2 bgcolor="#{@htmlcolor}"> 
+<br><center> <table width=81% border=1 cellpadding=2 cellspacing=2 bgcolor="#{@htmlcolor}">
 <tr>
   <td valign=top>#{@name}</td>
   <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="/hex/images/#{@uuid}.png" width=400 height=560></td>
@@ -190,28 +200,27 @@ module Hex
 #{flavor_info}
 </table>
 </center>
-<br>
 EOCARD
     end
 
     def to_csv
-      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@uuid}"
+      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@curr_resources}|#{@max_resources}|#{@uuid}"
     end
 
     # Put this here so we can keep the table header formate in the same location as the to_csv method (immediately previous
     # to this)
     def self.dump_csv_header
-      string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|UUID'
+      string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|CURRENT RESOURCES ADDED|MAX RESOURCES ADDED|UUID'
     end
 
     def to_html_table
-      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@uuid}</td>\n</tr>"
+      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@curr_resources}</td>\n<td>#{@max_resources}</td>\n<td>#{@uuid}</td>\n</tr>"
     end
 
     # Put this here so we can keep the table header formate in the same location as the to_html_table method (immediately previous
     # to this)
     def self.dump_html_table_header
-      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT UUIDS</td> <td>UUID</td> </tr> '
+      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT UUIDS</td> <td>CURRENT RESOURCES ADDED</td> <td>MAX RESOURCES ADDED</td> <td>UUID</td> </tr> '
     end
 
     def equipment_string_from_array(equip)
@@ -229,13 +238,13 @@ EOCARD
 
     def to_sql
       require 'mysql'
-      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}','#{Mysql.escape_string @equipment_string}');"
+      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}');"
     end
 
     # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
     # this)
     def self.dump_sql_header
-      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2), equipment_string VARCHAR(90));"
+      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2), equipment_string VARCHAR(90), curr_resources INT, max_resources INT);"
     end
   end
 
