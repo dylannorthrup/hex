@@ -30,7 +30,7 @@ def print_out_sql(lines=nil)
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
     #if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(.*),(\d+)$/)
-    if parsed_line.match(/^\s*(.*?)\s*,\s*(GOLD|PLATINUM)\s*,\s*(\d+)\s*,\s*(.*?)\s*$/)
+    if parsed_line.match(/^"?\s*(.*?)\s*"?,\s*(GOLD|PLATINUM)\s*,\s*(\d+)\s*,\s*(.*?)\s*$/)
       name = $1
       currency = $2
       price = $3
