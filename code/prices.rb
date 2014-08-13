@@ -6,10 +6,110 @@ $: << "/home/docxstudios/web/hex/code"
 require 'mysql'
 require 'Hex'
 
-#@fname = "AH_Sold_Cards_unix.csv"
+# Some (reasonably) global variables
 @fname = "AH_Sold_Cards.csv"
 @price_data = Hash.new
 @card_names = Hash.new
+@output_type  = 'CSV'   # The other option currently is 'HTML'. Others may happen down the road
+@content_types = {
+  'CSV'   => 'text/plain',    # Comma Separated Variables
+  'PDCSV' => 'text/plain',    # Price Data Comma Separated Variables
+  'PSV'   => 'text/plain',    # Pipe Separated Variables
+  'HTML'  => 'text/html',     # HTML Tables
+}
+@output_detail = 'detailed'
+@name_filter = '.*'
+
+@card_closing_bits = {
+  'CSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'PDCSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'PSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'HTML'   => {
+    'brief'     => 'puts "</table></div>"',
+    'detailed'  => 'puts "</table></div>"',
+  }
+}
+@card_field_descriptors = {
+  'CSV'   => {
+    'brief'     => 'puts "Name,Avg_price,Currency,# of auctions,Avg_price,Currency,# of auctions"',
+    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices"'
+  },
+  'PDCSV'   => {
+    'brief'     => '',
+    'detailed'  => 'puts "Average Price (Plat), Average Price (Gold),\"Name\"'
+  },
+  'PSV'   => {
+    'brief'     => 'puts "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
+    'detailed'  => 'puts "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices"'
+  },
+  'HTML'  => {
+    'brief'     => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
+    'detailed'  => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
+  }
+}
+@card_init_string = {
+  'CSV'   => {
+    'brief'     => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}"',
+    'detailed'  => 'str = "\"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\",\"\\\1\"")}"',
+  },
+  'PDCSV'   => {
+    'brief'     => 'str = ""',
+    'detailed'  => 'str = ""',
+  },
+  'PSV'   => {
+    'brief'     => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}"',
+    'detailed'  => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "|\\\1")}"',
+  },
+  'HTML'  => {
+    'brief'     => 'str = "<tr><td>#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}</td>"',
+    'detailed'  => 'str = "<tr><td>#{name}</td>"',
+  }
+}
+@card_details_string = {
+  'CSV'   => {
+    'brief'     => 'str << ",#{avg},\"#{currency}\",#{sample_size}"',
+    'detailed'  => 'str << ",\"#{currency}\",#{avg},#{sample_size},#{true_avg},#{min},#{lq},#{med},#{uq},#{max},\"#{excl}\""',
+  },
+  'PDCSV'   => {
+    'brief'     => 'str << "#{avg},"',
+    'detailed'  => 'str << "#{avg},"',
+  },
+  'PSV'   => {
+    'brief'     => 'str << " ... #{avg} #{currency} [#{sample_size} auctions]"',
+    'detailed'  => 'str << "|#{currency}|#{avg}|#{sample_size}|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"',
+  },
+  'HTML'  => {
+    'brief'     => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
+    'detailed'  => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
+  }
+}
+@card_closing_string = {
+  'CSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'PDCSV'   => {
+    'brief'     => 'str << "\"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\"")}"',
+    'detailed'  => 'str << "\"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\"")}"',
+  },
+  'PSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'HTML'  => {
+    'brief'     => '',
+    'detailed'  => '',
+  }
+}
 
 # Read in AH data from CSV file
 def read_file(fname=nil)
@@ -23,36 +123,38 @@ def read_file(fname=nil)
   return lines
 end
 
+# Read in AH data from database
 def read_db(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity FROM ah_data ah, cards c where c.name = ah.name #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.count FROM ah_data ah, cards c where c.name = ah.name #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
-    line = "#{row[0]},#{row[1]},#{row[2]},#{row[3]}"
+    line = "'#{row[0]}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]}"
     lines << line
   end
   return lines
 end
 
+# Helper method to print out HTML header indicating what type of output we're sending
+def print_html_header
+  puts "Content-type: #{@content_types[@output_type]}"
+  puts "\n"
+end
+
+# Take raw lines in an array and turn them into a data structure we can use
 def parse_lines(lines=nil, html=false)
   return if lines.nil?
   # Do this here because I wasn't smart enough to do this before...
   # Print out HTTP headers
-  if html
-    puts "Content-type: text/html"
-    puts ""
-  else
-    puts "Content-type: text/plain"
-    puts ""
-  end
-  #
+  print_html_header
+  # Iterate through the lines and grab interesting info out
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(.*)$/)
-      name = "'#{$1}' [#{$4}]"
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*)$/)
+      name = $1
       currency = $2
       price = $3
       # Do replacements afterward so we don't mess up match variables
@@ -138,66 +240,70 @@ def get_full_price_details(prices=nil)
   return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
 end
 
+# General print statement
+def print_card_output(array=nil)
+  return if array.nil?
+  eval @card_field_descriptors[@output_type][@output_detail]
+  array.sort.map do |name, currencies|
+    next unless name.match(/#{@name_filter}/)
+    str = ''
+    eval @card_init_string[@output_type][@output_detail]
+    currencies.sort.reverse.map do |currency, prices|
+      avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
+      eval @card_details_string[@output_type][@output_detail]
+    end
+    eval @card_closing_string[@output_type][@output_detail]
+    puts str
+  end
+  eval @card_closing_bits[@output_type][@output_detail]
+end
+
 # Print out requested cards
 def print_filtered_output(array=nil, filter='.*')
   return if array.nil?
-  array.each_pair do |name, currencies|
-    next unless name.match(/#{filter}/)
-    str = "* #{name}"
-    currencies.each_pair do |currency, prices|
-      (avg, sample_size) = get_average_price(prices)
-      str << " ... #{avg} #{currency} [#{sample_size} auctions]"
-    end
-    puts str
-  end
+  @name_filter = filter
+  @output_type = 'PSV'
+  @output_detail = 'brief'
+  print_card_output(array)
 end
+
+## Print out full details of requested cards
+#def print_filtered_detailed_output(array=nil, filter='.*')
+#  return if array.nil?
+#  array.sort.map do |name, currencies|
+#    next unless name.match(/#{filter}/)
+#    str = "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
+#    currencies.sort.map do |currency, prices|
+#      avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
+#      str << "|#{currency}|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
+#    end
+#    puts str
+#  end
+#end
 
 # Print out full details of requested cards
 def print_filtered_detailed_output(array=nil, filter='.*')
   return if array.nil?
-  array.each_pair do |name, currencies|
-    next unless name.match(/#{filter}/)
-    str = "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
-    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['PLATINUM'])
-    str << "|PLATINUM|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
-    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['GOLD'])
-    str << "|GOLD|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
-    puts str
-  end
-end
-
-# Print out full details of requested cards
-def print_filtered_detailed_output(array=nil, filter='.*')
-  return if array.nil?
-  puts "<div class='CSSTableGenerator'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"
-  array.each_pair do |name, currencies|
-    next unless name.match(/#{filter}/)
-    str = "<tr><td>#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
-    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['PLATINUM'])
-    str << "</td><td>PLATINUM</td><td>#{avg}</td><td>#{sample_size} auctions</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}"
-    avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(currencies['GOLD'])
-    str << "</td><td>GOLD</td><td>#{avg}</td><td>#{sample_size} auctions</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td></tr>"
-    puts str
-  end
-  puts "</table></div>"
+  @name_filter = filter
+  @output_type = 'HTML'
+  @output_detail = 'detailed'
+  print_card_output(array)
 end
 
 # Print out cards in CSV format
 def print_csv_output(array=nil, filter='.*')
   return if array.nil?
-  array.each_pair do |name, currencies|
-    next unless name.match(/#{filter}/)
-    puts "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}|#{(get_average_price(currencies['PLATINUM']))[0]}|#{(get_average_price(currencies['GOLD']))[0]}"
-  end
+  @name_filter = filter
+  @output_type = 'CSV'
+  @output_detail = 'detailed'
+  print_card_output(array)
 end
 
-# Print out cards in CommaSV format
-def print_csv_output(array=nil, filter='.*')
+# Print out price data csv format
+def print_pdcsv_output(array=nil, filter='.*')
   return if array.nil?
-  array.each_pair do |name, currencies|
-    next unless name.match(/#{filter}/)
-    puts "#{(get_average_price(currencies['PLATINUM']))[0]},#{(get_average_price(currencies['GOLD']))[0]},#{name.gsub(/^'/, '"').gsub(/' \[.*\]$/, '"')}"
-  end
+  @name_filter = filter
+  @output_type = 'PDCSV'
+  @output_detail = 'brief'
+  print_card_output(array)
 end
-
-
