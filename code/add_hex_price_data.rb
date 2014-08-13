@@ -4,7 +4,8 @@
 
 require "mysql"
 
-@fname = "AH_Sold_Cards.csv"
+#@fname = "AH_Sold_Cards.csv"
+@fname = "AH_Sold_Cards_20140811.csv"
 @card_names = Hash.new
 
 # Read in AH data from CSV file
@@ -28,12 +29,14 @@ def print_out_sql(lines=nil)
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(.*),(\d+)$/)
+    #if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(.*),(\d+)$/)
+    if parsed_line.match(/^\s*(.*?)\s*,\s*(GOLD|PLATINUM)\s*,\s*(\d+)\s*,\s*(.*?)\s*$/)
       name = $1
       currency = $2
       price = $3
       date = $4
-      count = $5
+      #count = $5
+      count = "1"
       # Do replacements afterward so we don't mess up match variables
       name.gsub!(/"/, '')   # Get rid of any double quotes
       puts "INSERT INTO ah_data values ('#{Mysql.escape_string name}','#{Mysql.escape_string currency}',#{Mysql.escape_string price},'#{Mysql.escape_string date}',#{Mysql.escape_string count});"
