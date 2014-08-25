@@ -5,6 +5,8 @@
 $: << "/home/docxstudios/web/hex/code"
 require 'prices'
 
+@output_type = 'HTML'
+
 ####### MAIN SECTION
 foo = Hex::Collection.new
 con = foo.get_db_con
