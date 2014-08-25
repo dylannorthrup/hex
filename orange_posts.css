@@ -1225,6 +1225,19 @@ body a.thread_title {
   background: #F5F5F5;
 }
 
+blockquote.postcontent a {
+  color: #BA9500;
+	text-decoration:none;
+}
+
+blockquote.postcontent a:hover {
+	color: #FFB800;
+  background: #353535;
+	text-decoration:underline;
+}
+ 
+
+
 body th.thread_title {
   color: #000000;
   background: #F5F5F5;
