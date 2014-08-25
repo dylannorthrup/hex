@@ -1,3 +1,16 @@
 Portraits/
 *.jpg
 log/
+abilities/
+images/
+foo.html
+get_orange_start
+get_orange_end
+all_prices*.txt
+legendary_rare_*
+set2_abilit*
+code/AH_Sold_Cards*
+code/ah_data*.sql
+code/*test*.rb
+code/lrdb.rb
+code/spreadsheet.json
