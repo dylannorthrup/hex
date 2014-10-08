@@ -41,6 +41,8 @@ end
 # Get the posts we have information for. By default, limit this to 20
 def get_posts(sql_con=nil, limit=20)
   return if sql_con.nil?
+  # Even though we do explicit sorting later by date, we order by post_date here for when we get a subset
+  # of posts (so we're getting the right subset)
   query = "select p.title, o.name, p.url, p.contents, p.post_date, p.orange_id from orange_posts as p, orange as o where o.userid = p.orange_id order by p.post_date desc limit #{limit}"
   sql_con.query(query).to_enum
 end
@@ -53,12 +55,42 @@ def get_all_posts(sql_con=nil)
   get_posts(sql_con, num)
 end
 
+# A named proc to use for sorting post dates
+post_date_sort = ->(a,b) {
+    a_date = a[4]; b_date = b[4];
+    # Replace non digits with dashes for easier splitting
+    astr = a_date.gsub(/[:, ]+/, '-')
+    bstr = b_date.gsub(/[:, ]+/, '-')
+    # Split on '-' to get all the bits
+    (ayr, amo, ada, ahr, amn, aap) = astr.split(/-/)
+    (byr, bmo, bda, bhr, bmn, bap) = bstr.split(/-/)
+    # Make hour strings into integers
+    ahi = ahr.gsub(/\D+/,'').to_i; bhi = bhr.gsub(/\D+/,'').to_i
+    # Then bump their value 12 hours if the time's in the PM
+    ahi += 12 if aap.match('PM')
+    bhi += 12 if bap.match('PM')
+    comparables = [[byr, ayr], [bmo, amo], [bda, ada], [bhi, ahi], [bmn, amn]]
+    # Now, go through the pairs and compare them
+    comparables.each do |thingy|
+      # See if there's a difference
+      diff = thingy[0].to_i <=> thingy[1].to_i
+      # If they aren't equal, return that comparison
+      if (diff != 0)
+        return diff
+      end
+    end
+    # And since this is the last thing, we can just compare like normal
+#    [bmn.to_i] <=> [amn.to_i]
+    # If we get this far, everything's equal, so return 0
+    return 0    
+}
+
 #### MAIN STARTING
 
 cgi = CGI.new
 params = cgi.params
 
-puts "Content-type: text/html"
+puts "Content-type: text/html;  charset=utf-8"
 puts ""
 puts "<html><head><title>Orange Tracker</title>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/orange_posts.css">'
@@ -67,13 +99,15 @@ puts "<h1>Orange Tracker</h1>"
 sql_con = get_db_con
 if params['all'][0] =~ /true/
   puts "<a href='/hex#{cgi.path_info}'>Get recent Orange posts</a>"
-  get_all_posts(sql_con).each do |thing|
+  posts = get_all_posts(sql_con)
+  posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
   puts "<a href='/hex#{cgi.path_info}'>Get recent Orange posts</a>"
 else
   puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
-  get_posts(sql_con).each do |thing|
+  posts = get_posts(sql_con)
+  posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
   puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
