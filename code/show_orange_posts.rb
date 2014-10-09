@@ -66,6 +66,10 @@ post_date_sort = ->(a,b) {
     (byr, bmo, bda, bhr, bmn, bap) = bstr.split(/-/)
     # Make hour strings into integers
     ahi = ahr.gsub(/\D+/,'').to_i; bhi = bhr.gsub(/\D+/,'').to_i
+    # A little modification for 12AM and 12PM to make them fit in properly (since
+    # 12:01 AM should go before 1:01 AM, but without this modification it doesn't)
+    if ahi == 12; ahi = 0; end
+    if bhi == 12; bhi = 0; end
     # Then bump their value 12 hours if the time's in the PM
     ahi += 12 if aap.match('PM')
     bhi += 12 if bap.match('PM')
