@@ -55,6 +55,20 @@ def get_all_posts(sql_con=nil)
   get_posts(sql_con, num)
 end
 
+def show_adsense()
+  puts "<p><hr></p>"
+  puts '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Orange Posts -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4508512474592505"
+     data-ad-slot="5780297935"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>'
+  puts "<p><hr></p>"
+end
+
 # A named proc to use for sorting post dates
 post_date_sort = ->(a,b) {
     a_date = a[4]; b_date = b[4];
@@ -107,6 +121,7 @@ if params['all'][0] =~ /true/
   posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
+  show_adsense
   puts "<a href='/hex#{cgi.path_info}'>Get recent Orange posts</a>"
 else
   puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
@@ -114,6 +129,7 @@ else
   posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
+  show_adsense
   puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
 end
 
