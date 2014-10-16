@@ -57,7 +57,8 @@ end
 
 def show_adsense()
   puts "<p><hr></p>"
-  puts '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  puts '<center>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- Orange Posts -->
 <ins class="adsbygoogle"
      style="display:inline-block;width:728px;height:90px"
@@ -65,7 +66,8 @@ def show_adsense()
      data-ad-slot="5780297935"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
-</script>'
+</script>
+</center>'
   puts "<p><hr></p>"
 end
 
@@ -114,22 +116,21 @@ puts "<html><head><title>Orange Tracker</title>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/orange_posts.css">'
 puts "</head><body>"
 puts "<h1>Orange Tracker</h1>"
+show_adsense
 sql_con = get_db_con
 if params['all'][0] =~ /true/
-  puts "<a href='/hex#{cgi.path_info}'>Get recent Orange posts</a>"
+  puts "<p style='font-size:20px'><a href='/hex#{cgi.path_info}'>Get recent Orange posts</a></p>"
   posts = get_all_posts(sql_con)
   posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
-  show_adsense
   puts "<a href='/hex#{cgi.path_info}'>Get recent Orange posts</a>"
 else
-  puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
+  puts "<p style='font-size:20px'><a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a></p>"
   posts = get_posts(sql_con)
   posts.sort( & post_date_sort ).each do |thing|
     print_post(thing)
   end
-  show_adsense
   puts "<a href='/hex#{cgi.path_info}?all=true'>Get all Orange posts</a>"
 end
 
