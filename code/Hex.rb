@@ -16,6 +16,7 @@ module Hex
     @@uid_to_set = {
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
       '0382f729-7710-432b-b761-13677982dcd2' => '001',
+      'b05e69d2-299a-4eed-ac31-3f1b4fa36470' => '002',
     }
 
     # Something to translate gem names into HTML colors
