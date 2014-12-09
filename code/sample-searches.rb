@@ -32,7 +32,7 @@ foo.load_collection(con)
 types = Hash.new(0)
 sub_types = Hash.new(0)
 
-traits = %w< Type Cost Rarity Color Restriction Sub_Type Socket_Count Faction ATK Health Threshold_Color Threshold_Number >
+traits = %w< Set_ID Type Cost Rarity Color Sub_Type Restriction Socket_Count Faction ATK Health Threshold_Color Threshold_Number >
 #traits = %w< ATK Health >
 trait_list = Hash.new
 traits.each do |trait|
