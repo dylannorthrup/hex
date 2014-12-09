@@ -13,6 +13,7 @@ usage() {
 
 # Make sure we have at least two arguments
 if [ "X" == "$2X" ]; then
+  echo "Did not get a second argument for some reason: '$1' '$2'"
   usage
 fi
 
@@ -22,6 +23,7 @@ DESTDIR="$2"
 
 # Make sure they're both directories
 if [ ! -d "$SRCDIR" ] || [ ! -d "$DESTDIR" ]; then
+  echo "The source directory ('$SRCDIR') and/or destination directory ('$DESTDIR') were not actually directories for some reason"
   usage
 fi
 
