@@ -38,8 +38,8 @@ def print_post(row=nil)
   puts "<tr><td align=left><blockquote>#{contents}</td></tr></table></center>"
 end
 
-# Get the posts we have information for. By default, limit this to 20
-def get_posts(sql_con=nil, limit=20)
+# Get the posts we have information for. By default, limit this to 100
+def get_posts(sql_con=nil, limit=100)
   return if sql_con.nil?
   # Even though we do explicit sorting later by date, we order by post_date here for when we get a subset
   # of posts (so we're getting the right subset)
