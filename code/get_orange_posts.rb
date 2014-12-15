@@ -56,6 +56,8 @@ def retrieve_post(url="")
   title = page.css("span[class='threadtitle'] > a").text
   contents = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div.postdetails div.postbody div.content").to_s
   date = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div span span[class='date']").text
+  # Get rid of '&nbsp;' in the date
+  date.gsub!(/,[^\d]*/, ', ')
   # Check for 'yesterday' or 'today' in the date output
   if date =~ /(Yester|To)day/
     today = Date.today.to_s
