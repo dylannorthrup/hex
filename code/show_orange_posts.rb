@@ -39,11 +39,11 @@ def print_post(row=nil)
 end
 
 # Get the posts we have information for. By default, limit this to 100
-def get_posts(sql_con=nil, limit=100)
+def get_posts(sql_con=nil, limit=20)
   return if sql_con.nil?
   # Even though we do explicit sorting later by date, we order by post_date here for when we get a subset
   # of posts (so we're getting the right subset)
-  query = "select p.title, o.name, p.url, p.contents, p.post_date, p.orange_id from orange_posts as p, orange as o where o.userid = p.orange_id order by p.post_date desc limit #{limit}"
+  query = "select p.title, o.name, p.url, p.contents, p.post_date, p.orange_id from orange_posts as p, orange as o where o.userid = p.orange_id order by str_to_date(p.post_date, '%Y-%m-%d, %h:%i %p') desc limit #{limit}"
   sql_con.query(query).to_enum
 end
 
