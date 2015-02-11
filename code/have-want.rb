@@ -11,7 +11,7 @@ require 'open-uri'
 require 'json'
 require 'pp'
 #spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1_8qzXrlpBnucl5H9tybuJr0Lntl9ydFqtaHvleQJJ4I/gviz/tq?tq'
-spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet1.json' ]
+spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json' ]
 
 needed = Array.new
 surplus = Array.new
@@ -42,14 +42,16 @@ spreadsheet_urls.each do |spreadsheet_url|
     count = row['gsx$count']['$t'].to_i
     rarity = row['gsx$rarity']['$t']
     shard = "[#{row['gsx$shard']['$t']}]"
-#    price = "NO DATA"
+    price = "NO DATA"
+    price = row['gsx$plat_2']['$t'] unless row['gsx$plat_2'].nil?
 #    price = row['c'][6]['v'] unless row['c'][6].nil?
-#    gprice = "NO DATA"
-#    gprice = row['c'][7]['v'] unless row['c'][7].nil?
+    gprice = "NO DATA"
+    gprice = row['gsx$gold_2']['$t'] unless row['gsx$gold_2'].nil? or row['gsx$gold_2']['$t'].match(/[A-Za-z]/)
     next unless rarity =~ /Legendary|Rare/
+#    binding.pry
   #  puts "Testing #{name} with count of #{count}"
     if count < 4
-      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} "
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
       needed << value
     end
     if count > 4
@@ -61,7 +63,7 @@ spreadsheet_urls.each do |spreadsheet_url|
   #puts "Extracted rows into needed array"
 end
 
-puts "========== WANTS =========================================="
+puts "========== WANTS ===================================================================="
 needed.sort.each do |row|
   puts row
 end
