@@ -7,7 +7,7 @@ require 'mysql'
 require 'Hex'
 
 # Some (reasonably) global variables
-@cutoff_time_in_hours = 720   # Price data older than this will be skipped. 720 hours = 30 days
+@cutoff_time_in_hours = 336   # Price data older than this will be skipped. 336 hours = 14 days
 @fname = "AH_Sold_Cards.csv"
 @price_data = Hash.new
 @card_names = Hash.new
@@ -189,7 +189,10 @@ def parse_lines(lines=nil, html=false)
         @card_names[name] = Hash.new
       end
       if @card_names[name][currency].nil?
-        @card_names[name][currency] = Array.new
+        # Explicitly make both currencies here so we won't be missing any if no auctions of that particular
+        # type showed up in our window
+        @card_names[name]['GOLD'] = Array.new
+        @card_names[name]['PLATINUM'] = Array.new
       end
       @card_names[name][currency] << price.to_i
     end
