@@ -7,6 +7,7 @@ require 'mysql'
 require 'Hex'
 
 # Some (reasonably) global variables
+@cutoff_time_in_hours = 720   # Price data older than this will be skipped. 720 hours = 30 days
 @fname = "AH_Sold_Cards.csv"
 @price_data = Hash.new
 @card_names = Hash.new
@@ -19,6 +20,7 @@ require 'Hex'
 }
 @output_detail = 'detailed'
 @name_filter = '.*'
+@exclude_filter = nil
 
 @card_closing_bits = {
   'CSV'   => {
@@ -128,10 +130,19 @@ def read_db(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.count FROM ah_data ah, cards c where c.name = ah.name #{filter}"
+  # We filter out 'Epic' rarity because it creates duplicates in the output. We take care of that by
+  # looking at the sales data, though
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
-    line = "'#{row[0]}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]}"
+    name = row[0]
+    rarity = row[3]
+    if row[5].match(/5/) then
+      name << " AA"
+      rarity = 'Epic'
+    end
+    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]}"
+    #puts line
     lines << line
   end
   return lines
@@ -149,6 +160,8 @@ def parse_lines(lines=nil, html=false)
   # Do this here because I wasn't smart enough to do this before...
   # Print out HTTP headers
   print_html_header
+  # Get current time for comparison
+  now = Time.now
   # Iterate through the lines and grab interesting info out
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
@@ -157,6 +170,16 @@ def parse_lines(lines=nil, html=false)
       name = $1
       currency = $2
       price = $3
+      date = $4
+      (year, mon, day) = date.split(/[-\s:]/)
+      old = Time.new(year, mon, day)
+      age = ((now - old)/3600).to_i
+      if age > @cutoff_time_in_hours
+#        puts "Skipping because age of #{age} hours > #{@cutoff_time_in_hours} for #{name} - #{date}"
+        next
+      else
+#        puts "#{name} - #{price} #{currency} - #{age}"
+      end
       # Do replacements afterward so we don't mess up match variables
       name.gsub!(/"/, '')   # Get rid of any double quotes
       # Add price onto hash for access later
@@ -240,12 +263,21 @@ def get_full_price_details(prices=nil)
   return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
 end
 
+def test(name='foo', filter=nil)
+  puts name
+  puts "Passed filter with '#{name}'"
+end
+
 # General print statement
 def print_card_output(array=nil)
   return if array.nil?
   eval @card_field_descriptors[@output_type][@output_detail]
   array.sort.map do |name, currencies|
     next unless name.match(/#{@name_filter}/)
+#    puts "Checking #{name} against /#{@exclude_filter}/"
+    unless @exclude_filter.nil?
+      next if name.match(/#{@exclude_filter}/)
+    end
     str = ''
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
@@ -282,28 +314,32 @@ end
 #end
 
 # Print out full details of requested cards
-def print_filtered_detailed_output(array=nil, filter='.*')
+def print_filtered_detailed_output(array=nil, filter='.*', exclude=nil)
   return if array.nil?
   @name_filter = filter
+  @exclude_filter = exclude
   @output_type = 'HTML'
   @output_detail = 'detailed'
   print_card_output(array)
 end
 
 # Print out cards in CSV format
-def print_csv_output(array=nil, filter='.*')
+def print_csv_output(array=nil, filter='.*', exclude=nil)
   return if array.nil?
   @name_filter = filter
+  @exclude_filter = exclude
   @output_type = 'CSV'
   @output_detail = 'detailed'
   print_card_output(array)
 end
 
 # Print out price data csv format
-def print_pdcsv_output(array=nil, filter='.*')
+def print_pdcsv_output(array=nil, filter='.*', exclude=nil)
   return if array.nil?
   @name_filter = filter
+  @exclude_filter = exclude
   @output_type = 'PDCSV'
   @output_detail = 'brief'
   print_card_output(array)
 end
+
