@@ -74,13 +74,13 @@ def print_out_sql(lines=nil)
 end
 
 ####### MAIN SECTION
+Dir.chdir('/home/docxstudios/web/hex/code')
 sql_con = get_db_con
 gzip_cmd = 'gzip -f9'
 
 Dir.foreach('csvs') do |fname|
-#  puts "fname is #{fname}"
-  next if fname =~ /^\.\.?/
-  next if fname =~ /csv.gz$/
+  next unless fname =~ /csv$/
+  puts "Processing Hex price data from #{fname}"
   lines = File.readlines("csvs/#{fname}")
   insert_data(sql_con, lines)                    # Take that data and shove it into the database
   #print_out_sql(lines)                          # Take that data and make database statements out of it
