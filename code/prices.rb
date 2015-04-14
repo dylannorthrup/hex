@@ -125,6 +125,21 @@ def read_file(fname=nil)
   return lines
 end
 
+# Read in names from database
+def read_names_from_db(sqlcon=nil, filter='')
+  return if sqlcon.nil?
+  names = Array.new
+  query = "SELECT c.name, c.rarity FROM cards c where c.rarity not regexp 'Epic' #{filter}"
+  results = sqlcon.query(query)
+  results.each do |row|
+    name = "'#{row[0]}' [#{row[1]}]"
+    name.gsub!(/,/, '')
+#    puts name
+    names << name
+  end
+  build_card_names_hash(names)
+end
+
 # Read in AH data from database
 def read_db(sqlcon=nil, filter='')
   return if sqlcon.nil?
@@ -152,6 +167,18 @@ end
 def print_html_header
   puts "Content-type: #{@content_types[@output_type]}"
   puts "\n"
+end
+
+# Helper method to build out the @card_names hash
+def build_card_names_hash(names=nil)
+  return if names.nil?
+  names.each do |name|
+    if @card_names[name].nil?
+      @card_names[name] = Hash.new
+      @card_names[name]['GOLD'] = Array.new
+      @card_names[name]['PLATINUM'] = Array.new
+    end
+  end
 end
 
 # Take raw lines in an array and turn them into a data structure we can use
@@ -183,7 +210,6 @@ def parse_lines(lines=nil, html=false)
       # Do replacements afterward so we don't mess up match variables
       name.gsub!(/"/, '')   # Get rid of any double quotes
       # Add price onto hash for access later
-      # TODO: We can put a date check in here to expire off data later.
       # Make sure we build out the data structure as we need it
       if @card_names[name].nil?
         @card_names[name] = Hash.new
@@ -221,7 +247,7 @@ end
 # Method to get all details and distribution info about a set.
 def get_full_price_details(prices=nil)
   # If we didn't get a proper array, set average to 0 and sample size to 0
-  return 0, 0 if prices.nil?
+  return 0, 0, 0, 0, 0, 0, 0, 0, 0 if prices.nil?
   # if we have a small number of sales, just average and return the result
   if prices.size < 9
     avg_price = array_int_avg(prices)
@@ -284,7 +310,12 @@ def print_card_output(array=nil)
     str = ''
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
-      avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
+#      puts "Working on #{name} and got the following prices for #{currency}: #{prices}"
+      if prices.nil? then
+        avg = sample_size = true_avg = min = lq = med = uq = max = excl = 0
+      else
+        avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
+      end
       eval @card_details_string[@output_type][@output_detail]
     end
     eval @card_closing_string[@output_type][@output_detail]
