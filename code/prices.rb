@@ -5,6 +5,7 @@
 $: << "/home/docxstudios/web/hex/code"
 require 'mysql'
 require 'Hex'
+require 'moving_average'
 
 # Some (reasonably) global variables
 @cutoff_time_in_hours = 336   # Price data older than this will be skipped. 336 hours = 14 days
@@ -287,7 +288,8 @@ def get_full_price_details(prices=nil)
     end
   } 
   prices = p2                             # Then make prices into p2
-  avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
+#  avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
+  avg_price = prices.exponential_moving_average.to_i
   # Return all the appropriate values
   return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
 end
