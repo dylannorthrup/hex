@@ -6,6 +6,7 @@ $: << "/home/docxstudios/web/hex/code"
 require 'mysql'
 require 'Hex'
 require 'moving_average'
+#require 'pry'
 
 # Some (reasonably) global variables
 @cutoff_time_in_hours = 336   # Price data older than this will be skipped. 336 hours = 14 days
@@ -221,7 +222,10 @@ def parse_lines(lines=nil, html=false)
         @card_names[name]['GOLD'] = Array.new
         @card_names[name]['PLATINUM'] = Array.new
       end
-      @card_names[name][currency] << price.to_i
+      # Make tuple here so we can use it later to sort on for calculating the moving average
+      info = [ price.to_i, date]
+      @card_names[name][currency] << info
+      #@card_names[name][currency] << price.to_i
     end
   end
 end
@@ -249,28 +253,34 @@ end
 def get_full_price_details(prices=nil)
   # If we didn't get a proper array, set average to 0 and sample size to 0
   return 0, 0, 0, 0, 0, 0, 0, 0, 0 if prices.nil?
+  # Extract out only the prices for use below
+  local_prices = Array.new
+  prices.each do |p|
+    local_prices << p[0]
+  end
   # if we have a small number of sales, just average and return the result
   if prices.size < 9
-    avg_price = array_int_avg(prices)
-    return avg_price, prices.size, avg_price
+    avg_price = array_int_avg(local_prices)
+    return avg_price, local_prices.size, avg_price
   end
-  true_average = array_int_avg(prices)    # Get an initial average for the entire, pre-filtered array
-  prices.sort!                            # Sort array numerically
-  min = prices[0]                         # Store min and max for returning later
-  max = prices[-1]
-  median = (prices.size / 2).to_i         # Find median
+  true_average = array_int_avg(local_prices)    # Get an initial average for the entire, pre-filtered array
+  local_prices.sort!                            # Sort array numerically
+#  binding.pry
+  min = local_prices[0]                         # Store min and max for returning later
+  max = local_prices[-1]
+  median = (local_prices.size / 2).to_i         # Find median
   lq = (median / 2).to_i                  # Find lower quartile array index
-  uq = ((median + prices.size) / 2).to_i  # Find upper quartile array index
-  iqr = prices[uq] - prices[lq]           # IQR = upper - lower
+  uq = ((median + local_prices.size) / 2).to_i  # Find upper quartile array index
+  iqr = local_prices[uq] - local_prices[lq]           # IQR = upper - lower
   # Set upper and lower cutoff values
-  lower_cutoff = prices[median] - (iqr * 1.5).to_i
-  upper_cutoff = prices[median] + (iqr * 1.5).to_i
+  lower_cutoff = local_prices[median] - (iqr * 1.5).to_i
+  upper_cutoff = local_prices[median] + (iqr * 1.5).to_i
   # exclude outlier values below lower - (IQR * 1.5)
   excluded = Array.new
   p2 = Array.new                          # Create new Array
   prices.each {|value|                    # Iterate through values in prices
     next if value.nil?                    # Skip if this value somehow got set to nil
-    if value >= lower_cutoff              # If the value is greater than or equal to the lower of the cutoff values
+    if value[0] >= lower_cutoff              # If the value is greater than or equal to the lower of the cutoff values
       p2 << value                         # add it to p2
     else                                  # Otherwise
       excluded << value                   # Add it to our excluded array
@@ -281,7 +291,7 @@ def get_full_price_details(prices=nil)
   p2 = Array.new                          # Reset p2 into new array
   prices.each {|value|                    # Iterate through values in prices
     next if value.nil?                    # Skip if this value somehow got set to nil
-    if value <= upper_cutoff              # If the value is less than or equal to the higher of the cutoff values
+    if value[0] <= upper_cutoff              # If the value is less than or equal to the higher of the cutoff values
       p2 << value                         # add it to p2
     else                                  # Otherwise
       excluded << value                   # Add it to our excluded array
@@ -289,7 +299,16 @@ def get_full_price_details(prices=nil)
   } 
   prices = p2                             # Then make prices into p2
 #  avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
-  avg_price = prices.exponential_moving_average.to_i
+  # Now that we've exclude outliers, sort by date, then extract the prices and hand that off 
+  # to get teh exponential moving average price
+  prices.sort do |a, b|
+    a[1] <=> b[1]
+  end
+  bare_prices = Array.new
+  prices.each do |p|
+    bare_prices << p[0]
+  end
+  avg_price = bare_prices.exponential_moving_average.to_i
   # Return all the appropriate values
   return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
 end
