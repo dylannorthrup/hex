@@ -10,7 +10,9 @@ require 'pry'
 require 'open-uri'
 require 'json'
 require 'pp'
-#spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1_8qzXrlpBnucl5H9tybuJr0Lntl9ydFqtaHvleQJJ4I/gviz/tq?tq'
+
+high_exch = 180
+low_exch = 160
 spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json' ]
 
 needed = Array.new
@@ -51,7 +53,18 @@ spreadsheet_urls.each do |spreadsheet_url|
 #    binding.pry
   #  puts "Testing #{name} with count of #{count}"
     if count < 4
-      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
+      pi = price.to_i; gi = gprice.to_i
+      # Put indicator here which is the better value based on exchange rate: gold or plat
+      if (pi * low_exch) < gi then
+        # If plat * low_exch < gold price, then buy using plat
+        value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:  #{'%7.7s' % gprice}"
+      elsif (pi * high_exch) > gi then
+        # If plat * high_exch > gold price, then buy using gold
+        value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:  #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
+      else
+        # Otherwise, they're both equally good values
+        value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
+      end
       needed << value
     end
     if count > 4
