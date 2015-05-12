@@ -13,10 +13,11 @@ module Hex
     attr_accessor :image_path, :type, :sub_type, :atk, :health, :text, :flavor, :rarity, :restriction, :artist
     attr_accessor :equipment, :equipment_string, :enters_exhausted, :card_json, :uuid, :htmlcolor
     # Mapping of sets to set names/numbers
-    @@uid_to_set = {
+    @@uuid_to_set = {
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
       '0382f729-7710-432b-b761-13677982dcd2' => '001',
       'b05e69d2-299a-4eed-ac31-3f1b4fa36470' => '002',
+      'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001',
     }
 
     # Something to translate gem names into HTML colors
@@ -76,10 +77,10 @@ module Hex
       return ''
     end
 
-    def setuid_to_setname(uid=nil)
-      return "UNSET" if uid.nil?
-      return @@uid_to_set[uid] unless @@uid_to_set[uid].nil?
-      return uid
+    def setuuid_to_setname(uuid=nil)
+      return "UNSET" if uuid.nil?
+      return @@uuid_to_set[uuid] unless @@uuid_to_set[uuid].nil?
+      return uuid
     end
 
     def gem_to_htmlcolor(gem=nil)
@@ -95,31 +96,55 @@ module Hex
     def get_json_value(json, param)
       chomp_string(json[param])
     end
+
+    def get_champion_abilities(json)
+      ret_string = json['m_AbilitySlot1']['m_Guid']
+      unless json['m_AbilitySlot2']['m_Guid'].match('00000000-0000-0000-0000-000000000000') then
+        ret_string = "#{ret_string}, #{json['m_AbilitySlot2']['m_Guid']}"
+      end
+      unless json['m_AbilitySlot3']['m_Guid'].match('00000000-0000-0000-0000-000000000000') then
+        ret_string = "#{ret_string}, #{json['m_AbilitySlot3']['m_Guid']}"
+      end
+      return ret_string
+    end
     
     # Make the card load up from a file
     def load_card_from_json(path=nil)
       return if path.nil?
       @card_json        = JSON.parse(IO.read(path))
+      # Test if this is a Champion
+      if @card_json['_v'][0]['ChampionTemplate'].nil? then
+        # Not a Champion
+        @type           = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
+        @sub_type       = get_json_value(@card_json, 'm_CardSubtype')
+        @health         = get_json_value(@card_json, 'm_BaseHealthValue') 
+        @rarity         = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
+        @color          = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
+      else
+        # A Champion
+        @type           = "Champion"
+        @sub_type       = get_json_value(@card_json, 'm_SubType')
+        @health         = get_json_value(@card_json, 'm_BaseHealth')
+        @rarity         = 'Champion'
+        @color          = 'Colorless'
+        @equipment        = get_champion_abilities(@card_json)
+        @equipment_string = equipment_string_from_array(@equipment)
+      end
       @name             = get_json_value(@card_json, 'm_Name')
       @card_number      = get_json_value(@card_json, 'm_CardNumber')
-      @set_id           = setuid_to_setname(@card_json['m_SetId']['m_Guid'])
+      @set_id           = setuuid_to_setname(@card_json['m_SetId']['m_Guid'])
       @uuid             = chomp_string(@card_json['m_Id']['m_Guid'])
       @faction          = get_json_value(@card_json, 'm_Faction')
       @socket_count     = get_json_value(@card_json, 'm_SocketCount')
-      @color            = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
       @htmlcolor        = gem_to_htmlcolor(@color)
       @cost             = get_json_value(@card_json, 'm_ResourceCost')
       if get_json_value(@card_json, 'm_VariableCost') =~ /1/
         @cost = "#{@cost}X"
       end
       @image_path       = get_json_value(@card_json, 'm_CardImagePath').gsub(/\\/, '/')
-      @type             = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
-      @sub_type         = get_json_value(@card_json, 'm_CardSubtype')
       @atk              = get_json_value(@card_json, 'm_BaseAttackValue')
-      @health           = get_json_value(@card_json, 'm_BaseHealthValue')
       @text             = get_json_value(@card_json, 'm_GameText')
       @flavor           = get_json_value(@card_json, 'm_FlavorText')
-      @rarity           = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
       @restriction      = determine_card_restrictions(get_json_value(@card_json, 'm_Unlimited'), get_json_value(@card_json, 'm_Unique'))
       @artist           = get_json_value(@card_json, 'm_ArtistName')
       @enters_exhausted = get_json_value(@card_json, 'm_EntersPlayExhausted')
@@ -239,6 +264,9 @@ EOCARD
 
     def to_sql
       require 'mysql'
+      if @equipment_string.nil?
+        @equipment_string = ""
+      end
       string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}');"
     end
 
