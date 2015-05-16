@@ -2,7 +2,7 @@
 #
 # Get Orange posts from database and show them
 
-require 'pry'
+#require 'pry'
 require 'mysql'
 require 'cgi'
 
@@ -57,17 +57,15 @@ end
 
 def show_adsense()
   puts "<p><hr></p>"
-  puts '<center>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Orange Posts -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-4508512474592505"
-     data-ad-slot="5780297935"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</center>'
+  puts "<style>"
+  puts "begging{ width: 70%; }"
+  puts "</style>"
+  puts "<center><table border=0 width=80%>"
+  puts "<tr><td>
+My In Game Name is 'Dylan'.  If you like this page, the service it provides and are so inclined, feel free to 
+take a look at my <a href='/hex/have-want.txt'>want list</a> and throw me a card or two.  If you don't have 
+any of those, throw some Gold my way (or Plat, if you have any extra).  Thanks and now, on to the reason you're 
+here . . . </td></tr></table></center>"
   puts "<p><hr></p>"
 end
 
