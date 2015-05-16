@@ -13,7 +13,7 @@ require 'pp'
 
 high_exch = 180
 low_exch = 160
-spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json' ]
+spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet3.json' ]
 
 needed = Array.new
 surplus = Array.new
