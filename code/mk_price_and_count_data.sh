@@ -1,20 +1,34 @@
 #!/bin/bash
 #
-# Grab collection lines from api data we've collected and print out counts for us
+# Grab card collection data we've gotten from the Hex API and print out counts for us
 
-APIFILE='api-data'
+APIFILE='collection.out'
 
-rm -f all_prices.txt
-wget -q http://doc-x.net/hex/all_prices.txt
+if [ ! -f $APIFILE ]; then
+  echo "*** Did not find a collection file '$APIFILE'."
+  echo "*** Cannot work without that."
+  echo "*** Exiting."
+  exit 1
+fi
 
-# grep the 'Collection' lines out of our API data, grab the last of those, sed to turn the
+# If this is called with the 'nodl' option, skip the downloading of new price data
+if [ "$1X" == "nodlX" ]; then
+  set +x  # Turn off debugging of the script. . . but simply something to have as a placeholder
+          # so the syntax is correct
+#  echo "Skipping price data download"
+else
+#  echo "Downloading price data"
+  rm -f all_prices.txt
+  wget -q http://doc-x.net/hex/all_prices.txt
+fi
+
+#echo "Beginning local data parse"
+# This should only be called when a Collection line is in the APIFILE.  Use sed to turn the
 # data into JSON data, pipe that through python's json.tool, get out all the cards, count
 # those and shove them into a file
-grep '^\["\[\\"Collection\\"' $APIFILE | \
-  tail -1 | \
-  sed -e 's/\\"/"/g; 
+sed -e 's/\\"/"/g; 
   s/\]\]"\]$/]}/g; 
-  s/^\["\["Collection","[^"]*",/{"Collection": /g' | \
+  s/^\["\["Collection","[^"]*",/{"Collection": /g' $APIFILE | \
   python -mjson.tool | \
   egrep '^        "' | \
   sed -e 's/",*$//; s/^        "/ - /' | \
@@ -30,3 +44,4 @@ grep '^\["\[\\"Collection\\"' $APIFILE | \
       echo $count - $stuff 
     fi
   done > price_and_count_data.out
+#echo "Local data parse complete"
