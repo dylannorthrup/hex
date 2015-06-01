@@ -12,12 +12,19 @@ if [ ! -f $APIFILE ]; then
 fi
 
 # If this is called with the 'nodl' option, skip the downloading of new price data
-if [ "$1X" == "nodlX" ]; then
+if [ "$1X" == "DEBUGX" ]; then
+  echo "Skipping everything because DEBUG"
+  exit 0
+#  set +x  # Turn off debugging of the script. . . but simply something to have as a placeholder
+#          # so the syntax is correct
+#  echo "Skipping price data download"
+elif [ "$1X" == "nodlX" ]; then
+# If this is called with the 'nodl' option, skip the downloading of new price data
   set +x  # Turn off debugging of the script. . . but simply something to have as a placeholder
           # so the syntax is correct
-#  echo "Skipping price data download"
+  echo "Skipping price data download"
 else
-#  echo "Downloading price data"
+  echo "Downloading price data"
   rm -f all_prices.txt
   wget -q http://doc-x.net/hex/all_prices.txt
 fi
@@ -44,4 +51,10 @@ sed -e 's/\\"/"/g;
       echo $count - $stuff 
     fi
   done > price_and_count_data.out
-#echo "Local data parse complete"
+# Add in Booster Pack prices
+grep 'Booster Pack' all_prices.txt | \
+  while read i; do 
+    echo $i | sed -e 's/\.\.\./-/g; s/\[[0-9]* auctions\]//g; s/^/1 - /' 
+  done >> price_and_count_data.out;
+
+
