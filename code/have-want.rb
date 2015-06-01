@@ -11,8 +11,24 @@ require 'open-uri'
 require 'json'
 require 'pp'
 
-high_exch = 180
-low_exch = 160
+# Figure out exchange rate between Gold and Plat
+exchange_file = "/home/docxstudios/web/hex/sorted_gold_plat_comparisons.txt"
+rates = Array.new
+File.readlines(exchange_file).each do |line|
+  next unless line =~ /^(\d+) gold per plat.*Set .* Booster Pack\s*$/
+  rates << $1
+end
+
+sum = 0
+rates.each do |rate|
+  sum += rate.to_i
+end
+avg_exch = (sum / rates.size).round
+puts "INFO: Using #{avg_exch} gold to 1 plat as conversion rate based on Booster Pack prices"
+puts ""
+  
+#high_exch = 180
+#low_exch = 160
 spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet3.json' ]
 
 needed = Array.new
@@ -55,13 +71,15 @@ spreadsheet_urls.each do |spreadsheet_url|
     if count < 4
       pi = price.to_i; gi = gprice.to_i
       # Put indicator here which is the better value based on exchange rate: gold or plat
-      if (pi * low_exch) < gi then
-        # If plat * low_exch < gold price, then buy using plat
+      if (pi * avg_exch) < gi then
+        # If plat * avg_exch < gold price, then buy using plat
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:  #{'%7.7s' % gprice}"
-      elsif (pi * high_exch) > gi then
-        # If plat * high_exch > gold price, then buy using gold
+      elsif (pi * avg_exch) > gi then
+        # If plat * avg_exch > gold price, then buy using gold
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:  #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
       else
+        # This should not be hit (since we squished everything into 'avg_exch' and went away from high_exch/low_exch)
+        # But leaving here in case we want to go back to this sometime
         # Otherwise, they're both equally good values
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
       end
