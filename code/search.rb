@@ -37,6 +37,10 @@ params.each_pair do |k, v_ary|
   next if v =~ /^-Any-$/    # Skip values that say '-Any-'
   next if v =~ /^\s*$/      # Skip values that are blank
 #  puts "X-Query-DEBUG: PASSED key validation"
+  # Quick thing here to squash threshold_n and threshold_c to 'threshold'
+  if k =~ /^threshold_(c|n)/ then 
+    k = 'threshold'
+  end
   v = CGI.unescape v
   v = Mysql.escape_string v
   query += " AND "
@@ -51,7 +55,6 @@ puts "X-Search-Query: #{query}"
 puts "X-Output-Format: #{output_format}"
 puts ""
 
-#require "pry"
 $: << "/home/docxstudios/web/hex/code"
 require "Hex"
 foo = Hex::Collection.new
