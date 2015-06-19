@@ -142,6 +142,16 @@ sub read_prices {
   return %ret;
 }
 
+# Simple shell out to a script that does this. Maybe integrate it later, but for now having
+# external is fine
+sub update_prices {
+  # Put some checking in here for if this exists as well as exit codes and such
+  system("./mk_price_and_count_data.sh");
+}
+
+print "Updating price data\n";
+update_prices();
+print "Price data updated\n";
 %card_info = read_prices($price_file);
 print "Read in card price info\n";
 
