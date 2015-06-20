@@ -9,8 +9,8 @@ module Hex
   require 'pry'
 
   class Card
-    attr_accessor :name, :card_number, :set_id, :faction, :socket_count, :color, :cost, :threshold_color, :threshold_number
-    attr_accessor :image_path, :type, :sub_type, :atk, :health, :text, :flavor, :rarity, :restriction, :artist
+    attr_accessor :name, :card_number, :set_id, :faction, :socket_count, :color, :cost, :threshold
+    attr_accessor :type, :sub_type, :atk, :health, :text, :flavor, :rarity, :restriction, :artist
     attr_accessor :equipment, :equipment_string, :enters_exhausted, :card_json, :uuid, :htmlcolor
     # Mapping of sets to set names/numbers
     @@uuid_to_set = {
@@ -25,10 +25,10 @@ module Hex
     @@gem_to_color = {
       'Colorless' => 'Burlywood',
       'Sapphire'  => 'LightSkyBlue',
-      'Ruby'      => '#FF2217',
+      'Ruby'      => '#F5A9A9',
       'Diamond'   => 'White',
-      'Wild'      => 'OliveDrab',
-      'Blood'     => '#CD65A2'
+      'Wild'      => '#81F781',
+      'Blood'     => '#F781F3'
     }
 
     def initialize(path=nil)
@@ -54,12 +54,10 @@ module Hex
         @artist = path[15]
         @enters_exhausted = path[16]
         @uuid = path[17]
-        @image_path = path[18]
-        @threshold_color = path[19]
-        @threshold_number = path[20]
-        @equipment_string = path[21]
-        @curr_resources = path[22]
-        @max_resources = path[23]
+        @threshold = path[18]
+        @equipment_string = path[19]
+        @curr_resources = path[20]
+        @max_resources = path[21]
         @htmlcolor = gem_to_htmlcolor(@color)
       elsif path.instance_of? Mysql
         load_card_from_mysql(path)
@@ -87,6 +85,7 @@ module Hex
     def gem_to_htmlcolor(gem=nil)
       return "white" if gem.nil?
       return @@gem_to_color[gem] unless @@gem_to_color[gem].nil?
+      return "#D8CEF6" if gem =~ /, /;
       return "white"
     end
 
@@ -142,7 +141,6 @@ module Hex
       if get_json_value(@card_json, 'm_VariableCost') =~ /1/
         @cost = "#{@cost}X"
       end
-      @image_path       = get_json_value(@card_json, 'm_CardImagePath').gsub(/\\/, '/')
       @atk              = get_json_value(@card_json, 'm_BaseAttackValue')
       @text             = get_json_value(@card_json, 'm_GameText')
       @flavor           = get_json_value(@card_json, 'm_FlavorText')
@@ -156,13 +154,13 @@ module Hex
         @equipment_string = equipment_string_from_array(@equipment)
       end
       # Do it this way to double check things exist before trying to access them
-      @threshold_color  = ""
-      @threshold_number = ""
+      @threshold = ""
       unless @card_json['m_Threshold'].nil?
-        unless @card_json['m_Threshold'][0].nil?
-          threshold_stuff   = @card_json['m_Threshold'][0]
-          @threshold_color  = chomp_string(threshold_stuff['m_ColorFlags'])
-          @threshold_number = chomp_string(threshold_stuff['m_ThresholdColorRequirement'])
+        @card_json['m_Threshold'].each do |th|
+          unless @threshold.match(/^$/) then
+            @threshold << ", "
+          end
+          @threshold << "#{th['m_ThresholdColorRequirement']} #{th['m_ColorFlags']}"
         end
       end
     end
@@ -192,7 +190,7 @@ module Hex
         cost_info = "<tr>\n<td>[#{@curr_resources}/#{@max_resources}]\n</tr>"
         info_rows -= 1
       else
-        cost_info = "<tr>\n<td>Cost: #{@cost}<br>\nThreshold: #{@threshold_number} #{@threshold_color} </td>\n</tr>"
+        cost_info = "<tr>\n<td>Cost: #{@cost}<br>\nThreshold: #{@threshold} </td>\n</tr>"
       end
       # If the flavor's blank, don't print the extra, blank row in the table
       if @flavor =~ /^\s*$/
@@ -211,12 +209,14 @@ module Hex
       end
       type_info += "<p>#{@rarity}</td>\n</tr>"
 
+      image_path = get_image_path
+
       # Now that we've set that up, fill up 'string' with what we want it to have
       string = <<EOCARD
 <br><center> <table width=81% border=1 cellpadding=2 cellspacing=2 bgcolor="#{@htmlcolor}">
 <tr>
   <td valign=top>#{@name}</td>
-  <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="/hex/images/#{@uuid}.png" width=400 height=560></td>
+  <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="#{image_path}" width=400 height=560></td>
 </tr>
 #{cost_info}
 #{type_info}
@@ -230,6 +230,13 @@ module Hex
 EOCARD
     end
 
+    def get_image_path
+      string = "/hex/images/#{@set_id}/#{@name}.png"
+      string.gsub!(" ", '%20')
+      string.gsub!(":", '')
+      return string
+    end
+
     def to_csv
       string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@curr_resources}|#{@max_resources}|#{@uuid}"
     end
@@ -241,13 +248,13 @@ EOCARD
     end
 
     def to_html_table
-      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold_color}</td>\n<td>#{@threshold_number}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@curr_resources}</td>\n<td>#{@max_resources}</td>\n<td>#{@uuid}</td>\n</tr>"
+      string = "<tr>\n<td>#{@set_id}</td>\n<td>#{@card_number}</td>\n<td>#{@name}</td>\n<td>#{@rarity}</td>\n<td>#{@color}</td>\n<td>#{@type}</td>\n<td>#{@sub_type}</td>\n<td>#{@faction}</td>\n<td>#{@socket_count}</td>\n<td>#{@cost}</td>\n<td>#{@threshold}</td>\n<td>#{@atk}</td>\n<td>#{@health}</td>\n<td>#{@text}</td>\n<td>#{@flavor}</td>\n<td>#{@restriction}</td>\n<td>#{@artist}</td>\n<td>#{@enters_exhausted}</td>\n<td>#{@equipment_string}</td>\n<td>#{@curr_resources}</td>\n<td>#{@max_resources}</td>\n<td>#{@uuid}</td>\n</tr>"
     end
 
     # Put this here so we can keep the table header formate in the same location as the to_html_table method (immediately previous
     # to this)
     def self.dump_html_table_header
-      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD COLOR</td> <td>THRESHOLD NUMBER</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT UUIDS</td> <td>CURRENT RESOURCES ADDED</td> <td>MAX RESOURCES ADDED</td> <td>UUID</td> </tr> '
+      string = ' <tr> <td>SET NUMBER</td> <td>CARD NUMBER</td> <td>NAME</td> <td>RARITY</td> <td>COLOR</td> <td>TYPE</td> <td>SUB TYPE</td> <td>FACTION</td> <td>SOCKET COUNT</td> <td>COST</td> <td>THRESHOLD</td> <td>ATK</td> <td>HEALTH</td> <td>TEXT</td> <td>FLAVOR</td> <td>RESTRICTION</td> <td>ARTIST</td> <td>ENTERS PLAY EXHAUSTED</td> <td>EQUIPMENT UUIDS</td> <td>CURRENT RESOURCES ADDED</td> <td>MAX RESOURCES ADDED</td> <td>UUID</td> </tr> '
     end
 
     def equipment_string_from_array(equip)
@@ -268,13 +275,13 @@ EOCARD
       if @equipment_string.nil?
         @equipment_string = ""
       end
-      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @image_path}','#{Mysql.escape_string @threshold_color}','#{Mysql.escape_string @threshold_number}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}');"
+      string = "INSERT INTO cards values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @threshold}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}');"
     end
 
     # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
     # this)
     def self.dump_sql_header
-      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, image_path VARCHAR(200), threshold_color VARCHAR(60), threshold_number VARCHAR(2), equipment_string VARCHAR(90), curr_resources INT, max_resources INT);"
+      string = "CREATE TABLE IF NOT EXISTS cards(set_id VARCHAR(20), card_number INT, name VARCHAR(50), rarity VARCHAR(15), color VARCHAR(60), type VARCHAR(30), sub_type VARCHAR(30), faction VARCHAR(30), socket_count INT, cost VARCHAR(4), atk INT, health INT, text VARCHAR(400), flavor VARCHAR(400), restriction VARCHAR(30), artist VARCHAR(50), enters_exhausted INT, uuid VARCHAR(72) PRIMARY KEY, threshold VARCHAR(60), equipment_string VARCHAR(90), curr_resources INT, max_resources INT);"
     end
   end
 
