@@ -66,6 +66,11 @@ module Hex
       end
     end
 
+    def get_db_con
+      pw = File.open("/home/docxstudios/hex.sql.pws").read.chomp
+      con = Mysql.new 'mysql.doc-x.net', 'hex_reader', pw, 'hex_tcg'
+    end
+
     def get_binding
       binding
     end
@@ -197,7 +202,7 @@ module Hex
         flavor_info = ""
         info_rows -= 1
       else
-        flavor_info = "<tr>\n<td valign=top>#{@flavor}</td>\n</tr>"
+        flavor_info = "<tr>\n<td valign=top><i>#{@flavor}</i></td>\n</tr>"
       end
       # Fill up type_info with each bit of info as needed
       type_info = "<tr>\n<td valign=top>\n#{@type}<br>\n"
@@ -208,6 +213,35 @@ module Hex
         type_info += "#{@restriction}<br>\n"
       end
       type_info += "<p>#{@rarity}</td>\n</tr>"
+
+      # If this card has equipment, let's find out what it is and print out its info
+      equipment_info = ""
+      if @equipment_string =~ /-/
+        # Get a local sql connection so we don't muck up with any other connections that might currently be active
+        my_con = get_db_con
+        equipment_info = "<tr valign=top><td><table border=1><tr><th colspan=2>Related PVE Equipment</th></tr>\n"
+        # Copy to local variable and get rid of commas
+        es = @equipment_string
+        es.gsub!(/,/, '')
+        es.split(/\s+/).each do |equip|
+          query = "SELECT name, sub_type, text from cards where uuid = '#{equip}'"
+          results = my_con.query(query)
+          results.each do |row|
+            name = row[0]
+            slot = row[1]
+            text = row[2]
+            equipment_info += "<tr><td align=left><i>Name:</i> #{name}</td><td><i>Slot:</i> #{slot}</td align=left></tr><tr><td colspan=2>#{text}</td></tr>\n"
+          end
+        end
+        # Close the SQL connection now we don't need it
+        my_con.close
+        # And close the Equipment table off
+        equipment_info += "</td></tr></table>\n"
+        # Finally, do a quick check for missing equipment on the card....
+        unless equipment_info.match(/Slot:/) then
+          equipment_info = ""
+        end
+      end
 
       image_path = get_image_path
 
@@ -225,6 +259,7 @@ module Hex
 </tr>
 #{health_info}
 #{flavor_info}
+#{equipment_info}
 </table>
 </center>
 EOCARD
