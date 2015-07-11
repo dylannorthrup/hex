@@ -265,7 +265,6 @@ def get_full_price_details(prices=nil)
   end
   true_average = array_int_avg(local_prices)    # Get an initial average for the entire, pre-filtered array
   local_prices.sort!                            # Sort array numerically
-#  binding.pry
   min = local_prices[0]                         # Store min and max for returning later
   max = local_prices[-1]
   median = (local_prices.size / 2).to_i         # Find median
@@ -321,6 +320,10 @@ end
 # General print statement
 def print_card_output(array=nil)
   return if array.nil?
+  # Do some bits here to calculate price of a Draft Pack
+  draft_format = { '002' => 2, '001' => 1 }
+  # We'll calculate 100 plat worth of gold presently and the 100 plat as well
+  draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
   array.sort.map do |name, currencies|
     next unless name.match(/#{@name_filter}/)
@@ -338,10 +341,31 @@ def print_card_output(array=nil)
         avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
       end
       eval @card_details_string[@output_type][@output_detail]
+      draft_format.each_pair do |k, v|
+        if name =~ /#{k} Booster Pack/ then
+          draft_pack_value[currency] += (avg * v)
+        end
+      end
     end
-    eval @card_closing_string[@output_type][@output_detail]
     puts str
   end
+  # Now, take the values we got for draft packs, calculate a gold to plat ratio 
+  ratio = draft_pack_value['GOLD'] / draft_pack_value['PLATINUM']
+  # Take that ratio, multiply it times 100 and add it to the GOLD draft_pack_value then add 100 to plat value
+  draft_pack_value['GOLD'] += ratio * 100
+  draft_pack_value['PLATINUM'] += 100
+  # Init some vars and print out our computed draft pack value
+  str = ''
+  name = "Computed Draft Booster Pack"
+  eval @card_init_string[@output_type][@output_detail]
+  # Now, take those values and print out some stuff
+  ['PLATINUM', 'GOLD'].each do |currency|
+    avg = true_avg = min = lq = med = uq = max = draft_pack_value[currency] / 3
+    sample_size = 1; excl = 0
+    eval @card_details_string[@output_type][@output_detail]
+  end
+  eval @card_closing_string[@output_type][@output_detail]
+  puts str
   eval @card_closing_bits[@output_type][@output_detail]
 end
 
