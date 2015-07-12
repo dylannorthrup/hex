@@ -347,25 +347,29 @@ def print_card_output(array=nil)
         end
       end
     end
+    eval @card_closing_string[@output_type][@output_detail]
     puts str
   end
-  # Now, take the values we got for draft packs, calculate a gold to plat ratio 
-  ratio = draft_pack_value['GOLD'] / draft_pack_value['PLATINUM']
-  # Take that ratio, multiply it times 100 and add it to the GOLD draft_pack_value then add 100 to plat value
-  draft_pack_value['GOLD'] += ratio * 100
-  draft_pack_value['PLATINUM'] += 100
-  # Init some vars and print out our computed draft pack value
-  str = ''
-  name = "Computed Draft Booster Pack"
-  eval @card_init_string[@output_type][@output_detail]
-  # Now, take those values and print out some stuff
-  ['PLATINUM', 'GOLD'].each do |currency|
-    avg = true_avg = min = lq = med = uq = max = draft_pack_value[currency] / 3
-    sample_size = 1; excl = 0
-    eval @card_details_string[@output_type][@output_detail]
+  # Skip unless we've done anything with the draft booster pack prices
+  unless draft_pack_value['PLATINUM'] == 0 then
+    # Use the values we got for draft packs and calculate a gold to plat ratio 
+    ratio = draft_pack_value['GOLD'] / draft_pack_value['PLATINUM']
+    # Take that ratio, multiply it times 100 and add it to the GOLD draft_pack_value then add 100 to plat value
+    draft_pack_value['GOLD'] += ratio * 100
+    draft_pack_value['PLATINUM'] += 100
+    # Init some vars and print out our computed draft pack value
+    str = ''
+    name = "Computed Draft Booster Pack"
+    eval @card_init_string[@output_type][@output_detail]
+    # Now, take those values and print out some stuff
+    ['PLATINUM', 'GOLD'].each do |currency|
+      avg = true_avg = min = lq = med = uq = max = draft_pack_value[currency] / 3
+      sample_size = 1; excl = 0
+      eval @card_details_string[@output_type][@output_detail]
+    end
+    eval @card_closing_string[@output_type][@output_detail]
+    puts str
   end
-  eval @card_closing_string[@output_type][@output_detail]
-  puts str
   eval @card_closing_bits[@output_type][@output_detail]
 end
 
