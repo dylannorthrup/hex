@@ -29,7 +29,7 @@ puts ""
   
 #high_exch = 180
 #low_exch = 160
-spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet3.json' ]
+spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet3.json', '/home/docxstudios/web/hex/code/hex_collection_sheet4.json' ]
 
 needed = Array.new
 surplus = Array.new
@@ -61,10 +61,18 @@ spreadsheet_urls.each do |spreadsheet_url|
     rarity = row['gsx$rarity']['$t']
     shard = "[#{row['gsx$shard']['$t']}]"
     price = "NO DATA"
-    price = row['gsx$plat_2']['$t'] unless row['gsx$plat_2'].nil?
+    if row['gsx$plat']['$t'].match(/^[0-9]+$/) then
+      price = row['gsx$plat']['$t']
+    else
+      price = row['gsx$plat_2']['$t'] unless row['gsx$plat_2'].nil? or row['gsx$plat_2']['$t'] == ""
+    end
 #    price = row['c'][6]['v'] unless row['c'][6].nil?
     gprice = "NO DATA"
-    gprice = row['gsx$gold_2']['$t'] unless row['gsx$gold_2'].nil? or row['gsx$gold_2']['$t'].match(/[A-Za-z]/)
+    if row['gsx$gold']['$t'].match(/^[0-9]+$/) then
+      gprice = row['gsx$gold']['$t']
+    else
+      gprice = row['gsx$gold_2']['$t'] unless row['gsx$gold_2'].nil? or row['gsx$gold_2']['$t'].match(/[A-Za-z]/) or row['gsx$gold_2']['$t'] == ""
+    end
     next unless rarity =~ /Legendary|Rare/
 #    binding.pry
   #  puts "Testing #{name} with count of #{count}"
