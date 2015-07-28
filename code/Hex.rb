@@ -17,8 +17,12 @@ module Hex
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
       '0382f729-7710-432b-b761-13677982dcd2' => '001',
       'b05e69d2-299a-4eed-ac31-3f1b4fa36470' => '002',
-      'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001',
+      'a31dd265-9d3b-4ac7-9669-bb1ab19c62bc' => 'PVE001', # PVE Modified Cards
+      'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001', # PVE Collectible Cards
+      '582f8d90-d5e6-41e5-b6f9-5de73de140be' => 'PVE001', # Caress of the Void has this as a set Guid with Design Notes of 'Arena'
+      '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'PVE003', # PVE Collectible Cards
       'fce480eb-15f9-4096-8d12-6beee9118652' => '003',
+      '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'Unclassified',
     }
 
     # Something to translate gem names into HTML colors
