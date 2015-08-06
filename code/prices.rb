@@ -18,6 +18,7 @@ require 'moving_average'
   'CSV'   => 'text/plain',    # Comma Separated Variables
   'PDCSV' => 'text/plain',    # Price Data Comma Separated Variables
   'PSV'   => 'text/plain',    # Pipe Separated Variables
+  'UUIDPSV'   => 'text/plain',    # Pipe Separated Variables with UUID
   'HTML'  => 'text/html',     # HTML Tables
 }
 @output_detail = 'detailed'
@@ -34,6 +35,10 @@ require 'moving_average'
     'detailed'  => '',
   },
   'PSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'UUIDPSV'   => {
     'brief'     => '',
     'detailed'  => '',
   },
@@ -55,6 +60,10 @@ require 'moving_average'
     'brief'     => 'puts "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
     'detailed'  => 'puts "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices"'
   },
+  'UUIDPSV'   => {
+    'brief'     => 'puts "Name ... UUID ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
+    'detailed'  => 'puts "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices"'
+  },
   'HTML'  => {
     'brief'     => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
     'detailed'  => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
@@ -72,6 +81,10 @@ require 'moving_average'
   'PSV'   => {
     'brief'     => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}"',
     'detailed'  => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "|\\\1")}"',
+  },
+  'UUIDPSV'   => {
+    'brief'     => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')} ... #{uuid}"',
+    'detailed'  => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "|\\\1")}|#{uuid}"',
   },
   'HTML'  => {
     'brief'     => 'str = "<tr><td>#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}</td>"',
@@ -91,6 +104,10 @@ require 'moving_average'
     'brief'     => 'str << " ... #{avg} #{currency} [#{sample_size} auctions]"',
     'detailed'  => 'str << "|#{currency}|#{avg}|#{sample_size}|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"',
   },
+  'UUIDPSV'   => {
+    'brief'     => 'str << " ... #{avg} #{currency} [#{sample_size} auctions]"',
+    'detailed'  => 'str << "|#{currency}|#{avg}|#{sample_size}|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"',
+  },
   'HTML'  => {
     'brief'     => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
     'detailed'  => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
@@ -106,6 +123,10 @@ require 'moving_average'
     'detailed'  => 'str << "\"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\"")}"',
   },
   'PSV'   => {
+    'brief'     => '',
+    'detailed'  => '',
+  },
+  'UUIDPSV'   => {
     'brief'     => '',
     'detailed'  => '',
   },
@@ -165,6 +186,36 @@ def read_db(sqlcon=nil, filter='')
   return lines
 end
 
+# Read in AH data from database including AAs and UUIDs
+# I HATE DUPLICATING THIS CODE!!!! IT NEEDS TO BE REFACTORED SO I'M NOT REPEATING MYSELF!!!!
+def read_db_with_uuids(sqlcon=nil, filter='')
+  return if sqlcon.nil?
+  lines = Array.new
+  # Select from database to get all bits. Get non-Epic stuff first
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
+  results = sqlcon.query(query)
+  results.each do |row|
+    name = row[0]
+    rarity = row[3]
+    uuid = row[6]
+    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
+    #puts line
+    lines << line
+  end
+  # Now, do the same thing, but for epic cards and prices
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity regexp 'Epic' and ah.rarity like '5' #{filter}"
+  results = sqlcon.query(query)
+  results.each do |row|
+    name = row[0] + " AA"
+    rarity = row[3]
+    uuid = row[6]
+    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
+    #puts line
+    lines << line
+  end
+  return lines
+end
+
 # Helper method to print out HTML header indicating what type of output we're sending
 def print_html_header
   puts "Content-type: #{@content_types[@output_type]}"
@@ -177,6 +228,7 @@ def build_card_names_hash(names=nil)
   names.each do |name|
     if @card_names[name].nil?
       @card_names[name] = Hash.new
+      @card_names[name]['uuid'] = ""
       @card_names[name]['GOLD'] = Array.new
       @card_names[name]['PLATINUM'] = Array.new
     end
@@ -195,11 +247,13 @@ def parse_lines(lines=nil, html=false)
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*)$/)
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*?),?([a-f0-9-]+)?$/)
       name = $1
       currency = $2
       price = $3
       date = $4
+      uuid = $5
+# binding.pry
       (year, mon, day) = date.split(/[-\s:]/)
       old = Time.new(year, mon, day)
       age = ((now - old)/3600).to_i
@@ -216,6 +270,7 @@ def parse_lines(lines=nil, html=false)
       if @card_names[name].nil?
         @card_names[name] = Hash.new
       end
+      @card_names[name]['uuid'] = uuid
       if @card_names[name][currency].nil?
         # Explicitly make both currencies here so we won't be missing any if no auctions of that particular
         # type showed up in our window
@@ -321,7 +376,7 @@ end
 def print_card_output(array=nil)
   return if array.nil?
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { '002' => 2, '001' => 1 }
+  draft_format = { '003' => 3 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
@@ -332,8 +387,11 @@ def print_card_output(array=nil)
       next if name.match(/#{@exclude_filter}/)
     end
     str = ''
+# binding.pry
+    uuid = array[name]['uuid']
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
+      next if currency == 'uuid'
 #      puts "Working on #{name} and got the following prices for #{currency}: #{prices}"
       if prices.nil? then
         avg = sample_size = true_avg = min = lq = med = uq = max = excl = 0
@@ -350,8 +408,10 @@ def print_card_output(array=nil)
     eval @card_closing_string[@output_type][@output_detail]
     puts str
   end
+# binding.pry
   # Skip unless we've done anything with the draft booster pack prices
   unless draft_pack_value['PLATINUM'] == 0 then
+    uuid = "draftpak-0000-0000-0000-000000000000"
     # Use the values we got for draft packs and calculate a gold to plat ratio 
     ratio = draft_pack_value['GOLD'] / draft_pack_value['PLATINUM']
     # Take that ratio, multiply it times 100 and add it to the GOLD draft_pack_value then add 100 to plat value
