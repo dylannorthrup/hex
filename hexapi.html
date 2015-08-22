@@ -1,0 +1,33 @@
+<html>
+<title>HexAPI Parser Page</title>
+<body>
+<h1>HexAPI Parser Page</h1>
+If you're here, you're probably interested in my Hex API Parser.  I've got binaries for Windows (<a href="downloads/hexapi_windows_386.exe">32-Bit</a> and <a href="downloads/hexapi_windows_amd64.exe">64-bit</a>) and OS X (<a href="downloads/hexapi_darwin_386">here</a>). I've also got the source code on my github page as a part of my "fooling around with Go" repository.  The source code is <a href="https://github.com/dylannorthrup/go-stuff/blob/master/hexapi/hexapi.go">here</a>.
+<p>
+I do my development on a Mac, so the OS X version should run as expected.  For the Windows version, there may be some unexpected bits, but my cursory checking showed it worked ok.  If that's not the case, let me know what specific problems you're encountering and I'll do my best to look into it.
+<p>
+You'll need to set up your Hex Client to forward on API requests as detailed <a href="http://forums.cryptozoic.com/showthread.php?t=40975">in this thread</a>.  What you'll specifically need to put into the api.ini file is the following:
+<pre>
+http://127.0.0.1:5000/log.cgi|All
+</pre>
+
+Once that's done, you'll run the hexapi program you downloaded from the links above in either a cmd.exe window (for Windows) or Terminal window (for OS X).
+<p>
+<h2>Features</h2>
+<ul>
+<li> Catches Collection events and caches them to a file (by default it's named 'collection.out' and will be in the same directory you run the program from)
+<li> Provides limited game state information (Cards drawn, Champion life totals, Cards on the Chain) during games
+<li> Provides guidance for drafting cards by providing the card with the highest plat value, card with the highest gold value and the card you have the least of in your collection (presuming you started up the API parser before you logged in and it was able to get the Collection info or your collection cache is up to date)
+<ul>
+<li> Price data is gathered from my price parsing information. Full methodology is beyond the scope of this document by is avilable at <a href="/hex/prices.html">my prices page</a>
+<li> When making recommendations, in the case of ties the highest plat price will win, followed by the least number of cards followed by the highest gold value with the final tie breaker being the card that appears latest in the pack (nearest the rare/legendary slot).
+</ul>
+<li> Tracks how long games last and provides a winner/loser summary along with game length after each match.
+<li> You can make some behavioral changes by editing a 'config.ini' file, but that is currently undocumented.
+</ul>
+
+If you're up for trying it out and giving feedback, feel free!  And, if you're wondering why, when you're playing against me in a draft, that the signals are all <a href="https://en.wiktionary.org/wiki/verkakte">verkakte</a>, this is why :-)
+<p>
+<i> Legal stuff: This is all my code.  Feel free to use the programs, but do not take my code without talking to me. I'm nice and we may be able to make a deal.  If you use the programs provided or compile the code on your own and run the program, you do so at your own risk.  I do not believe any problems will happen, but want to be explicit that no warranty, express or implied, is provided and any use is at your own risk.  Also, I write and maintain this program in my free time (of which there is precious little).  If something's broken, I'll try to fix it when I can.  Encouragement (in the form of gold, plat or sending <a href="/hex/have-want.txt">cards missing from my collection</a> to my IGN of 'Dylan') will help motivate me to work on features and fixes, but this is a side project.  Please set your expectations appropriately regarding action on any feedback that is provided.</i>
+</body>
+</html>
