@@ -23,7 +23,13 @@ Once that's done, you'll run the hexapi program you downloaded from the links ab
 <li> When making recommendations, in the case of ties the highest plat price will win, followed by the least number of cards followed by the highest gold value with the final tie breaker being the card that appears latest in the pack (nearest the rare/legendary slot).
 </ul>
 <li> Tracks how long games last and provides a winner/loser summary along with game length after each match.
-<li> You can make some behavioral changes by editing a 'config.ini' file, but that is currently undocumented.
+<li> You can make some behavioral changes by editing a 'config.ini' file. The file needs to be located in the same directory as the hexapi program.  Values are specified in the format <code>key=value</code>.  Config options intended for end-users are given below:
+<ul>
+<li> <code>collection_file=filename</code> - Specify the name of the file the program caches your collection information to.  The format for the collection file is <code>card_uuid : quantity</code>.  This is not very human readable, so a CSV option is available which caches by card name.  The file has one line per card and gets updated approximately 20 seconds after a collection event (which any collection events arriving before the 20 seconds is up resetting that timer, such as after the Drafting phase of a Draft tournament is complete and Deckbuilding begins, or when multiple items have been purchased in rapid succession from the Auction House).
+<li> <code>export_csv=true</code> - Trigger the program to write out a CSV file with card names and quantities whenever the program caches your collection information locally.  The format for this file is <code>"Card Name",quantity</code>.
+<li> <code>csv_filename</code> - If you'd like a name other than 'collection.csv' for the CSV name.  If <code>export_csv</code> is not set to true, this has no effect
+</ul>
+<li> Program checks to see if it's the most recent version and, if not, will provide a warning indicating a new version is available.
 </ul>
 
 If you're up for trying it out and giving feedback, feel free!  And, if you're wondering why, when you're playing against me in a draft, that the signals are all <a href="https://en.wiktionary.org/wiki/verkakte">verkakte</a>, this is why :-)
