@@ -17,12 +17,8 @@ module Hex
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
       '0382f729-7710-432b-b761-13677982dcd2' => '001',
       'b05e69d2-299a-4eed-ac31-3f1b4fa36470' => '002',
-      'a31dd265-9d3b-4ac7-9669-bb1ab19c62bc' => 'PVE001', # PVE Modified Cards
-      'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001', # PVE Collectible Cards
-      '582f8d90-d5e6-41e5-b6f9-5de73de140be' => 'PVE001', # Caress of the Void has this as a set Guid with Design Notes of 'Arena'
-      '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'PVE003', # PVE Collectible Cards
+      'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001',
       'fce480eb-15f9-4096-8d12-6beee9118652' => '003',
-      '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'Unclassified',
     }
 
     # Something to translate gem names into HTML colors
@@ -249,12 +245,20 @@ module Hex
 
       image_path = get_image_path
 
+      # Standard card image size
+      image_size = "width=400 height=560"
+
+      # But for equipment, we go with a different setup
+      if @type == "Equipment" then
+        image_size = "height='50%'"
+      end
+
       # Now that we've set that up, fill up 'string' with what we want it to have
       string = <<EOCARD
 <br><center> <table width=81% border=1 cellpadding=2 cellspacing=2 bgcolor="#{@htmlcolor}">
 <tr>
   <td valign=top>#{@name}</td>
-  <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="#{image_path}" width=400 height=560></td>
+  <td width=30% colspan=2 rowspan=#{info_rows} align=center><img src="#{image_path}" #{image_size}></td>
 </tr>
 #{cost_info}
 #{type_info}
@@ -270,7 +274,16 @@ EOCARD
     end
 
     def get_image_path
+      # Use this as the default
       string = "/hex/images/#{@set_id}/#{@name}.png"
+      # But if it's an equipment, mix it up
+      if @type == "Equipment" then
+        location = @set_id
+        if location =~ /^00[123]$/ || location =~ /^PVE00[123]$/ || location =~ /^Unspecified$/ then
+          location = 'AOM'
+        end
+        string = "/hex/images/#{location}_Equipment/#{@name}.png"
+      end
       string.gsub!(" ", '%20')
       string.gsub!(":", '')
       return string
