@@ -6,6 +6,8 @@ $: << "/home/docxstudios/web/hex/code"
 require 'Hex'
 
 ####### MAIN SECTION
+puts "Content-type: text/plain"
+puts ""
 foo = Hex::Collection.new
 con = foo.get_db_con
 foo.load_collection_from_search(con, "rarity like 'Epic' order by name")
