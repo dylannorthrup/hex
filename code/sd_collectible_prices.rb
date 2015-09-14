@@ -8,7 +8,7 @@ require 'prices'
 ####### MAIN SECTION
 foo = Hex::Collection.new
 con = foo.get_db_con
-filter = "and c.rarity regexp 'Legendary|Rare' and c.set_id regexp '^002$'"
+filter = "and c.rarity regexp 'Legendary|Rare' and c.set_id regexp '^002$' and c.type not like 'Equipment'"
 lines = read_db(con, filter)   # Get data from database
 parse_lines(lines)             # Compile that data into a useable form
 #puts "====== LEGENDARY CARDS ======"
