@@ -355,8 +355,19 @@ def get_full_price_details(prices=nil)
 #  avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
   # Now that we've exclude outliers, sort by date, then extract the prices and hand that off 
   # to get teh exponential moving average price
-  prices.sort do |a, b|
-    a[1] <=> b[1]
+  prices.sort! do |b, a|
+    a_ary = a[1].split(/-/)
+    a_ary[2].sub!(/,.*/, "")
+    b_ary = b[1].split(/-/)
+    b_ary[2].sub!(/,.*/, "")
+    v = a_ary[1] <=> b_ary[1]
+    if v == 0 then 
+      v = a_ary[2] <=> b_ary[2]
+      if v == 0 then 
+        v = a_ary[3] <=> b_ary[3]
+      end
+    end
+    v
   end
   bare_prices = Array.new
   prices.each do |p|
