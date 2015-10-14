@@ -8,15 +8,33 @@ puts ""
 
 require 'pry'
 require 'open-uri'
-require 'json'
-require 'pp'
 
-# Figure out exchange rate between Gold and Plat
+# Grab all card prices and figure out exchange rate between Gold and Plat
+price_file = "/home/docxstudios/web/hex/all_prices.txt"
+prices = Hash.new
+File.readlines(price_file).each do |line|
+  #next unless line =~ /^\d+ gold per plat \[(\d+)p - (\d+)g\]  => (.*)$/
+  next unless line =~ /^(.*) \.\.\. (\d+) PLATINUM.* \.\.\. (\d+) GOLD/
+  card_name = $1
+  plat_price = $2
+  gold_price = $3
+  card_name.gsub!(/\s*$/, '')  # Get rid of any trailing spaces
+#  puts "#{card_name} = #{plat_price}p and #{gold_price}g"
+  prices[card_name] = Hash.new
+  prices[card_name]['plat'] = plat_price
+  prices[card_name]['gold'] = gold_price
+end
+
+# Figure out exchange rates between Gold and Plat
 exchange_file = "/home/docxstudios/web/hex/sorted_gold_plat_comparisons.txt"
 rates = Array.new
 File.readlines(exchange_file).each do |line|
   next unless line =~ /^(\d+) gold per plat.*Set .* Booster Pack\s*$/
   rates << $1
+end
+
+prices.keys.each do |p|
+#  puts "'#{p}' = #{prices[p]['plat']}p and #{prices[p]['gold']}g"
 end
 
 sum = 0
@@ -26,63 +44,38 @@ end
 avg_exch = (sum / rates.size).round
 puts "INFO: Using #{avg_exch} gold to 1 plat as conversion rate based on Booster Pack prices"
 puts ""
-  
-#high_exch = 180
-#low_exch = 160
-spreadsheet_urls = [ '/home/docxstudios/web/hex/code/hex_collection_sheet1.json', '/home/docxstudios/web/hex/code/hex_collection_sheet2.json', '/home/docxstudios/web/hex/code/hex_collection_sheet3.json', '/home/docxstudios/web/hex/code/hex_collection_sheet4.json' ]
+
+count_files = [ '/home/docxstudios/web/hex/aom_counts.txt', '/home/docxstudios/web/hex/pve_counts.txt', '/home/docxstudios/web/hex/sd_counts.txt', '/home/docxstudios/web/hex/sof_counts.txt' ]
 
 needed = Array.new
 surplus = Array.new
 
-spreadsheet_urls.each do |spreadsheet_url|
-  raw_data = open(spreadsheet_url).read
-
-  #puts "Got data from remote source"
-
-  # Have to trim off the first bit and last bit of the string we get back from Google
-  raw_data.gsub!(/^google.visualization.Query.setResponse\(/, '')
-  raw_data.gsub!(/\);$/, '')
-
-  #puts "Data massaged"
-  
-  # Parse the json into a data structure we can access
-  data_json = JSON.parse(raw_data)
-  #puts "Data parsed"
-
-#  binding.pry
-
-  # Grab out the array of rows
-  rows = data_json['feed']['entry']
+count_files.each do |count_file|
+  raw_data = open(count_file).read
 
   # Go through each row.  If we don't have at least four, add the card info to the needed array
-  rows.each do |row|
-    name = row['gsx$name']['$t']
-    count = row['gsx$count']['$t'].to_i
-    rarity = row['gsx$rarity']['$t']
-    shard = "[#{row['gsx$shard']['$t']}]"
+  raw_data.lines.each do |row|
+    next unless row =~ /^"([^"]+)",(\d+),"([^"]+)","([^"]+)"$/
+    name = $1
+    count = $2.to_i
+    rarity = $3
+    shard = $4
+    key = name
+    key.gsub!(/,/, '')
     price = "NO DATA"
-    if row['gsx$plat']['$t'].match(/^[0-9]+$/) then
-      price = row['gsx$plat']['$t']
-    else
-      price = row['gsx$plat_2']['$t'] unless row['gsx$plat_2'].nil? or row['gsx$plat_2']['$t'] == ""
-    end
-#    price = row['c'][6]['v'] unless row['c'][6].nil?
     gprice = "NO DATA"
-    if row['gsx$gold']['$t'].match(/^[0-9]+$/) then
-      gprice = row['gsx$gold']['$t']
-    else
-      gprice = row['gsx$gold_2']['$t'] unless row['gsx$gold_2'].nil? or row['gsx$gold_2']['$t'].match(/[A-Za-z]/) or row['gsx$gold_2']['$t'] == ""
+    if not prices[key].nil? then
+      price = prices[key]['plat']
+      gprice  = prices[key]['gold']
     end
     next unless rarity =~ /Legendary|Rare/
-#    binding.pry
-  #  puts "Testing #{name} with count of #{count}"
     if count < 4
       pi = price.to_i; gi = gprice.to_i
       # Put indicator here which is the better value based on exchange rate: gold or plat
-      if (pi * avg_exch) < gi then
+      if (pi * avg_exch) < gi or gi == 0 then
         # If plat * avg_exch < gold price, then buy using plat
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:  #{'%7.7s' % gprice}"
-      elsif (pi * avg_exch) > gi then
+      elsif (pi * avg_exch) > gi or pi == 0 then
         # If plat * avg_exch > gold price, then buy using gold
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:  #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
       else
@@ -98,8 +91,6 @@ spreadsheet_urls.each do |spreadsheet_url|
       surplus << value
     end
   end
-  
-  #puts "Extracted rows into needed array"
 end
 
 puts "========== WANTS ===================================================================="
