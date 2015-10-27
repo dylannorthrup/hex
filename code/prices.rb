@@ -50,7 +50,7 @@ require 'moving_average'
 @card_field_descriptors = {
   'CSV'   => {
     'brief'     => 'puts "Name,Avg_price,Currency,# of auctions,Avg_price,Currency,# of auctions"',
-    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices"'
+    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,UUID"'
   },
   'PDCSV'   => {
     'brief'     => '',
@@ -94,7 +94,7 @@ require 'moving_average'
 @card_details_string = {
   'CSV'   => {
     'brief'     => 'str << ",#{avg},\"#{currency}\",#{sample_size}"',
-    'detailed'  => 'str << ",\"#{currency}\",#{avg},#{sample_size},#{true_avg},#{min},#{lq},#{med},#{uq},#{max},\"#{excl}\""',
+    'detailed'  => 'str << ",\"#{currency}\",#{avg},#{sample_size},#{true_avg},#{min},#{lq},#{med},#{uq},#{max},\"#{excl}\",#{uuid}"',
   },
   'PDCSV'   => {
     'brief'     => 'str << "#{avg},"',
@@ -170,16 +170,18 @@ def read_db(sqlcon=nil, filter='')
   # Select from database to get all bits
   # We filter out 'Epic' rarity because it creates duplicates in the output. We take care of that by
   # looking at the sales data, though
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' #{filter}"
+  #query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
     name = row[0]
     rarity = row[3]
+    uuid = row[6]
     if row[5].match(/5/) then
       name << " AA"
       rarity = 'Epic'
     end
-    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]}"
+    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
     #puts line
     lines << line
   end
@@ -192,7 +194,7 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
     name = row[0]
@@ -203,7 +205,7 @@ def read_db_with_uuids(sqlcon=nil, filter='')
     lines << line
   end
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity regexp 'Epic' and ah.rarity like '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity regexp 'Epic' and ah.rarity like '5' #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
     name = row[0] + " AA"
