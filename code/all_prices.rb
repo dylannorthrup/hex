@@ -2,12 +2,20 @@
 #
 # get distribution of prices for card for both gold and platinum from Hex price data
 
-$: << "/home/docxstudios/web/hex/code"
-require 'prices'
+puts "Content-type: text\plain\n"
 
-####### MAIN SECTION
-foo = Hex::Collection.new
-con = foo.get_db_con
-lines = read_db(con)                      # Get data from database
-parse_lines(lines)                        # Compile that data into a useable form
-print_filtered_output(@card_names)
+puts "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"
+
+File.open("/home/docxstudios/web/hex/all_prices_csv.txt").each_line { |line|
+  line.chomp!
+  if   line.match(/^"([^"]+)",.*,"PLATINUM",(\d+),(\d+),.*"GOLD",(\d+),(\d+).*,([^,]+)$/) then
+    name = $1
+    pavg = $2
+    pcount = $3
+    gavg = $4
+    gcount = $5
+    uuid = $6
+    puts "#{name} ... #{pavg} PLATINUM [#{pcount} auctions] ... #{gavg} GOLD [#{gcount} auctions]"
+  end
+}
+
