@@ -94,7 +94,7 @@ require 'moving_average'
 @card_details_string = {
   'CSV'   => {
     'brief'     => 'str << ",#{avg},\"#{currency}\",#{sample_size}"',
-    'detailed'  => 'str << ",\"#{currency}\",#{avg},#{sample_size},#{true_avg},#{min},#{lq},#{med},#{uq},#{max},\"#{excl}\",#{uuid}"',
+    'detailed'  => 'str << ",\"#{currency}\",#{avg},#{sample_size},#{true_avg},#{min},#{lq},#{med},#{uq},#{max},\"#{excl}\""',
   },
   'PDCSV'   => {
     'brief'     => 'str << "#{avg},"',
@@ -116,7 +116,7 @@ require 'moving_average'
 @card_closing_string = {
   'CSV'   => {
     'brief'     => '',
-    'detailed'  => '',
+    'detailed'  => 'str << ",#{uuid}"',
   },
   'PDCSV'   => {
     'brief'     => 'str << "\"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\"")}"',
@@ -432,7 +432,7 @@ def print_card_output(array=nil)
     draft_pack_value['PLATINUM'] += 100
     # Init some vars and print out our computed draft pack value
     str = ''
-    name = "Computed Draft Booster Pack"
+    name = "'Computed Draft Booster Pack' [Common]"
     eval @card_init_string[@output_type][@output_detail]
     # Now, take those values and print out some stuff
     ['PLATINUM', 'GOLD'].each do |currency|
@@ -454,20 +454,6 @@ def print_filtered_output(array=nil, filter='.*')
   @output_detail = 'brief'
   print_card_output(array)
 end
-
-## Print out full details of requested cards
-#def print_filtered_detailed_output(array=nil, filter='.*')
-#  return if array.nil?
-#  array.sort.map do |name, currencies|
-#    next unless name.match(/#{filter}/)
-#    str = "#{name.gsub(/^'/, '').gsub(/' \[.*\]$/, '')}"
-#    currencies.sort.map do |currency, prices|
-#      avg, sample_size, true_avg, min, lq, med, uq, max, excl = get_full_price_details(prices)
-#      str << "|#{currency}|#{avg}|#{sample_size} auctions|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"
-#    end
-#    puts str
-#  end
-#end
 
 # Print out full details of requested cards
 def print_filtered_detailed_output(array=nil, filter='.*', exclude=nil)
