@@ -319,10 +319,10 @@ def get_full_price_details(prices=nil)
   p2 = Array.new                          # Create new Array
   prices.each {|value|                    # Iterate through values in prices
     next if value.nil?                    # Skip if this value somehow got set to nil
-    if value[0] >= lower_cutoff              # If the value is greater than or equal to the lower of the cutoff values
+    if value[0] >= lower_cutoff           # If the value is greater than or equal to the lower of the cutoff values
       p2 << value                         # add it to p2
     else                                  # Otherwise
-      excluded << value                   # Add it to our excluded array
+      excluded << value                   # And add it to our excluded array
     end
   } 
   prices = p2                             # Then make prices into p2
@@ -330,16 +330,16 @@ def get_full_price_details(prices=nil)
   p2 = Array.new                          # Reset p2 into new array
   prices.each {|value|                    # Iterate through values in prices
     next if value.nil?                    # Skip if this value somehow got set to nil
-    if value[0] <= upper_cutoff              # If the value is less than or equal to the higher of the cutoff values
+    if value[0] <= upper_cutoff           # If the value is less than or equal to the higher of the cutoff values
       p2 << value                         # add it to p2
     else                                  # Otherwise
-      excluded << value                   # Add it to our excluded array
+      excluded << value                   # And add it to our excluded array
     end
   } 
   prices = p2                             # Then make prices into p2
 #  avg_price = array_int_avg(prices)       # Average remaining values and return that (along with the sample size)
   # Now that we've exclude outliers, sort by date, then extract the prices and hand that off 
-  # to get teh exponential moving average price
+  # to get the exponential moving average price
   prices.sort! do |b, a|
     a_ary = a[1].split(/-/)
     a_ary[2].sub!(/,.*/, "")
@@ -359,8 +359,11 @@ def get_full_price_details(prices=nil)
     bare_prices << p[0]
   end
   avg_price = bare_prices.exponential_moving_average.to_i
+  # Massage excluded array into a string, then remove the double quotes from it as that messes up CSV output
+  excluded_string = excluded.to_s
+  excluded_string.gsub!(/"/, '')               # Get rid of double quotes (which mess up CSV output)
   # Return all the appropriate values
-  return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded
+  return avg_price, prices.size, true_average, min, lq, median, uq, max, excluded_string
 end
 
 def test(name='foo', filter=nil)
