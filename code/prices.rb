@@ -164,57 +164,40 @@ def read_names_from_db(sqlcon=nil, filter='')
 end
 
 # Read in AH data from database
+# This is farmed out to 'read_db_with_uuids' as we've got the logic there and are updating everything
+# to use UUIDs now.  One day I may clean this up, but too busy today.
 def read_db(sqlcon=nil, filter='')
-  return if sqlcon.nil?
-  lines = Array.new
-  # Select from database to get all bits
-  # We filter out 'Epic' rarity because it creates duplicates in the output. We take care of that by
-  # looking at the sales data, though
-  #query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity FROM ah_data ah, cards c where replace(c.name, ',', '') = ah.name and c.rarity not regexp 'Epic' #{filter}"
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
-  results = sqlcon.query(query)
+  return read_db_with_uuids(sqlcon, filter)
+end
+
+def add_uuid_lines(results)
+  return_lines = Array.new
   results.each do |row|
     name = row[0]
     rarity = row[3]
-    uuid = row[6]
-    if row[5].match(/5/) then
-      name << " AA"
-      rarity = 'Epic'
+    if rarity == 'Epic' then
+      name += " AA"
     end
+    uuid = row[6]
     line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
     #puts line
-    lines << line
+    return_lines << line
   end
-  return lines
+  return return_lines
 end
 
 # Read in AH data from database including AAs and UUIDs
-# I HATE DUPLICATING THIS CODE!!!! IT NEEDS TO BE REFACTORED SO I'M NOT REPEATING MYSELF!!!!
 def read_db_with_uuids(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits. Get non-Epic stuff first
   query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
   results = sqlcon.query(query)
-  results.each do |row|
-    name = row[0]
-    rarity = row[3]
-    uuid = row[6]
-    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
-    #puts line
-    lines << line
-  end
+  lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
   query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity regexp 'Epic' and ah.rarity like '5' #{filter}"
   results = sqlcon.query(query)
-  results.each do |row|
-    name = row[0] + " AA"
-    rarity = row[3]
-    uuid = row[6]
-    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
-    #puts line
-    lines << line
-  end
+  lines = lines + add_uuid_lines(results)
   return lines
 end
 
