@@ -461,15 +461,34 @@ EOCARD
         plat_ary = bits[2].split(',')
         gold_ary = bits[3].split(',')
         plat_avg = plat_ary[1]
+        plat_count = plat_ary[2]
         gold_avg = gold_ary[1]
+        gold_count = gold_ary[2]
         prices[name] = Hash.new
         prices[name]['rarity'] = rarity
         prices[name]['plat'] = plat_avg
+        prices[name]['pcount'] = plat_count
         prices[name]['gold'] = gold_avg
+        prices[name]['gcount'] = gold_count
       end
       @local_prices = prices
     end
+
+    # Get card list
+    def get_card_list_from_db(filter=nil)
+      return if filter.nil?
+      retlist = Array.new
+      con = get_db_con
+      query = "SELECT name, rarity, set_id, color, type FROM cards WHERE #{filter}"
+      lines = con.query(query)
+      lines.each do |line|
+        card = { 'name' => line[0], 'rarity' => line[1], 'set_id' => line[2], 'color' => line[3], 'type' => line[4] }
+        retlist << card
+      end
+      return retlist
+    end
     
+    # Make this use get_card_list_from_db (so we reduce redundant code paths)
     # Get card info
     def print_local_price_info_for_set(set_id=nil)
       return if set_id.nil?
@@ -497,6 +516,26 @@ EOCARD
         # Need to rewind the results to the beginning
         lines.data_seek 0
       }
+    end
+
+    def print_local_info_for_cardlist(lines=nil, prices=nil)
+      return if lines.nil?
+      return if prices.nil?
+      lines = lines.sort do |a, b|
+       a['name'] <=> b['name'] 
+      end
+      lines.each do |line|
+        name = line['name']
+        if prices[name].nil?; then
+          pavg = pcount = gavg = gcount = 0
+        else
+          pavg = prices[name]['plat']
+          pcount = prices[name]['pcount']
+          gavg = prices[name]['gold']
+          gcount = prices[name]['gcount']
+        end
+        puts "#{name} ... #{pavg} PLATINUM [#{pcount} auctions] ... #{gavg} GOLD [#{gcount} auctions]"
+      end
     end
   end
 end
