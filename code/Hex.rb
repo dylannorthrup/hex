@@ -475,7 +475,7 @@ EOCARD
       return if set_id.nil?
       return if @local_prices.nil?
       con = get_db_con
-      query = "SELECT name, rarity from cards WHERE set_id regexp '^#{set_id}$' AND type not like 'Equipment' order by name"
+      query = "SELECT name, rarity from cards WHERE set_id regexp '^#{set_id}$' AND rarity REGEXP 'Epic|Legendary|Rare|Uncommon|Common' AND type not like 'Equipment' order by name"
       lines = con.query(query)
       rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
       rarities.each { |rarity|
