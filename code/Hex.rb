@@ -327,7 +327,9 @@ EOCARD
       if @equipment_string.nil?
         @equipment_string = ""
       end
-      string = "REPLACE INTO cards (set_id, card_number, name, rarity, color, type, sub_type, faction, socket_count, cost, atk, health, text, flavor, restriction, artist, enters_exhausted, uuid, threshold, equipment_string, curr_resources, max_resources) values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @threshold}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}');"
+      @parsed_name = @name
+      @parsed_name.gsub!(/,/, '')
+      string = "REPLACE INTO cards (set_id, card_number, name, rarity, color, type, sub_type, faction, socket_count, cost, atk, health, text, flavor, restriction, artist, enters_exhausted, uuid, threshold, equipment_string, curr_resources, max_resources, parsed_name) values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @threshold}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}','#{Mysql.escape_string @parsed_name}');"
     end
 
     # Put this here so we can keep the table creation syntax in the same location as the to_sql method (immediately previous to 
@@ -342,6 +344,8 @@ EOCARD
     @@set_dir = "Sets"
     @@card_def_dir = "CardDefinitions"
     @@pic_dir = "Portraits"
+    @@price_file = "/home/docxstudios/web/hex/all_prices_csv.txt"
+    @local_prices = Array.new
 
     def get_db_con
       pw = File.open("/home/docxstudios/hex.sql.pws").read.chomp
@@ -443,6 +447,56 @@ EOCARD
           load_set(set_name, sql_con)
         end
       end
+    end
+
+    def get_local_price_info()
+      price_data = open(@@price_file).read
+      
+      prices = Hash.new
+      # We extract out the name, rarity and weighted avg prices for GOLD and PLATINUM
+      price_data.each_line do |line|
+        bits = line.split('","')
+        name = bits[0].gsub(/^"/, '')
+        rarity = bits[1]
+        plat_ary = bits[2].split(',')
+        gold_ary = bits[3].split(',')
+        plat_avg = plat_ary[1]
+        gold_avg = gold_ary[1]
+        prices[name] = Hash.new
+        prices[name]['rarity'] = rarity
+        prices[name]['plat'] = plat_avg
+        prices[name]['gold'] = gold_avg
+      end
+      @local_prices = prices
+    end
+    
+    # Get card info
+    def print_local_price_info_for_set(set_id=nil)
+      return if set_id.nil?
+      return if @local_prices.nil?
+      con = get_db_con
+      query = "SELECT name, rarity from cards WHERE set_id regexp '^#{set_id}$' AND type not like 'Equipment' order by name"
+      lines = con.query(query)
+      rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
+      rarities.each { |rarity|
+        lines.each do |line|
+          if line[1] == rarity; then
+            name = "#{line[0]}"
+            if rarity == 'Epic'; then
+              output_name = "#{name} AA"
+            else
+              output_name = name
+            end
+            if @local_prices[line[0]].nil? then
+              puts "0,0,#{output_name}"
+            else
+              puts "#{@local_prices[name]['plat']},#{@local_prices[name]['gold']},#{output_name}"
+            end
+          end
+        end
+        # Need to rewind the results to the beginning
+        lines.data_seek 0
+      }
     end
   end
 end
