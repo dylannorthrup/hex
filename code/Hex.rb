@@ -518,7 +518,7 @@ EOCARD
       }
     end
 
-    def print_local_info_for_cardlist(lines=nil, prices=nil)
+    def print_local_info_for_cardlist(lines=nil, prices=nil, format=nil)
       return if lines.nil?
       return if prices.nil?
       lines = lines.sort do |a, b|
@@ -534,8 +534,13 @@ EOCARD
           gavg = prices[name]['gold']
           gcount = prices[name]['gcount']
         end
-        puts "#{name} ... #{pavg} PLATINUM [#{pcount} auctions] ... #{gavg} GOLD [#{gcount} auctions]"
+        if format.nil?; then
+          puts "#{name} ... #{pavg} PLATINUM [#{pcount} auctions] ... #{gavg} GOLD [#{gcount} auctions]"
+        elsif format == "CSV"; then
+          puts "#{pavg},#{gavg},#{name}"
+        end
       end
     end
+
   end
 end
