@@ -15,10 +15,13 @@ module Hex
     # Mapping of sets to set names/numbers
     @@uuid_to_set = {
       'f8e55e3b-11e5-4d2d-b4f5-fc72c70dabb5' => 'DELETE',
+      'd552850f-2d3c-479c-b120-c9814a0b042a' => 'DELETE',
       '0382f729-7710-432b-b761-13677982dcd2' => '001',
       'b05e69d2-299a-4eed-ac31-3f1b4fa36470' => '002',
       'd8ee3b8d-d4b7-4997-bbb3-f00658dbf303' => 'PVE001',
       'fce480eb-15f9-4096-8d12-6beee9118652' => '003',
+      'dacf5a9d-4240-4634-8043-2531365edd83' => 'PVE001AI',
+      '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'PVE002',
     }
 
     # Something to translate gem names into HTML colors
