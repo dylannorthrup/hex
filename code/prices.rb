@@ -50,7 +50,7 @@ require 'moving_average'
 @card_field_descriptors = {
   'CSV'   => {
     'brief'     => 'puts "Name,Avg_price,Currency,# of auctions,Avg_price,Currency,# of auctions"',
-    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,Excluded Prices,UUID"'
+    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",UUID"'
   },
   'PDCSV'   => {
     'brief'     => '',
@@ -58,11 +58,11 @@ require 'moving_average'
   },
   'PSV'   => {
     'brief'     => 'puts "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
-    'detailed'  => 'puts "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices"'
+    'detailed'  => 'puts "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
   },
   'UUIDPSV'   => {
     'brief'     => 'puts "Name ... UUID ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
-    'detailed'  => 'puts "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|Excluded Prices"'
+    'detailed'  => 'puts "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
   },
   'HTML'  => {
     'brief'     => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
