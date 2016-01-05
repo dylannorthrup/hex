@@ -289,6 +289,15 @@ def get_average_price(prices=nil?)
   return avg_price, size
 end
 
+def get_median_price(prices=nil?)
+  return 0 if prices.nil?
+  return 0 if prices.length < 1
+  sorted = prices.sort
+  len = sorted.length
+  binding.pry
+  return (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+end
+
 # Method to get all details and distribution info about a set.
 def get_full_price_details(prices=nil)
   # If we didn't get a proper array, set average to 0 and sample size to 0
@@ -300,8 +309,8 @@ def get_full_price_details(prices=nil)
   end
   # if we have a small number of sales, just average and return the result
   if prices.size < 9
-    avg_price = array_int_avg(local_prices)
-    return avg_price, local_prices.size, avg_price
+    median_price = get_median_price(local_prices)
+    return median_price, local_prices.size, median_price
   end
   true_average = array_int_avg(local_prices)    # Get an initial average for the entire, pre-filtered array
   local_prices.sort!                            # Sort array numerically
