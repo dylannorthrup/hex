@@ -4,7 +4,7 @@
 <h1>HexAPI Parser Page</h1>
 If you're here, you're probably interested in my Hex API Parser.  I've got binaries for Windows (<a href="downloads/hexapi_windows_386.exe">32-Bit</a> and <a href="downloads/hexapi_windows_amd64.exe">64-bit</a>) and OS X (<a href="downloads/hexapi_darwin_386">here</a>). I've also got the source code on my github page as a part of my "fooling around with Go" repository.  The source code is <a href="https://github.com/dylannorthrup/go-stuff/blob/master/hexapi/hexapi.go">here</a>.
 <p>
-I do my development on a Mac, so the OS X version should run as expected.  For the Windows version, there may be some unexpected bits, but my cursory checking showed it worked ok.  If that's not the case, let me know what specific problems you're encountering and I'll do my best to look into it.
+I do my development on a Mac, so the OS X version should run as expected.  For the Windows version, I do cursory checks to make sure it runs, but nothing extensive.  If that's not the case, let me know what specific problems you're encountering and I'll do my best to look into it.
 <p>
 You'll need to set up your Hex Client to forward on API requests as detailed <a href="http://forums.cryptozoic.com/showthread.php?t=40975">in this thread</a>.  What you'll specifically need to put into the api.ini file is the following:
 <pre>
@@ -30,12 +30,31 @@ Once that's done, you'll run the hexapi program you downloaded from the links ab
 <li> <code>csv_filename</code> - If you'd like a name other than 'collection.csv' for the CSV name.  If <code>export_csv</code> is not set to true, this has no effect
 </ul>
 <li> Program checks to see if it's the most recent version and, if not, will provide a warning indicating a new version is available.
-<li> Program will identify and delete duplicate messages.
-<li> Program will update price data every two hours to avoid stale price data.
+<li> Program identifies and deletes duplicate messages.
+<li> Program updates price data every two hours to avoid stale price data.
 </ul>
 
 If you're up for trying it out and giving feedback, feel free!  And, if you're wondering why, when you're playing against me in a draft, that the signals are all <a href="https://en.wiktionary.org/wiki/verkakte">verkakte</a>, this is why :-)
 <p>
+<h3>Change Log</h3>
+This is a summarized list of changes between the different versions. For all changes, go to <a href="https://github.com/dylannorthrup/go-stuff/commits/master/hexapi/hexapi.go">the github logs</a>.
+<pre>
+0.7
+Bumped version to account for 0.6 unintentionally getting out earlier than intended.
+Added more output to Draft Pack contents to give count, plat and gold value for those (and not just the "best" in each category)
+Fixed bug with calculating session value for draft sessions
+0.6
+Skipped
+0.5
+Updated to account for 17 card packs (up from 15 card packs). 
+Added additional logging for debugging purposes.
+Added option to print collection value.
+Added better handling of issues where card is not listed in price download (such as 'Night of Bells' was after initially being released)
+0.4
+This version and earlier do not have Change Log data separate from the github repository
+</pre>
+
+</pre>
 <i> Legal stuff: This is all my code.  Feel free to use the programs, but do not take my code without talking to me. I'm nice and we may be able to make a deal.  If you use the programs provided or compile the code on your own and run the program, you do so at your own risk.  I do not believe any problems will happen, but want to be explicit that no warranty, express or implied, is provided and any use is at your own risk.  Also, I write and maintain this program in my free time (of which there is precious little).  If something's broken, I'll try to fix it when I can.  Encouragement (in the form of gold, plat or sending <a href="/hex/have-want.txt">cards missing from my collection</a> to my IGN of 'Dylan') will help motivate me to work on features and fixes, but this is a side project.  Please set your expectations appropriately regarding action on any feedback that is provided.</i>
 </body>
 </html>
