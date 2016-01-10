@@ -294,8 +294,8 @@ def get_median_price(prices=nil?)
   return 0 if prices.length < 1
   sorted = prices.sort
   len = sorted.length
-  binding.pry
-  return (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+  median = (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+  return median.to_i
 end
 
 # Method to get all details and distribution info about a set.
