@@ -20,6 +20,7 @@ require 'moving_average'
   'PSV'   => 'text/plain',    # Pipe Separated Variables
   'UUIDPSV'   => 'text/plain',    # Pipe Separated Variables with UUID
   'HTML'  => 'text/html',     # HTML Tables
+  'JSON'  => 'application/json',    # JSON
 }
 @output_detail = 'detailed'
 @name_filter = '.*'
@@ -41,6 +42,10 @@ require 'moving_average'
   'UUIDPSV'   => {
     'brief'     => '',
     'detailed'  => '',
+  },
+  'JSON'   => {
+    'brief'     => 'puts "{\"bogus\": 1}\n]}"',
+    'detailed'  => 'puts "{\"bogus\": 1}\n]}"',
   },
   'HTML'   => {
     'brief'     => 'puts "</table></div>"',
@@ -64,6 +69,10 @@ require 'moving_average'
     'brief'     => 'puts "Name ... UUID ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
     'detailed'  => 'puts "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
   },
+  'JSON'   => {
+    'brief'     => 'puts "{\n\"cards\": [\n"',
+    'detailed'  => 'puts "{\n\"cards\": [\n"',
+  },
   'HTML'  => {
     'brief'     => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
     'detailed'  => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
@@ -85,6 +94,10 @@ require 'moving_average'
   'UUIDPSV'   => {
     'brief'     => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')} ... #{uuid}"',
     'detailed'  => 'str = "#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "|\\\1")}|#{uuid}"',
+  },
+  'JSON'   => {
+    'brief'     => 'str = "{\"name\": \"#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}\", "',
+    'detailed'  => 'str = "{\n  \"name\": \"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\",\n  \"rarity\": \"\\\1")}\",\n"',
   },
   'HTML'  => {
     'brief'     => 'str = "<tr><td>#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}</td>"',
@@ -108,6 +121,20 @@ require 'moving_average'
     'brief'     => 'str << " ... #{avg} #{currency} [#{sample_size} auctions]"',
     'detailed'  => 'str << "|#{currency}|#{avg}|#{sample_size}|#{true_avg}|#{min}|#{lq}|#{med}|#{uq}|#{max}|#{excl}"',
   },
+  'JSON'   => {
+    'brief'     => 'str << "{\"#{currency}\":\n\t{\"avg\": #{avg},\n\t\"sample_size\": #{sample_size}\n},"',
+    'detailed'  => 'str << "  \"#{currency}\": {
+    \"avg\": #{avg},
+    \"sample_size\": #{sample_size},
+    \"true_avg\": #{true_avg},
+    \"min\": #{min},
+    \"lq\": #{lq},
+    \"med\": #{med},
+    \"uq\": #{uq},
+    \"max\": #{max},
+    \"excl\": \"#{sample_size}\"
+  },\n"',
+  },
   'HTML'  => {
     'brief'     => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
     'detailed'  => 'str << "<td>#{currency}</td><td>#{avg}</td><td>#{sample_size}</td><td>#{true_avg}</td><td>#{min}</td><td>#{lq}</td><td>#{med}</td><td>#{uq}</td><td>#{max}</td><td>#{excl}</td>"',
@@ -129,6 +156,10 @@ require 'moving_average'
   'UUIDPSV'   => {
     'brief'     => '',
     'detailed'  => '',
+  },
+  'JSON'   => {
+    'brief'     => 'str << "\n  \"uuid\": \"#{uuid}\"\n},\n"',
+    'detailed'  => 'str << "\n  \"uuid\": \"#{uuid}\"\n},\n"',
   },
   'HTML'  => {
     'brief'     => '',
@@ -310,7 +341,7 @@ def get_full_price_details(prices=nil)
   # if we have a small number of sales, just average and return the result
   if prices.size < 9
     median_price = get_median_price(local_prices)
-    return median_price, local_prices.size, median_price
+    return median_price, local_prices.size, median_price, 0, 0, 0, 0, 0, 0
   end
   true_average = array_int_avg(local_prices)    # Get an initial average for the entire, pre-filtered array
   local_prices.sort!                            # Sort array numerically
@@ -365,6 +396,7 @@ def get_full_price_details(prices=nil)
   end
   bare_prices = Array.new
   prices.each do |p|
+    next if p.nil?
     bare_prices << p[0]
   end
   avg_price = bare_prices.exponential_moving_average.to_i
