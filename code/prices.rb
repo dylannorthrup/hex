@@ -97,7 +97,7 @@ require 'moving_average'
   },
   'JSON'   => {
     'brief'     => 'str = "{\"name\": \"#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}\", "',
-    'detailed'  => 'str = "{\n  \"name\": \"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\",\n  \"rarity\": \"\\\1")}\",\n"',
+    'detailed'  => 'str = "{ \"name\": \"#{name.gsub(/^\'/, \'\').gsub(/\' \[(.*)\]$/, "\",\n  \"rarity\": \"\\\1")}\",\n"',
   },
   'HTML'  => {
     'brief'     => 'str = "<tr><td>#{name.gsub(/^\'/, \'\').gsub(/\' \[.*\]$/, \'\')}</td>"',
@@ -158,8 +158,8 @@ require 'moving_average'
     'detailed'  => '',
   },
   'JSON'   => {
-    'brief'     => 'str << "\n  \"uuid\": \"#{uuid}\"\n},\n"',
-    'detailed'  => 'str << "\n  \"uuid\": \"#{uuid}\"\n},\n"',
+    'brief'     => 'str << "  \"uuid\": \"#{uuid}\"\n},\n"',
+    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\"\n},\n"',
   },
   'HTML'  => {
     'brief'     => '',
