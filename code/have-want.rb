@@ -60,7 +60,13 @@ count_files.each do |count_file|
     count = $2.to_i
     rarity = $3
     shard = $4
-    key = name
+    # Shortcut here if we're simply not interested in the cards
+    next unless rarity =~ /Legendary|Rare|Epic/
+    if rarity == /Epic/ then
+      key = name + " AA"
+    else
+      key = name
+    end
     key.gsub!(/,/, '')
     price = "NO DATA"
     gprice = "NO DATA"
@@ -68,7 +74,13 @@ count_files.each do |count_file|
       price = prices[key]['plat']
       gprice  = prices[key]['gold']
     end
-    next unless rarity =~ /Legendary|Rare/
+    # Skip cards we don't care about
+    if count > 4
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{count - 4} for trade - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
+      surplus << value
+    end
+    # And skip Epic (aka 'AA' cards for wants)
+    next if rarity =~ /Epic/
     if count < 4
       pi = price.to_i; gi = gprice.to_i
       # Put indicator here which is the better value based on exchange rate: gold or plat
@@ -85,10 +97,6 @@ count_files.each do |count_file|
         value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{4 - count} - P:> #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
       end
       needed << value
-    end
-    if count > 4
-      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{count - 4} for trade"
-      surplus << value
     end
   end
 end
