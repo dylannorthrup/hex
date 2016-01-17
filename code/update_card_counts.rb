@@ -20,7 +20,7 @@ File.readlines('collection.out').map { |line|
 # step 2: get card data from database
 sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve' }
 #sets = { 'PVE0%' => 'pve' }
-rarities = [ 'Legendary', 'Rare', 'Uncommon', 'Common' ]
+rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
 # Step 3: merge this information and print it out
 sets.each_pair { |set, name|
