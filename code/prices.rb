@@ -132,7 +132,7 @@ require 'moving_average'
     \"med\": #{med},
     \"uq\": #{uq},
     \"max\": #{max},
-    \"excl\": \"#{sample_size}\"
+    \"excl\": \"#{excl}\"
   },\n"',
   },
   'HTML'  => {
