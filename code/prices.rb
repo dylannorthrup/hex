@@ -183,7 +183,7 @@ end
 def read_names_from_db(sqlcon=nil, filter='')
   return if sqlcon.nil?
   names = Array.new
-  query = "SELECT c.name, c.rarity FROM cards c where c.rarity not regexp 'Epic' #{filter}"
+  query = "SELECT c.name, c.rarity FROM cards c WHERE c.rarity NOT LIKE 'Epic' #{filter}"
   results = sqlcon.query(query)
   results.each do |row|
     name = "'#{row[0]}' [#{row[1]}]"
@@ -222,11 +222,11 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity not regexp 'Epic' and ah.rarity not like '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.rarity NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c where c.parsed_name = ah.name and c.rarity regexp 'Epic' and ah.rarity like '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND ah.rarity LIKE '5' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   return lines
