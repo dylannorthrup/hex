@@ -39,6 +39,14 @@ If you're up for trying it out and giving feedback, feel free!  And, if you're w
 <h3>Change Log</h3>
 This is a summarized list of changes between the different versions. For all changes, go to <a href="https://github.com/dylannorthrup/go-stuff/commits/master/hexapi/hexapi.go">the github logs</a>.
 <pre>
+0.8
+Modified when duplicate messages are ignored.
+Adding rarity to DraftPack information and changing formatting so prices will line up
+Sorting DraftPack information from highest rarity to lowest (to mirror sorting change in game)
+Added in gold value tracking for draft value
+Added some additional debugging options (ability to dump card collection by doing a POST to http://localhost:5000/dump)
+Fixed a bug with AA cards showing up improperly when no recent auctions were reported
+Filtering out bogus UUIDs in collectionEvent handling 
 0.7
 Bumped version to account for 0.6 unintentionally getting out earlier than intended.
 Added more output to Draft Pack contents to give count, plat and gold value for those (and not just the "best" in each category)
