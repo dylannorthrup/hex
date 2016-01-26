@@ -322,9 +322,14 @@ EOCARD
         end
         string = "/hex/images/#{location}_Equipment/#{@name}.png"
       end
-      string.gsub!(" ", '%20')
       string.gsub!(":", '')
-      return string
+      local_path = "/home/docxstudios/doc-x.net" + string
+      string.gsub!(" ", '%20')
+      if File.file?(local_path) then
+        return string
+      else
+        return "/hex/images/Default-Sleeve.jpg\" alt=\"Image File Unavailable"
+      end
     end
 
     def to_csv
