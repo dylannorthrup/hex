@@ -23,7 +23,25 @@ module Hex
       'dacf5a9d-4240-4634-8043-2531365edd83' => 'PVE001AI',
       '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'PVE002',
       'c363c22e-1c03-43c0-a5d3-e3e8759120e7' => 'COE001',
+      '794e37a9-442f-4c02-a26a-8120a87e8a6e' => 'CLASS',
+      'cd112780-7766-44e8-bf3b-4cd269d47e3e' => 'CLASS',
+      'ccde3b6a-3425-4403-b366-dba0e2358fae' => 'SCENARIO',
     }
+
+    @@sets_to_names = {
+      '001' => 'Shards of Fate',
+      '002' => 'Shattered Destiny',
+      '003' => 'Armies of Myth',
+      'PVE001'  => 'Arena',
+      'PVE001AI'  => 'Arena AI Only',
+      'COE001'    => 'Chronicles of Entrath, Chapter 1',
+      'CLASS'       => 'Class Card',
+      'HOLIDAY'   => 'Holiday Reward',
+      'PVE_AI_CARD' => 'PVE AI Card',
+      'PVE_Campaign_Card' => 'Chronicles of Entrath, Chapter 1',
+      'SCENARIO'          => 'Scenario Based Effect',
+    }
+      
 
     # Something to translate gem names into HTML colors
     @@gem_to_color = {
@@ -225,7 +243,14 @@ module Hex
       if restriction !~ /^\s*$/
         type_info += "#{@restriction}<br>\n"
       end
-      type_info += "<p>#{@rarity}</td>\n</tr>"
+      source = ''
+      if @@sets_to_names[@set_id].nil? then
+        source = ''
+      else
+        source = @@sets_to_names[@set_id]
+      end
+        
+      type_info += "<p>#{@rarity}<p>#{source}</td>\n</tr>"
 
       # If this card has equipment, let's find out what it is and print out its info
       equipment_info = ""
