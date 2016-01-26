@@ -22,6 +22,7 @@ module Hex
       'fce480eb-15f9-4096-8d12-6beee9118652' => '003',
       'dacf5a9d-4240-4634-8043-2531365edd83' => 'PVE001AI',
       '3cc27cc9-b3af-44c7-a5de-4126f78d96ed' => 'PVE002',
+      'c363c22e-1c03-43c0-a5d3-e3e8759120e7' => 'COE001',
     }
 
     # Something to translate gem names into HTML colors
