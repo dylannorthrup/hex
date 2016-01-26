@@ -120,6 +120,7 @@ module Hex
     # Make the card load up from a file
     def load_card_from_json(path=nil)
       return if path.nil?
+#      puts "Loading #{path} from json"
       @card_json        = JSON.parse(IO.read(path))
       # Test if this is a Champion
       if @card_json['_v'][0]['ChampionTemplate'].nil? then
@@ -141,7 +142,11 @@ module Hex
       end
       @name             = get_json_value(@card_json, 'm_Name')
       @card_number      = get_json_value(@card_json, 'm_CardNumber')
-      @set_id           = setuuid_to_setname(@card_json['m_SetId']['m_Guid'])
+      if @card_json['m_SetId'].nil? then
+        @set_id           = 'UNSET'
+      else
+        @set_id           = setuuid_to_setname(@card_json['m_SetId']['m_Guid'])
+      end
       @uuid             = chomp_string(@card_json['m_Id']['m_Guid'])
       @faction          = get_json_value(@card_json, 'm_Faction')
       @socket_count     = get_json_value(@card_json, 'm_SocketCount')
