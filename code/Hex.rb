@@ -184,6 +184,10 @@ module Hex
       string = "#{@name} [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
     end
 
+    def self.dump_s_header
+      string = '<pre>'
+    end
+
     def self.dump_html_card_table_header
       string = ''
     end
