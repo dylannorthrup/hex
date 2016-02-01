@@ -18,7 +18,7 @@ File.readlines('collection.out').map { |line|
 }
 
 # step 2: get card data from database
-sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve' }
+sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve', 'COE001' => 'coe1' }
 #sets = { 'PVE0%' => 'pve' }
 rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
