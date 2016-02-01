@@ -45,7 +45,7 @@ avg_exch = (sum / rates.size).round
 puts "INFO: Using #{avg_exch} gold to 1 plat as conversion rate based on Booster Pack prices"
 puts ""
 
-count_files = [ '/home/docxstudios/web/hex/aom_counts.txt', '/home/docxstudios/web/hex/pve_counts.txt', '/home/docxstudios/web/hex/sd_counts.txt', '/home/docxstudios/web/hex/sof_counts.txt' ]
+count_files = Dir.glob("/home/docxstudios/web/hex/*_counts.txt")
 
 needed = Array.new
 surplus = Array.new
