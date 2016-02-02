@@ -43,7 +43,7 @@ end
 
 load_card_from_json(ARGV[0])
 exit unless @type =~ /Equipment/
-puts "INSERT INTO cards values ('ArenaEquipment', '0', '#{escape_string(@name)}', '#{escape_string(@rarity)}', 'Equipment', 'Equipment', '#{escape_string(@equipment_type)}', '', 0, 0, 0, 0, '#{escape_string(@text)}', '', '', '', 0, '#{escape_string(@uuid)}', '', '', '', '', 0, 0);"
+puts "INSERT INTO cards values ('CampaignEquipment', '0', '#{escape_string(@name)}', '#{escape_string(@rarity)}', 'Equipment', 'Equipment', '#{escape_string(@equipment_type)}', '', 0, 0, 0, 0, '#{escape_string(@text)}', '', '', '', 0, '#{escape_string(@uuid)}', '', '', '', '', 0, 0);"
 
 
 
