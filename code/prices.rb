@@ -222,11 +222,11 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.rarity NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND ah.rarity LIKE '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   return lines
