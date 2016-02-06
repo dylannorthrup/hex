@@ -314,7 +314,7 @@ EOCARD
     def get_image_path
       # Use this as the default
       string = "/hex/images/#{@set_id}/#{@name}.png"
-      # But if it's an equipment, mix it up
+      # If it's an equipment, mix it up
       if @type == "Equipment" then
         location = @set_id
         if location =~ /^00[123]$/ || location =~ /^PVE00[123]$/ || location =~ /^Unspecified$/ then
@@ -323,12 +323,22 @@ EOCARD
         string = "/hex/images/#{location}_Equipment/#{@name}.png"
       end
       string.gsub!(":", '')
+      # If we have 'AA' cards, see if we have that. If so, use it.
+      # If not, fall back to the normal art (and we check later to see if we have that)
+      if @rarity == 'Epic' then
+        aastring = "/hex/images/#{@set_id}/#{@name} AA.png"
+        local_path = "/home/docxstudios/doc-x.net" + aastring
+        if File.file?(local_path) then
+          string = aastring
+        end
+      else
+      end
       local_path = "/home/docxstudios/doc-x.net" + string
       string.gsub!(" ", '%20')
       if File.file?(local_path) then
         return string
       else
-        return "/hex/images/Default-Sleeve.jpg\" alt=\"Image File Unavailable"
+        return "/hex/images/Default-Sleeve.jpg\" alt=\"Image File Unavailable - #{string}"
       end
     end
 
@@ -467,7 +477,7 @@ EOCARD
 
     # Go into all set directories and load their cards
     def load_collection_from_search(sql_con = nil, search_query = nil)
-      query = "SELECT * FROM cards where #{search_query}"
+      query = "SELECT * FROM cards where set_id NOT LIKE 'SCENARIO' AND #{search_query}"
       results = sql_con.query(query)
       results.each do |row|
         new_card = Card.new(row)
@@ -522,7 +532,7 @@ EOCARD
       return if filter.nil?
       retlist = Array.new
       con = get_db_con
-      query = "SELECT name, rarity, set_id, color, type FROM cards WHERE #{filter}"
+      query = "SELECT name, rarity, set_id, color, type FROM cards WHERE set_id NOT LIKE 'SCENARIO' AND #{filter}"
       lines = con.query(query)
       lines.each do |line|
         card = { 'name' => line[0], 'rarity' => line[1], 'set_id' => line[2], 'color' => line[3], 'type' => line[4] }
