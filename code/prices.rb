@@ -260,7 +260,7 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, get all the non-AA cards and equipment that don't have any auction information
-  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5') AND rarity NOT LIKE 'Non-Collectible' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   # Finally, get all of the AA (Epic) cards that don't have any auction info
