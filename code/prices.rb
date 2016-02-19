@@ -201,6 +201,36 @@ def read_db(sqlcon=nil, filter='')
   return read_db_with_uuids(sqlcon, filter)
 end
 
+def add_no_ah_data_uuid_lines(results)
+  return if results.nil?
+#  binding.pry
+  return_lines = Array.new
+  ah_to_card_rarity = {
+    "Equipment" => 0,
+    "Unknown"   => 1,
+    "Common"    => 2,
+    "Uncommon"  => 3,
+    "Rare"      => 4,
+    "Epic"      => 5,
+    "Legendary" => 6,
+  }
+  results.each do |row|
+    name = row[0]
+    rarity = row[1]
+    if rarity == 'Epic' then
+      name += " AA"
+    end
+    uuid = row[2]
+    sale_date = Time.now.strftime("%Y-%m-%d")
+    gline = "'#{name}' [#{rarity}],GOLD,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid}"
+    pline = "'#{name}' [#{rarity}],PLATINUM,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid}"
+    #puts line
+    return_lines << gline
+    return_lines << pline
+  end
+  return return_lines
+end
+
 def add_uuid_lines(results)
   return_lines = Array.new
   results.each do |row|
@@ -229,6 +259,14 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
+  # Now, get all the non-AA cards and equipment that don't have any auction information
+  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5') AND rarity NOT LIKE 'Non-Collectible' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  results = sqlcon.query(query)
+  lines = lines + add_no_ah_data_uuid_lines(results)
+  # Finally, get all of the AA (Epic) cards that don't have any auction info
+  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  results = sqlcon.query(query)
+  lines = lines + add_no_ah_data_uuid_lines(results)
   return lines
 end
 
