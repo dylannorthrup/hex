@@ -203,7 +203,6 @@ end
 
 def add_no_ah_data_uuid_lines(results)
   return if results.nil?
-#  binding.pry
   return_lines = Array.new
   ah_to_card_rarity = {
     "Equipment" => 0,
@@ -251,20 +250,23 @@ end
 def read_db_with_uuids(sqlcon=nil, filter='')
   return if sqlcon.nil?
   lines = Array.new
+  # Figure out the date @cutoff_time_in_hours ago
+  cutoff = Time.now - (@cutoff_time_in_hours * 60 * 60)
+  sql_date = cutoff.strftime("%Y-%m-%d")
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, get all the non-AA cards and equipment that don't have any auction information
-  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5' AND sale_date > '#{sql_date}') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   # Finally, get all of the AA (Epic) cards that don't have any auction info
-  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5' AND sale_date > '#{sql_date}') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   return lines
@@ -307,7 +309,6 @@ def parse_lines(lines=nil, html=false)
       price = $3
       date = $4
       uuid = $5
-# binding.pry
       (year, mon, day) = date.split(/[-\s:]/)
       old = Time.new(year, mon, day)
       age = ((now - old)/3600).to_i
@@ -465,7 +466,6 @@ def print_card_output(array=nil)
       next if name.match(/#{@exclude_filter}/)
     end
     str = ''
-# binding.pry
     uuid = array[name]['uuid']
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
@@ -486,7 +486,6 @@ def print_card_output(array=nil)
     eval @card_closing_string[@output_type][@output_detail]
     puts str
   end
-# binding.pry
   # Skip unless we've done anything with the draft booster pack prices
   unless draft_pack_value['PLATINUM'] == 0 then
     uuid = "draftpak-0000-0000-0000-000000000000"
