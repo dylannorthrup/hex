@@ -1,13 +1,15 @@
-#<IfModule mod_fastcgi.c>
-#AddHandler fastcgi-script .fcgi
-#</IfModule>
-#<IfModule mod_fcgid.c>
-#AddHandler fcgid-script .fcgi
-#</IfModule>
-# 
+<IfModule mod_fastcgi.c>
+AddHandler fastcgi-script .fcgi
+</IfModule>
+<IfModule mod_fcgid.c>
+AddHandler fcgid-script .fcgi
+</IfModule>
+ 
 Options +FollowSymLinks +ExecCGI 
  
 RewriteEngine On 
+
+RewriteRule ^uuid_to_name.rb uuid_to_name.fcgi [QSA,L]
  
 # Original fast cgi rewrites
 #RewriteCond %{REQUEST_FILENAME} !-f
