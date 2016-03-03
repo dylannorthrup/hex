@@ -312,8 +312,16 @@ EOCARD
     end
 
     def get_image_path
+      # First we get the set UUID
+      set_uuid = '00000000-0000-0000-0000-000000000000'
+      @@uuid_to_set.each do |k, v|
+        if v == @set_id then
+          set_uuid = k
+          break
+        end
+      end
       # Use this as the default
-      string = "/hex/images/#{@set_id}/#{@name}.png"
+      string = "/hex/images/#{set_uuid}/#{@uuid}.png"
       # If it's an equipment, mix it up
       if @type == "Equipment" then
         location = @set_id
@@ -322,17 +330,10 @@ EOCARD
         end
         string = "/hex/images/#{location}_Equipment/#{@name}.png"
       end
-      string.gsub!(":", '')
-      # If we have 'AA' cards, see if we have that. If so, use it.
-      # If not, fall back to the normal art (and we check later to see if we have that)
-      if @rarity == 'Epic' then
-        aastring = "/hex/images/#{@set_id}/#{@name} AA.png"
-        local_path = "/home/docxstudios/doc-x.net" + aastring
-        if File.file?(local_path) then
-          string = aastring
-        end
-      else
+      if @type == "Champion" then
+        string = "/hex/images/Champions/#{@uuid}.png"
       end
+      string.gsub!(":", '')
       local_path = "/home/docxstudios/doc-x.net" + string
       string.gsub!(" ", '%20')
       if File.file?(local_path) then
