@@ -30,6 +30,7 @@ end
 # So, we've got some parameters.  Let's construct a query based on that.
 require 'mysql'
 query = '1 = 1'
+search_string = "output_format=#{output_format}"
 params.each_pair do |k, v_ary|
 #  puts "X-Query-DEBUG: key: #{k} and value: #{v} and query so far: #{query}"
   next unless k =~ /^[\w_]+$/  # Checking to make sure keys are sanely constructed (letters and underscores)
@@ -37,6 +38,8 @@ params.each_pair do |k, v_ary|
   next if v =~ /^-Any-$/    # Skip values that say '-Any-'
   next if v =~ /^\s*$/      # Skip values that are blank
 #  puts "X-Query-DEBUG: PASSED key validation"
+  # Keep track of search terms for the "Get URL for this search" thing
+  search_string = "#{search_string}&#{k}=#{v}"
   # Quick thing here to squash threshold_n and threshold_c to 'threshold'
   if k =~ /^threshold_(c|n)/ then 
     k = 'threshold'
@@ -62,10 +65,21 @@ con = foo.get_db_con
 #search = "rarity regexp 'Legendary' OR rarity regexp 'Rare'"
 foo.load_collection_from_search(con, query)
 
+# This is for a bare-bones output style. Do this in plain-text
+if output_format == "s"
+  puts "Content-type: text/plain"
+  puts ""
+  foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
+    puts card.send("to_#{output_format}")
+  end
+  exit
+end
+
 puts "<head>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/tables.css">'
 puts "</head>"
 puts '<h1>Search Results</h1>'
+puts "<a href='/hex/search.rb?#{search_string}'>Link to this search</a><br>"
 puts '<a href="/hex/">Search Again?</a>'
 if output_format =~ /html_card/
   puts ''
@@ -89,6 +103,7 @@ else
   puts '</pre>'
 end
 
+puts "<a href='/hex/search.rb?#{search_string}'>Link to this search</a><br>"
 puts '<a href="/hex/">Search Again?</a>'
 
 #binding.pry
