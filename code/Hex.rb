@@ -26,6 +26,7 @@ module Hex
       '794e37a9-442f-4c02-a26a-8120a87e8a6e' => 'CLASS',
       'cd112780-7766-44e8-bf3b-4cd269d47e3e' => 'CLASS',
       'ccde3b6a-3425-4403-b366-dba0e2358fae' => 'SCENARIO',
+      '2d05262c-d7a0-408f-a280-36d206a29344' => '004',
     }
 
     @@sets_to_names = {
@@ -101,6 +102,16 @@ module Hex
       return 'Unlimited' if unl == "1"
       return 'Unique' if unq == "1"
       return ''
+    end
+
+    def setname_to_setuuid(name=nil)
+      return "UNSET" if name.nil?
+      @@uuid_to_set.each_pair do |k, v|
+        if v == name then
+          return k
+        end
+      end
+      return "UNSET"
     end
 
     def setuuid_to_setname(uuid=nil)
