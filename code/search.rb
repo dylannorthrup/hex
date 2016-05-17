@@ -53,7 +53,13 @@ end
 query += ";"
 
 # Print out HTTP headers
-puts "Content-type: text/html"
+if output_format == "json" then
+  puts "Content-type: application/javascript"
+elsif output_format == "s" then
+  puts "Content-type: text/plain"
+else
+  puts "Content-type: text/html"
+end
 puts "X-Search-Query: #{query}"
 puts "X-Output-Format: #{output_format}"
 puts ""
@@ -67,11 +73,21 @@ foo.load_collection_from_search(con, query)
 
 # This is for a bare-bones output style. Do this in plain-text
 if output_format == "s"
-  puts "Content-type: text/plain"
-  puts ""
   foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
     puts card.send("to_#{output_format}")
   end
+  exit
+end
+
+# This is for json output.
+if output_format == "json"
+  string = "{ \"cards\": ["
+  foo.cards.sort {|a, b| a.card_number.to_i <=> b.card_number.to_i}.each do |card|
+    string += card.send("to_#{output_format}")
+  end
+  string.chomp!(',')
+  string += "\n\t]\n}"
+  puts string
   exit
 end
 
@@ -106,4 +122,6 @@ end
 puts "<a href='/hex/search.rb?#{search_string}'>Link to this search</a><br>"
 puts '<a href="/hex/">Search Again?</a>'
 
+puts "</body>"
+puts "</html>"
 #binding.pry

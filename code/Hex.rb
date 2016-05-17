@@ -217,6 +217,29 @@ module Hex
       string = '<pre>'
     end
 
+    def to_json
+      string = "\n\t{
+\t\t\"name\": #{@name.to_json},
+\t\t\"cost\": #{@cost.to_json},
+\t\t\"threshold\": #{@threshold.to_json},
+\t\t\"uuid\": #{@uuid.to_json},
+\t\t\"type\": #{@type.to_json},
+\t\t\"subtype\": #{@sub_type.to_json},
+\t\t\"restriction\": #{@restriction.to_json},
+\t\t\"rarity\": #{@rarity.to_json},
+\t\t\"text\": #{@text.to_json},
+\t\t\"flavor\": #{@flavor.to_json},
+\t\t\"atk\": #{@atk.to_json},
+\t\t\"health\": #{@health.to_json},
+\t\t\"set_id\": #{@set_id.to_json}
+\t},"
+#      string = "{\"name\": #{@name},\n [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
+    end
+
+    def self.dump_json_header
+      string = "{\n\"cards\": [\n"
+    end
+
     def self.dump_html_card_table_header
       string = ''
     end
