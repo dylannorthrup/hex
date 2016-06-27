@@ -11,15 +11,12 @@ out_dir = "/home/docxstudios/web/hex"
 # step 1: Read in collection file
 counts = Hash.new
 File.readlines('collection.out').map { |line|
-  next unless line =~ /^(.*) : (\d+)$/
+  next unless line =~ /^(.*) : (\d+) : (\d+)$/
   counts[$1] = $2
-#  uuid = $1
-#  count = $2
 }
 
 # step 2: get card data from database
-sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve', 'COE001' => 'coe1' }
-#sets = { 'PVE0%' => 'pve' }
+sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve', 'COE001' => 'coe1', '004' => 'primaldawn' }
 rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
 # Step 3: merge this information and print it out
