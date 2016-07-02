@@ -460,6 +460,50 @@ EOCARD
       @cards
     end
 
+    # Get all possible values for ATK on Troop cards
+    def troop_atk_values()
+      a_vals = Hash.new(0)
+      @cards.each do |card|
+        next unless card.type == 'Troop'
+        a_vals[card.atk] += 1
+      end
+      return a_vals.keys.uniq.sort { |x, y| x.to_i <=> y.to_i }
+    end
+
+    # Get all possible values for Health on Troop cards
+    def troop_health_values()
+      h_vals = Hash.new(0)
+      @cards.each do |card|
+        next unless card.type == 'Troop'
+        h_vals[card.health] += 1
+      end
+      return h_vals.keys.uniq.sort { |x, y| x.to_i <=> y.to_i }
+    end
+
+    # Something to return all values of Health for cards that have the requested ATK
+    def health_for_troops_with_atk(requested_atk=nil)
+      return if requested_atk.nil?
+      h_vals = Hash.new(0)
+      @cards.each do |card|
+        next unless card.type == 'Troop'
+        next unless card.atk == requested_atk
+        h_vals[card.health] += 1
+      end
+      return h_vals.keys.uniq.sort { |x, y| x.to_i <=> y.to_i }
+    end
+
+    # And now do the same thing for cards with a specified health
+    def atk_for_troops_with_health(requested_health=nil)
+      return if requested_health.nil?
+      a_vals = Hash.new(0)
+      @cards.each do |card|
+        next unless card.type == 'Troop'
+        next unless card.health == requested_health
+        a_vals[card.atk] += 1
+      end
+      return a_vals.keys.uniq.sort { |x, y| x.to_i <=> y.to_i }
+    end
+
     # Something to get groupings based on card values inside the Collection
     def card_trait_list(attribute=nil, split_character=nil)
       return if attribute.nil?
