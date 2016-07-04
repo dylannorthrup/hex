@@ -103,7 +103,7 @@ elsif output_format =~ /html/
   puts '<div class="CSSTableGenerator" > '
   puts '<table>'
 else
-  puts '<pre>'
+  puts '<xmp>'
 end
 #puts Hex::Card.dump_html_table_header
 puts Hex::Card.send("dump_#{output_format}_header")
@@ -116,7 +116,7 @@ if output_format =~ /html_card/
 elsif output_format =~ /html/
   puts '</table>'
 else
-  puts '</pre>'
+  puts '</xmp>'
 end
 
 puts "<a href='/hex/search.rb?#{search_string}'>Link to this search</a><br>"
