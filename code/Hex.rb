@@ -378,13 +378,13 @@ EOCARD
     end
 
     def to_csv
-      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@color}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@curr_resources}|#{@max_resources}|#{@uuid}"
+      string = "#{@set_id}|#{@card_number}|#{@name}|#{@rarity}|#{@threshold.gsub(/,/, '')}|#{@type}|#{@sub_type}|#{@faction}|#{@socket_count}|#{@cost}|#{@atk}|#{@health}|#{@text}|#{@flavor}|#{@restriction}|#{@artist}|#{@enters_exhausted}|#{@equipment_string}|#{@curr_resources}|#{@max_resources}|#{@uuid}"
     end
 
     # Put this here so we can keep the table header formate in the same location as the to_csv method (immediately previous
     # to this)
     def self.dump_csv_header
-      string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|COLOR|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|CURRENT RESOURCES ADDED|MAX RESOURCES ADDED|UUID'
+      string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|THRESHOLD|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|CURRENT RESOURCES ADDED|MAX RESOURCES ADDED|UUID'
     end
 
     def to_html_table
