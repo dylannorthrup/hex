@@ -7,7 +7,7 @@ require 'mysql'
 require 'cgi'
 
 # Some useful variables
-@user_info_url = 'http://forums.cryptozoic.com/member.php?u='
+@user_info_url = 'http://board.hex.gameforge.com/index.php?user/'
 
 def get_db_con
   pw = File.open("/home/docxstudios/hex.sql.pws").read.chomp
@@ -33,9 +33,9 @@ def print_post(row=nil)
   contents.gsub!(/\\\'/, "'")
   contents.gsub!(/\\"/, '')
   puts "<p><hr><p><center><table border=1 width=80%>"
-  puts "<tr><td class='orange_poster' align=left><a href='#{@user_info_url}#{orange_id}'>#{name}</a></td></tr>"
+  puts "<tr><td class='orange_poster' align=left><a href='#{@user_info_url}#{orange_id}-#{name.gsub(/_/, '-')}'>#{name}</a></td></tr>"
   puts "<tr><th class='thread_title'>posted in thread <a class='thread_title' href='#{url}'>#{title}</a> on #{post_date} </th></tr>"
-  puts "<tr><td align=left><blockquote>#{contents}</td></tr></table></center>"
+  puts "<tr><td class='post_contents' align=left><blockquote>#{contents}</td></tr></table></center>"
 end
 
 # Get the posts we have information for. By default, limit this to 100
@@ -43,7 +43,7 @@ def get_posts(sql_con=nil, limit=20)
   return if sql_con.nil?
   # Even though we do explicit sorting later by date, we order by post_date here for when we get a subset
   # of posts (so we're getting the right subset)
-  query = "select p.title, o.name, p.url, p.contents, p.post_date, p.orange_id from orange_posts as p, orange as o where o.userid = p.orange_id order by str_to_date(p.post_date, '%Y-%m-%d, %h:%i %p') desc limit #{limit}"
+  query = "select p.title, o.name, p.url, p.contents, p.post_date, p.orange_id from orange_posts as p, orange as o where o.userid = p.orange_id order by p.post_date desc limit #{limit}"
   sql_con.query(query).to_enum
 end
 
@@ -61,10 +61,10 @@ def show_adsense()
   puts "begging{ width: 70%; }"
   puts "</style>"
   puts "<center><table border=0 width=80%>"
-  puts "<tr><td>
+  puts "<tr><td class='post_contents'>
 My In Game Name is 'Dylan'.  If you like this page, the service it provides and are so inclined, feel free to 
 take a look at my <a href='/hex/have-want.txt'>want list</a> and throw me a card or two.  If you don't have 
-any of those, throw some Gold my way (or Plat, if you have any extra).  Thanks and now, on to the reason you're 
+any of those, throw some Gold my way (or Plat, if you have any extra).  If you want posts from the old Cryptozoic forums, they're archived <a href='/hex/old_orange_posts.html'>here</a> for posterity.  Thanks and now, on to the reason you're 
 here . . . </td></tr></table></center>"
   puts "<p><hr></p>"
 end
@@ -112,8 +112,9 @@ puts "Content-type: text/html;  charset=utf-8"
 puts ""
 puts "<html><head><title>Orange Tracker</title>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/orange_posts.css">'
+puts '<link rel="stylesheet" type="text/css" href="/hex/gf-main.css">'
 puts "</head><body>"
-puts "<h1>Orange Tracker</h1>"
+puts "<h1 class='orange_header'>Orange Tracker (now with 100% more GameForge)</h1>"
 show_adsense
 sql_con = get_db_con
 if params['all'][0] =~ /true/
