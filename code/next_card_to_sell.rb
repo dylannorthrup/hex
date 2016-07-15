@@ -17,6 +17,7 @@ card_info = Hash.new
 puts "Getting prices [#{Time.now}]"
 File.open(price_file).each_line do |line|
   bits = line.split(/ \.\.\. /)
+  next if bits[0] =~ / AA$/
   uuid = bits[1]
   
   card_info[uuid] = Hash.new
