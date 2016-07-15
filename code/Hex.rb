@@ -150,24 +150,39 @@ module Hex
     def load_card_from_json(path=nil)
       return if path.nil?
 #      puts "Loading #{path} from json"
-      @card_json        = JSON.parse(IO.read(path))
-      # Test if this is a Champion
-      if @card_json['_v'][0]['ChampionTemplate'].nil? then
-        # Not a Champion
-        @type           = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
-        @sub_type       = get_json_value(@card_json, 'm_CardSubtype')
-        @health         = get_json_value(@card_json, 'm_BaseHealthValue') 
-        @rarity         = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
-        @color          = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
-      else
-        # A Champion
-        @type           = "Champion"
-        @sub_type       = get_json_value(@card_json, 'm_SubType')
-        @health         = get_json_value(@card_json, 'm_BaseHealth')
-        @rarity         = 'Champion'
+      begin
+        @card_json        = JSON.parse(IO.read(path))
+      rescue JSON::ParserError, Encoding::InvalidByteSequenceError => e
+        puts "Had problem parsing #{path}: #{e}"
+        return
+      end
+      # Test if this is a Equipment. If this is nil, it's not an Equipment
+      unless @card_json['m_EquipmentType'].nil? then
+        @type           = 'Equipment'
+        @sub_type       = get_json_value(@card_json, 'm_EquipmentType')
+        @rarity         = get_json_value(@card_json, 'm_Rarity').gsub(/Land/, 'Non-Collectible')
+        @health         = ''
         @color          = 'Colorless'
-        @equipment        = get_champion_abilities(@card_json)
-        @equipment_string = equipment_string_from_array(@equipment)
+      # Otherwise it's not an equipment. Check for card vs champion
+      else 
+        # Test if this is a Champion
+        if @card_json['_v'][0]['ChampionTemplate'].nil? then
+          # Not a Champion
+          @type           = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
+          @sub_type       = get_json_value(@card_json, 'm_CardSubtype')
+          @health         = get_json_value(@card_json, 'm_BaseHealthValue') 
+          @rarity         = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
+          @color          = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
+        else
+          # A Champion
+          @type           = "Champion"
+          @sub_type       = get_json_value(@card_json, 'm_SubType')
+          @health         = get_json_value(@card_json, 'm_BaseHealth')
+          @rarity         = 'Champion'
+          @color          = 'Colorless'
+          @equipment        = get_champion_abilities(@card_json)
+          @equipment_string = equipment_string_from_array(@equipment)
+        end
       end
       @name             = get_json_value(@card_json, 'm_Name')
       @card_number      = get_json_value(@card_json, 'm_CardNumber')
@@ -181,11 +196,19 @@ module Hex
       @socket_count     = get_json_value(@card_json, 'm_SocketCount')
       @htmlcolor        = gem_to_htmlcolor(@color)
       @cost             = get_json_value(@card_json, 'm_ResourceCost')
+      # Update for variable cost cards
       if get_json_value(@card_json, 'm_VariableCost') =~ /1/
         @cost = "#{@cost}X"
       end
+      if get_json_value(@card_json, 'm_VariableCostDouble') =~ /1/
+        @cost = "#{@cost}XX"
+      end
       @atk              = get_json_value(@card_json, 'm_BaseAttackValue')
-      @text             = get_json_value(@card_json, 'm_GameText')
+      if @type == 'Equipment'
+        @text             = get_json_value(@card_json, 'm_Description')
+      else
+        @text             = get_json_value(@card_json, 'm_GameText')
+      end
       @flavor           = get_json_value(@card_json, 'm_FlavorText')
       @restriction      = determine_card_restrictions(get_json_value(@card_json, 'm_Unlimited'), get_json_value(@card_json, 'm_Unique'))
       @artist           = get_json_value(@card_json, 'm_ArtistName')
@@ -537,7 +560,12 @@ EOCARD
     def load_set(set_name = nil, sql_con = nil)
       return if set_name.nil?
       if sql_con.nil?   # If we don't have a SQL connection, load from JSON files
-        path = File.join(@@base_dir, @@set_dir, set_name, @@card_def_dir)
+        # Check to see if we've got a local directory we want to load from
+        if Dir.exists?(set_name) then
+          path = File.join('.', set_name, @@card_def_dir)
+        else
+          path = File.join(@@base_dir, @@set_dir, set_name, @@card_def_dir)
+        end
         get_card_files(path).each do |card|
           new_card = Card.new(File.join(path, card))
           if new_card.set_id !~ /DELETE/
@@ -675,4 +703,5 @@ EOCARD
     end
 
   end
+  require_relative "set_uuids"
 end
