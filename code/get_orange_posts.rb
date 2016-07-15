@@ -10,9 +10,9 @@ require 'mysql'
 require 'date'  # For modifying 'Yesterday' and 'Today' into dates from post information
 require 'fileutils'
 
-@url_prefix = 'http://forums.cryptozoic.com/'
+@url_prefix = 'http://board.hex.gameforge.com/'
 @url_scheme = "http"
-@url_host = "forums.cryptozoic.com"
+@url_host = "board.hex.gameforge.com"
 
 # Take the URLs in a page and make them into absolute URLs (instead of relative ones)
 def make_urls_absolute(page)
@@ -52,22 +52,12 @@ def retrieve_post(url="")
   initial_page = Nokogiri::HTML(open(url))
   page = make_urls_absolute(initial_page)
 
-  post_id = url[/p=(\d+)/, 1]
-  title = page.css("span[class='threadtitle'] > a").text
-  contents = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div.postdetails div.postbody div.content").to_s
-  date = page.css("li#post_#{post_id}.postbitlegacy.postbitim.postcontainer.old div span span[class='date']").text
-  # Get rid of '&nbsp;' in the date
-  date.gsub!(/,[^\d]*/, ', ')
-  # Check for 'yesterday' or 'today' in the date output
-  if date =~ /(Yester|To)day/
-    today = Date.today.to_s
-    date.gsub!(/^Today/, today)
-    yesterday = (Date.today - 1).to_s
-    date.gsub!(/^Yesterday/, yesterday)
-  else
-    date.gsub!(/^(\d\d)-(\d\d)-(\d\d\d\d)/, '\3-\1-\2')
-  end
-#  binding.pry
+  post_id = url[/postID=(\d+)/, 1]
+  title = page.css("header.boxHeadline.marginTop.wbbThread.labeledHeadline > h1").text.gsub!(/[\r\n\t]/, '')
+  contents = page.css("li#post#{post_id}.marginTop article div section.messageContent div div.messageBody div div.messageText").to_s.gsub!(/[\t]/, '')
+  date = page.css("li#post#{post_id}.marginTop article div section.messageContent div header div p time")[0].values[0]
+  # Massage out the T and GMT offset.
+  date.gsub!(/T/, ' ').gsub!(/\+\d+:00$/, '')
 
   return [ title, contents, date ]
 end
@@ -75,20 +65,33 @@ end
 # Get the list of posts by a specific user
 def get_user_post_list(userid="1")
   # Construct search URL
-  search_url = "http://forums.cryptozoic.com/search.php?do=finduser&userid=#{userid}&contenttype=vBForum_Post&showposts=1"
+  #search_url = "http://forums.cryptozoic.com/search.php?do=finduser&userid=#{userid}&contenttype=vBForum_Post&showposts=1"
+  search_url = "#{@url_prefix}index.php?search/&types%5B%5D=com.woltlab.wbb.post&userID=#{userid}"
+#  puts "Trying to get '#{search_url}'"
   # Retrieve page
-  page = Nokogiri::HTML(open(search_url))
+  begin
+    page = Nokogiri::HTML(open(search_url))
+  rescue OpenURI::HTTPError => e
+    if e.message == '404 Not Found' then
+      # Likely means they've got no posts
+      return
+    else
+      raise e
+    end
+  end
 
   return_array = Array.new
   # Parse page and extract out the URLs for the individual posts
   # I should understand how this works, but I mostly figured this out empirically
-  body = page.css("div.blockbody")
+  body = page.css("ul.containerList.messageSearchResultList")
+  
   # Doing this with xpath
   #body.xpath('//h3[@class="posttitle"]/a').each do |li| 
   # Doing this with CSS
-  body.css('h3.posttitle > a').each do |li| 
-    return_array << "#{@url_prefix}#{li.values[0]}"
+  body.css('div.containerHeadline > h3 > a').each do |li| 
+    return_array << "#{li.values[0]}"
   end
+  #binding.pry
   return return_array
 end
 
@@ -108,7 +111,8 @@ def store_post(con = nil, thread_id = nil, post_id = nil, title = nil, orange_id
   post_date = Mysql.escape_string post_date
   url = Mysql.escape_string url
   contents = Mysql.escape_string contents
-  query = "insert into orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}' on duplicate key update thread_id='#{thread_id}', post_date='#{post_date}', title='#{title}', orange_id='#{orange_id}', url='#{url}', contents='#{contents}'"
+  #query = "insert into orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}' on duplicate key update thread_id='#{thread_id}', post_date='#{post_date}', title='#{title}', orange_id='#{orange_id}', url='#{url}', contents='#{contents}'"
+  query = "REPLACE INTO orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}'"
   con.query(query)
 #  puts "Stored data for post #{post_id} in thread #{thread_id}"
 end
@@ -117,12 +121,19 @@ end
 def get_user_posts(orange_id=nil, sql_con=nil)
   return if sql_con.nil?
   return if orange_id.nil?
-  get_user_post_list(orange_id).each do |url|
-#    puts "Retrieving #{url}"
-    thread_id = url[/t=(\d+)/, 1]
-    post_id = url[/p=(\d+)/, 1]
+  posts = get_user_post_list(orange_id)
+  return if posts.nil?
+  posts.each do |url|
+   # puts "Retrieving #{url}"
+    thread_id = url[/thread\/(\d+[^\/]+)/, 1]
+    post_id = url[/postID=(\d+)/, 1]
+   # puts "Thread id: #{thread_id} and Post id: #{post_id}"
     title, contents, post_date = retrieve_post(url)
+#    puts "Title: #{title} and date: #{post_date}"
+#    puts "Contents: #{contents}"
     store_post(sql_con, thread_id, post_id, title, orange_id, post_date, url, contents)
+#binding.pry
+    sleep 3
   end
 end
 
@@ -140,7 +151,8 @@ end
 FileUtils.touch('/home/docxstudios/web/hex/get_orange_start')
 sql_con = get_db_con
 userids = get_orange_ids(sql_con)
-#userids = [ 190 ]      # Testing grabbing Chark's posts
+#userids = [ 15 ]      # Testing grabbing Chark's posts
+#userids = [ 10 ]      # Testing grabbing Chark's posts
 userids.each do |uid|
 #  puts uid
   get_user_posts(uid, sql_con)
