@@ -33,9 +33,9 @@ File.readlines(exchange_file).each do |line|
   rates << $1
 end
 
-prices.keys.each do |p|
+#prices.keys.each do |p|
 #  puts "'#{p}' = #{prices[p]['plat']}p and #{prices[p]['gold']}g"
-end
+#end
 
 sum = 0
 rates.each do |rate|
@@ -61,7 +61,10 @@ count_files.each do |count_file|
     rarity = $3
     shard = $4
     # Shortcut here if we're simply not interested in the cards
-    next unless rarity =~ /Legendary|Rare|Epic/
+#    next unless rarity =~ /Legendary|Rare|Epic/
+    if name == "Spectral Oak" then
+      next
+    end
     if rarity == /Epic/ then
       key = name + " AA"
     else
