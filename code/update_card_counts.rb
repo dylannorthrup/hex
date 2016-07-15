@@ -8,9 +8,14 @@ require "pry"
 
 out_dir = "/home/docxstudios/web/hex"
 
+# step 0: Figure out if collection data is new
+if File.mtime('/home/docxstudios/web/hex/code/collection.out') < File.mtime('/home/docxstudios/web/hex/aom_counts.txt') then
+  exit
+end
+
 # step 1: Read in collection file
 counts = Hash.new
-File.readlines('collection.out').map { |line|
+File.readlines('/home/docxstudios/web/hex/code/collection.out').map { |line|
   next unless line =~ /^(.*) : (\d+) : (\d+)$/
   counts[$1] = $2
 }
