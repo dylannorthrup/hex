@@ -6,7 +6,7 @@ If you're here, you're probably interested in my Hex API Parser.  I've got binar
 <p>
 I do my development on a Mac, so the OS X version should run as expected.  For the Windows version, I do cursory checks to make sure it runs, but nothing extensive.  If that's not the case, let me know what specific problems you're encountering and I'll do my best to look into it.
 <p>
-You'll need to set up your Hex Client to forward on API requests as detailed <a href="http://forums.cryptozoic.com/showthread.php?t=40975">in this thread</a>.  What you'll specifically need to put into the api.ini file is the following:
+You'll need to set up your Hex Client to forward on API requests as detailed <a href="http://board.hex.gameforge.com/index.php?thread/40975-hex-api/">in this thread</a>.  What you'll specifically need to put into the api.ini file is the following:
 <pre>
 http://127.0.0.1:5000/log.cgi|All
 </pre>
@@ -39,6 +39,12 @@ If you're up for trying it out and giving feedback, feel free!  And, if you're w
 <h3>Change Log</h3>
 This is a summarized list of changes between the different versions. For all changes, go to <a href="https://github.com/dylannorthrup/go-stuff/commits/master/hexapi/hexapi.go">the github logs</a>.
 <pre>
+0.9
+Updated to handle new Collection API format
+Updated ot handle new Inventory API messages
+Added recognition of EA cards
+Added additional fields in collection cache and CSV files for EA cards
+Now uses external API for retrieving card names if they are not in the Auction House results
 0.8
 Modified when duplicate messages are ignored.
 Adding rarity to DraftPack information and changing formatting so prices will line up
