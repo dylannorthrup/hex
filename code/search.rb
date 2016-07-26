@@ -38,6 +38,19 @@ params.each_pair do |k, v_ary|
   next if v =~ /^-Any-$/    # Skip values that say '-Any-'
   next if v =~ /^\s*$/      # Skip values that are blank
 #  puts "X-Query-DEBUG: PASSED key validation"
+  # Quick thing here to translate set_id to the actual name for early sets
+  if k =~ /set_id/ then
+    case v
+      when "004"
+        v = "Primal Dawn"
+      when "003"
+        v = "Armies of Myth"
+      when "002"
+        v = "Shattered Destiny"
+      when "001"
+        v = "Shards of Fate"
+    end
+  end
   # Keep track of search terms for the "Get URL for this search" thing
   search_string = "#{search_string}&#{k}=#{v}"
   # Quick thing here to squash threshold_n and threshold_c to 'threshold'
