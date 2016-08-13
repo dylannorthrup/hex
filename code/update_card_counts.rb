@@ -21,7 +21,7 @@ File.readlines('/home/docxstudios/web/hex/code/collection.out').map { |line|
 }
 
 # step 2: get card data from database
-sets = { '001' => 'sof', '002' => 'sd', '003' => 'aom', 'PVE0%' => 'pve', 'COE001' => 'coe1', '004' => 'primaldawn' }
+sets = { 'Shards of Fate' => 'sof', 'Shattered Destiny' => 'sd', 'Armies of Myth' => 'aom', 'Set01_PvE%' => 'pve', 'PvE%Universal_Card_Set' => 'coe1', 'Primal Dawn' => 'primaldawn' }
 rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
 # Step 3: merge this information and print it out
