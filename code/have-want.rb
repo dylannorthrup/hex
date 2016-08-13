@@ -51,15 +51,15 @@ needed = Array.new
 surplus = Array.new
 
 count_files.each do |count_file|
+#  puts "Working on #{count_file}"
   raw_data = open(count_file).read
 
   # Go through each row.  If we don't have at least four, add the card info to the needed array
   raw_data.lines.each do |row|
-    next unless row =~ /^"([^"]+)",(\d+),"([^"]+)","([^"]+)"$/
+    next unless row =~ /^"([^"]+)",(\d+),"([^"]+)","[^"]*"$/
     name = $1
     count = $2.to_i
     rarity = $3
-    shard = $4
     # Shortcut here if we're simply not interested in the cards
 #    next unless rarity =~ /Legendary|Rare|Epic/
     if name == "Spectral Oak" then
