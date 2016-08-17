@@ -158,8 +158,8 @@ require 'moving_average'
     'detailed'  => '',
   },
   'JSON'   => {
-    'brief'     => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_chances\": \"#{draft_chances}\"\n},\n"',
-    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_chances\": \"#{draft_chances}\"\n},\n"',
+    'brief'     => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
+    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
   },
   'HTML'  => {
     'brief'     => '',
@@ -451,8 +451,35 @@ def test(name='foo', filter=nil)
   puts "Passed filter with '#{name}'"
 end
 
+def jsonify_draft_chances(encoded_string) 
+  return if encoded_string.nil?
+  ary = encoded_string.split(/:/)
+  return_value = %Q[{
+    "9th": "#{ary[0]}",
+    "10th": "#{ary[1]}",
+    "11th": "#{ary[2]}",
+    "12th": "#{ary[3]}",
+    "13th": "#{ary[4]}",
+    "14th": "#{ary[5]}",
+    "15th": "#{ary[6]}",
+    "16th": "#{ary[7]}",
+    "17th": "#{ary[8]}"
+  }]
+  return return_value
+end
+
 def get_draft_chances(sqlcon, uuid)
-  default_value = '0:0:0:0:0:0:0:0:0'
+  default_value = '{
+    "9th": "0",
+    "10th": "0",
+    "11th": "0",
+    "12th": "0",
+    "13th": "0",
+    "14th": "0",
+    "15th": "0",
+    "16th": "0",
+    "17th": "0"
+  }'
   return default_value if sqlcon.nil?
   return default_value if uuid.nil?
   query = "SELECT d.chances from cards c, draft_data d where c.uuid = d.uuid AND c.uuid = '#{uuid}'";
@@ -462,7 +489,8 @@ def get_draft_chances(sqlcon, uuid)
     return default_value
   else
     chances = row[0]
-    return chances
+    value = jsonify_draft_chances(chances)
+    return value
   end
 end
 
