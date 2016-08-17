@@ -158,8 +158,8 @@ require 'moving_average'
     'detailed'  => '',
   },
   'JSON'   => {
-    'brief'     => 'str << "  \"uuid\": \"#{uuid}\"\n},\n"',
-    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\"\n},\n"',
+    'brief'     => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_chances\": \"#{draft_chances}\"\n},\n"',
+    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_chances\": \"#{draft_chances}\"\n},\n"',
   },
   'HTML'  => {
     'brief'     => '',
@@ -451,11 +451,29 @@ def test(name='foo', filter=nil)
   puts "Passed filter with '#{name}'"
 end
 
+def get_draft_chances(sqlcon, uuid)
+  default_value = '0:0:0:0:0:0:0:0:0'
+  return default_value if sqlcon.nil?
+  return default_value if uuid.nil?
+  query = "SELECT d.chances from cards c, draft_data d where c.uuid = d.uuid AND c.uuid = '#{uuid}'";
+  results = sqlcon.query(query)
+  row = results.fetch_row
+  if row.nil? then
+    return default_value
+  else
+    chances = row[0]
+    return chances
+  end
+end
+
 # General print statement
 def print_card_output(array=nil)
   return if array.nil?
+  # Needed for getting draft data
+  bar = Hex::Collection.new
+  con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { '003' => 3 }
+  draft_format = { '003' => 1, '004' => 2 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
@@ -467,6 +485,7 @@ def print_card_output(array=nil)
     end
     str = ''
     uuid = array[name]['uuid']
+    draft_chances = get_draft_chances(con, uuid)
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
       next if currency == 'uuid'
