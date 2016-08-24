@@ -501,7 +501,7 @@ def print_card_output(array=nil)
   bar = Hex::Collection.new
   con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { '003' => 1, '004' => 2 }
+  draft_format = { 'Armies of Myth' => 1, 'Primal Dawn' => 2 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
@@ -536,6 +536,7 @@ def print_card_output(array=nil)
   # Skip unless we've done anything with the draft booster pack prices
   unless draft_pack_value['PLATINUM'] == 0 then
     uuid = "draftpak-0000-0000-0000-000000000000"
+    draft_chances = get_draft_chances(con, uuid)
     # Use the values we got for draft packs and calculate a gold to plat ratio 
     ratio = draft_pack_value['GOLD'] / draft_pack_value['PLATINUM']
     # Take that ratio, multiply it times 100 and add it to the GOLD draft_pack_value then add 100 to plat value
