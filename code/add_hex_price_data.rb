@@ -6,6 +6,14 @@ require "mysql"
 
 @card_names = Hash.new
 
+@set_names = {
+  'Set 001' => 'Shards of Fate',
+  'Set 002' => 'Shatterd Destiny',
+  'Set 003' => 'Armies of Myth',
+  'Set 004' => 'Primal Dawn',
+  'Set 005' => 'Herofall',
+}
+
 def get_db_con
   pw = File.open("/home/docxstudios/hex_tcg.pw").read.chomp
   con = Mysql.new 'mysql.doc-x.net', 'hex_tcg', pw, 'hex_tcg'
@@ -44,6 +52,10 @@ def insert_data(sql_con=nil, lines=nil)
       uuid = $6
       # Do replacements afterward so we don't mess up match variables
       name.gsub!(/"/, '')   # Get rid of any double quotes
+      if name.match(/^(Set ...) Booster Pack/)
+        new_name = "#{@set_names[$1]} Booster Pack"
+        name = new_name
+      end
       query = "INSERT INTO ah_data values ('#{Mysql.escape_string name}','#{Mysql.escape_string currency}',#{Mysql.escape_string price},'#{Mysql.escape_string date}',#{Mysql.escape_string rarity},'#{Mysql.escape_string uuid}');"
       sql_con.query(query)
     else
