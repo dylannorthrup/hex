@@ -23,7 +23,14 @@ TOTAL_PRICE=0
 for price in $(grep 'Booster' $ONAME | awk '{print $1}'); do
   let "TOTAL_PRICE=${TOTAL_PRICE}+${price}"
 done
-let "AVG_PRICE=${TOTAL_PRICE}/${TOTAL_BOOSTERS}"
+if [ $TOTAL_BOOSTERS -eq 0 ]; then
+  # Use a semi-reasonable default if we have data problems
+  AVG_PRICE="100"
+  # Also bark so we can take a look at this
+  echo "When running find_disparities.sh, you did not get any booster packs listed. Might want to look at that."
+else
+  let "AVG_PRICE=${TOTAL_PRICE}/${TOTAL_BOOSTERS}"
+fi
 
 echo "Calculated value of 1 Plat is ${AVG_PRICE} gold" > $SNAME
 echo "" >> $SNAME
