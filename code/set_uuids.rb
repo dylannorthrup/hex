@@ -36,6 +36,10 @@ module Hex
       '7257041a-5c83-452f-8b03-b03478307a00' => 'Set04_PvE_Promo_alternates',
       '2d05262c-d7a0-408f-a280-36d206a29344' => 'Primal Dawn',
       'a2379dcc-5da0-4444-92bc-cac425d5f712' => 'Set04_PvP_alternates',
+      '57df329e-d186-4717-aa99-f2c82f0aee73' => 'Set05_PvE_Promo',
+      '658386a5-ba5a-41e5-b15e-6e38cfe05ff8' => 'Set05_PvE_Promo_alternates',
+      'ecdbc188-5750-48ef-acac-05e2bcbcc46f' => 'Herofall',
+      '2527b689-fb4f-42fc-baf6-98b600394691' => 'Set05_PvP_alternates',
     }
     @@uuid_to_set.default = 'None_Defined'
   end
