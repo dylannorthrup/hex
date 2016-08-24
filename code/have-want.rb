@@ -29,7 +29,8 @@ end
 exchange_file = "/home/docxstudios/web/hex/sorted_gold_plat_comparisons.txt"
 rates = Array.new
 File.readlines(exchange_file).each do |line|
-  next unless line =~ /^(\d+) gold per plat.*Set .* Booster Pack\s*$/
+  next unless line =~ /^(\d+) gold per plat.* Booster Pack\s*$/
+  next if line =~ /^(\d+) gold per plat Computed Draft Booster Pack\s*$/
   rates << $1
 end
 
