@@ -18,6 +18,9 @@ done
 # Now, do the work
 for file in $(wc -l gdsplit* | awk '/gdsplit/ && !/ 2 gdsplit/ {print $2}'); do
   SECTION=$(head -2 $file | tail -1 | sed -e 's///')
+  if [ -z ${SECTION} ]; then
+    continue
+  fi
   echo Removing $SECTION/$SECTION files. 
   echo $SECTION/${SECTION}* | xargs rm -f
   echo Working on making section_split_file for $SECTION. 
