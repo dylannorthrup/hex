@@ -30,9 +30,11 @@ module Hex
     }
 
     @@sets_to_names = {
-      '001' => 'Shards of Fate',
-      '002' => 'Shattered Destiny',
-      '003' => 'Armies of Myth',
+      'Shards of Fate' => 'Shards of Fate',
+      'Shattered Destiny' => 'Shattered Destiny',
+      'Armies of Myth' => 'Armies of Myth',
+      'Primal Dawn' => 'Primal Dawn',
+      'Herofall' => 'Herofall',
       'PVE001'  => 'Arena',
       'PVE001AI'  => 'Arena AI Only',
       'COE001'    => 'Chronicles of Entrath, Chapter 1',
@@ -270,6 +272,7 @@ module Hex
 \t\t\"flavor\": #{@flavor.to_json},
 \t\t\"atk\": #{@atk.to_json},
 \t\t\"health\": #{@health.to_json},
+\t\t\"artist\": #{@artist.to_json},
 \t\t\"set_id\": #{@set_id.to_json}
 \t},"
 #      string = "{\"name\": #{@name},\n [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
@@ -320,10 +323,10 @@ module Hex
       if @@sets_to_names[@set_id].nil? then
         source = ''
       else
-        source = @@sets_to_names[@set_id]
+        source = "Set: #{@@sets_to_names[@set_id]}"
       end
         
-      type_info += "<p>#{@rarity}<p>#{source}</td>\n</tr>"
+      type_info += "<p>#{@rarity}<p>#{source}<br>Artist: #{@artist}</td>\n</tr>"
 
       # If this card has equipment, let's find out what it is and print out its info
       equipment_info = ""
