@@ -16,8 +16,9 @@ Once that's done, you'll run the hexapi program you downloaded from the links ab
 <h2>Features</h2>
 <ul>
 <li> Catches Collection events and caches them to a file (by default it's named 'collection.out' and will be in the same directory you run the program from)
-<li> Provides limited game state information (Cards drawn, Champion life totals, Cards on the Chain) during games
+<li> Provides limited game state information (Cards drawn, Champion life totals, Cards on the Chain) during games <i>CURRENTLY TURNED OFF IN CLIENT. WHEN THIS IS RE-ENABLED IN THE CLIENT IT SHOULD WORK AGAIN</i>
 <li> Provides guidance for drafting cards by providing the card with the highest plat value, card with the highest gold value and the card you have the least of in your collection (presuming you started up the API parser before you logged in and it was able to get the Collection info or your collection cache is up to date)
+<li>Also reports percent chances individual cards will wheel around based on data gathered from previous draft tournaments.
 <ul>
 <li> Price data is gathered from my price parsing information. Full methodology is beyond the scope of this document by is avilable at <a href="/hex/prices.html">my prices page</a>
 <li> When making recommendations, in the case of ties the highest plat price will win, followed by the least number of cards followed by the highest gold value with the final tie breaker being the card that appears latest in the pack (nearest the rare/legendary slot).
@@ -39,6 +40,13 @@ If you're up for trying it out and giving feedback, feel free!  And, if you're w
 <h3>Change Log</h3>
 This is a summarized list of changes between the different versions. For all changes, go to <a href="https://github.com/dylannorthrup/go-stuff/commits/master/hexapi/hexapi.go">the github logs</a>.
 <pre>
+0.10
+Added valuation on SaveDeck events
+Added stubb handling of SaveTalents and Ladder messages
+Print out information based on Tournament messages
+Updated to handle new Hex Accepts requests
+Added better duplicate message detection
+Added in reporting of wheel percentage changes during drafts
 0.9
 Updated to handle new Collection API format
 Updated ot handle new Inventory API messages
