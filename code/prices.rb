@@ -158,8 +158,8 @@ require 'moving_average'
     'detailed'  => '',
   },
   'JSON'   => {
-    'brief'     => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
-    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
+    'brief'     => 'str << "  \"uuid\": \"#{uuid}\",\n  \"type\": \"#{type}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
+    'detailed'  => 'str << "  \"uuid\": \"#{uuid}\",\n  \"type\": \"#{type}\",\n  \"draft_pct_chances\": #{draft_chances}\n},\n"',
   },
   'HTML'  => {
     'brief'     => '',
@@ -220,9 +220,14 @@ def add_no_ah_data_uuid_lines(results)
       name += " AA"
     end
     uuid = row[2]
+    type = row[3]
+    if name =~ / Sleeve$/ then
+      rarity = 'Unknown'
+      type   = 'Sleeve'
+    end
     sale_date = Time.now.strftime("%Y-%m-%d")
-    gline = "'#{name}' [#{rarity}],GOLD,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid}"
-    pline = "'#{name}' [#{rarity}],PLATINUM,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid}"
+    gline = "'#{name}' [#{rarity}],GOLD,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid},#{type}"
+    pline = "'#{name}' [#{rarity}],PLATINUM,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid},#{type}"
     #puts line
     return_lines << gline
     return_lines << pline
@@ -239,7 +244,11 @@ def add_uuid_lines(results)
       name += " AA"
     end
     uuid = row[6]
-    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid}"
+    db_type = row[7]
+    type = "Card"
+    type = "Equipment" if db_type == "Equipment"
+    #line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid},#{type}"
+    line = "'#{name}' [#{row[3]}],#{row[1]},#{row[2]},#{row[4]},#{row[5]},#{uuid},#{type}"
     #puts line
     return_lines << line
   end
@@ -254,19 +263,19 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   cutoff = Time.now - (@cutoff_time_in_hours * 60 * 60)
   sql_date = cutoff.strftime("%Y-%m-%d")
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, get all the non-AA cards and equipment that don't have any auction information
-  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5' AND sale_date > '#{sql_date}') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5' AND sale_date > '#{sql_date}') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   # Finally, get all of the AA (Epic) cards that don't have any auction info
-  query = "SELECT c.parsed_name, c.rarity, c.uuid FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5' AND sale_date > '#{sql_date}') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5' AND sale_date > '#{sql_date}') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   return lines
@@ -303,12 +312,14 @@ def parse_lines(lines=nil, html=false)
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*?),?([a-f0-9-]+)?$/)
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*?),?([a-f0-9-]+)?,?(\w+)?$/)
       name = $1
       currency = $2
       price = $3
       date = $4
       uuid = $5
+      type = $6
+#      puts "DEBUG: type is #{type} and uuid is #{uuid} for #{parsed_line}"
       (year, mon, day) = date.split(/[-\s:]/)
       old = Time.new(year, mon, day)
       age = ((now - old)/3600).to_i
@@ -326,6 +337,7 @@ def parse_lines(lines=nil, html=false)
         @card_names[name] = Hash.new
       end
       @card_names[name]['uuid'] = uuid
+      @card_names[name]['type'] = type
       if @card_names[name][currency].nil?
         # Explicitly make both currencies here so we won't be missing any if no auctions of that particular
         # type showed up in our window
@@ -455,30 +467,30 @@ def jsonify_draft_chances(encoded_string)
   return if encoded_string.nil?
   ary = encoded_string.split(/:/)
   return_value = %Q[{
-    "9th": "#{ary[0]}",
-    "10th": "#{ary[1]}",
-    "11th": "#{ary[2]}",
-    "12th": "#{ary[3]}",
-    "13th": "#{ary[4]}",
-    "14th": "#{ary[5]}",
-    "15th": "#{ary[6]}",
-    "16th": "#{ary[7]}",
-    "17th": "#{ary[8]}"
+    "9": #{ary[0]},
+    "10": #{ary[1]},
+    "11": #{ary[2]},
+    "12": #{ary[3]},
+    "13": #{ary[4]},
+    "14": #{ary[5]},
+    "15": #{ary[6]},
+    "16": #{ary[7]},
+    "17": #{ary[8]}
   }]
   return return_value
 end
 
 def get_draft_chances(sqlcon, uuid)
   default_value = '{
-    "9th": "0",
-    "10th": "0",
-    "11th": "0",
-    "12th": "0",
-    "13th": "0",
-    "14th": "0",
-    "15th": "0",
-    "16th": "0",
-    "17th": "0"
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 0,
+    "17": 0
   }'
   return default_value if sqlcon.nil?
   return default_value if uuid.nil?
@@ -501,7 +513,7 @@ def print_card_output(array=nil)
   bar = Hex::Collection.new
   con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { 'Armies of Myth' => 1, 'Primal Dawn' => 2 }
+  draft_format = { 'Herofall' => 3 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
@@ -512,11 +524,13 @@ def print_card_output(array=nil)
       next if name.match(/#{@exclude_filter}/)
     end
     str = ''
+    type = array[name]['type']
     uuid = array[name]['uuid']
     draft_chances = get_draft_chances(con, uuid)
     eval @card_init_string[@output_type][@output_detail]
     currencies.sort.reverse.map do |currency, prices|
       next if currency == 'uuid'
+      next if currency == 'type'
 #      puts "Working on #{name} and got the following prices for #{currency}: #{prices}"
       if prices.nil? then
         avg = sample_size = true_avg = min = lq = med = uq = max = excl = 0
@@ -544,6 +558,7 @@ def print_card_output(array=nil)
     draft_pack_value['PLATINUM'] += 100
     # Init some vars and print out our computed draft pack value
     str = ''
+    type = 'Inventory'
     name = "'Computed Draft Booster Pack' [Common]"
     eval @card_init_string[@output_type][@output_detail]
     # Now, take those values and print out some stuff
