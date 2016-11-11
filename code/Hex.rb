@@ -158,62 +158,82 @@ module Hex
         puts "Had problem parsing #{path}: #{e}"
         return
       end
+      type_not_found = true
+      @name             = get_json_value(@card_json, 'm_Name')
       # Test if this is a Equipment. If this is nil, it's not an Equipment
       unless @card_json['m_EquipmentType'].nil? then
+#puts "Equip: #{name} - #{@card_json['m_EquipmentType']} - #{type_not_found}"
         @type           = 'Equipment'
         @sub_type       = get_json_value(@card_json, 'm_EquipmentType')
         @rarity         = get_json_value(@card_json, 'm_Rarity').gsub(/Land/, 'Non-Collectible')
         @health         = ''
         @color          = 'Colorless'
-      # Otherwise it's not an equipment. Check for card vs champion
-      else 
-        # Test if this is a Champion
-        if @card_json['_v'][0]['ChampionTemplate'].nil? then
-          # Not a Champion
-          if @card_json['_v'][0]['InventoryGemData'].nil? then
-            # Not a Gem
-            @type       = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
-            @sub_type   = get_json_value(@card_json, 'm_CardSubtype')
-            @health     = get_json_value(@card_json, 'm_BaseHealthValue') 
-            @rarity     = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
-            @color      = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
-          else
-            # A Gem
-            @type       = 'Gem'
-            @sub_type   = get_json_value(@card_json, 'm_GemType').gsub(/^[^_]+_/, '').gsub(/_[^_]+$/, '')
-            @health     = '0'
-            @rarity     = 'Land'
-            unless @card_json['m_Threshold'].nil?
-              @card_json['m_Threshold'].each do |th|
-                @color  = th['m_ColorFlags']
-              end
-            else           
-              @color    = 'Colorless'
-            end
+        type_not_found      = false
+      end
+      # Test if this is a Champion.
+      if ! @card_json['_v'][0]['ChampionTemplate'].nil? && type_not_found then
+        # A Champion
+#puts "Champ: #{name} - #{@card_json['_v'][0]['ChampionTemplate']} - #{type_not_found}"
+        @type         = "Champion"
+        @sub_type     = get_json_value(@card_json, 'm_SubType')
+        @health       = get_json_value(@card_json, 'm_BaseHealth')
+        @rarity       = 'Champion'
+        @color        = 'Colorless'
+        @equipment    = get_champion_abilities(@card_json)
+        @equipment_string = equipment_string_from_array(@equipment)
+        type_not_found    = false
+      end
+      # Test if this is a Gem.
+      if ! @card_json['_v'][0]['InventoryGemData'].nil? && type_not_found then
+#puts "Gem  : #{name} - #{@card_json['_v'][0]['InventoryGemData']} - #{type_not_found}"
+        # A Gem
+        @type       = 'Gem'
+        @sub_type   = get_json_value(@card_json, 'm_GemType').gsub(/^[^_]+_/, '').gsub(/_[^_]+$/, '')
+        @health     = '0'
+        @rarity     = 'Land'
+        unless @card_json['m_Threshold'].nil?
+          @card_json['m_Threshold'].each do |th|
+            @color  = th['m_ColorFlags']
           end
         else
-          # A Champion
-          @type         = "Champion"
-          @sub_type     = get_json_value(@card_json, 'm_SubType')
-          @health       = get_json_value(@card_json, 'm_BaseHealth')
-          @rarity       = 'Champion'
-          @color        = 'Colorless'
-          @equipment    = get_champion_abilities(@card_json)
-          @equipment_string = equipment_string_from_array(@equipment)
+          @color    = 'Colorless'
         end
+        type_not_found  = false
       end
-      @name             = get_json_value(@card_json, 'm_Name')
+      # Test if this is a Mercenary
+      if ! @card_json['_v'][0]['InventoryMercenaryData'].nil? && type_not_found then
+#puts "Merc : #{name} - #{@card_json['_v'][0]['InventoryMercenaryData']} - #{type_not_found}"
+        @type       = 'Mercenary'
+        @health     = "0"
+        @rarity     = get_json_value(@card_json, 'm_Rarity')
+        @set_id     = setuuid_to_setname(@card_json['m_MercenarySet']['m_Guid'])
+        type_not_found  = false
+      end
+      # If we've gotten this far, it should be a Card and not one of the "exceptions"
+      if type_not_found then
+#puts "Card : #{name} - #{@card_json['m_Type']} - #{type_not_found}"
+        # Not a Gem
+        @type       = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
+        @sub_type   = get_json_value(@card_json, 'm_CardSubtype')
+        @health     = get_json_value(@card_json, 'm_BaseHealthValue') 
+        @rarity     = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
+        @color      = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
+      end
       @card_number      = get_json_value(@card_json, 'm_CardNumber')
-      if @card_json['m_SetId'].nil? then
+      if @card_json['m_SetId'].nil? && @set_id.nil? then
         @set_id         = 'UNSET'
       else
+        unless @card_json['m_SetId'].nil? then
         @set_id         = setuuid_to_setname(@card_json['m_SetId']['m_Guid'])
+        end
       end
       @uuid             = chomp_string(@card_json['m_Id']['m_Guid'])
       @faction          = get_json_value(@card_json, 'm_Faction')
       @socket_count     = get_json_value(@card_json, 'm_SocketCount')
       @htmlcolor        = gem_to_htmlcolor(@color)
       @cost             = get_json_value(@card_json, 'm_ResourceCost')
+      if @color.nil? then @color = 'Colorless'; end
+      if @sub_type.nil? then @sub_type = ''; end
       # Update for variable cost cards
       if get_json_value(@card_json, 'm_VariableCost') =~ /1/
         @cost = "#{@cost}X"
@@ -463,6 +483,7 @@ EOCARD
         string = "REPLACE INTO cards (set_id, card_number, name, rarity, color, type, sub_type, faction, socket_count, cost, atk, health, text, flavor, restriction, artist, enters_exhausted, uuid, threshold, equipment_string, curr_resources, max_resources, parsed_name) values ('#{Mysql.escape_string @set_id}','#{Mysql.escape_string @card_number}','#{Mysql.escape_string @name}','#{Mysql.escape_string @rarity}','#{Mysql.escape_string @color}','#{Mysql.escape_string @type}','#{Mysql.escape_string @sub_type}','#{Mysql.escape_string @faction}','#{Mysql.escape_string @socket_count}','#{Mysql.escape_string @cost}','#{Mysql.escape_string @atk}','#{Mysql.escape_string @health}','#{Mysql.escape_string @text}','#{Mysql.escape_string @flavor}','#{Mysql.escape_string @restriction}','#{Mysql.escape_string @artist}','#{Mysql.escape_string @enters_exhausted}','#{Mysql.escape_string @uuid}','#{Mysql.escape_string @threshold}','#{Mysql.escape_string @equipment_string}','#{Mysql.escape_string @curr_resources}','#{Mysql.escape_string @max_resources}','#{Mysql.escape_string @parsed_name}');"
       rescue 
         puts "ENCOUNTERED FAILURE PARSING #{@set_id} - #{@name}. Exiting."
+#binding.pry
         exit
       end
     end
