@@ -552,7 +552,7 @@ def generate_card_output(array=nil)
       end
     end
     eval @card_closing_string[@output_type][@output_detail]
-    ret_str += str
+    ret_str << str
   end
   # Skip unless we've done anything with the draft booster pack prices
   unless draft_pack_value['PLATINUM'] == 0 then
@@ -575,7 +575,7 @@ def generate_card_output(array=nil)
       eval @card_details_string[@output_type][@output_detail]
     end
     eval @card_closing_string[@output_type][@output_detail]
-    ret_str += str 
+    ret_str << str
   end
   eval @card_closing_bits[@output_type][@output_detail]
   return ret_str
