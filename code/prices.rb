@@ -44,38 +44,38 @@ require 'moving_average'
     'detailed'  => '',
   },
   'JSON'   => {
-    'brief'     => 'puts "{\"bogus\": 1}\n]}"',
-    'detailed'  => 'puts "{\"bogus\": 1}\n]}"',
+    'brief'     => 'ret_str << "{\"bogus\": 1}\n]}"',
+    'detailed'  => 'ret_str << "{\"bogus\": 1}\n]}"',
   },
   'HTML'   => {
-    'brief'     => 'puts "</table></div>"',
-    'detailed'  => 'puts "</table></div>"',
+    'brief'     => 'ret_str << "</table></div>"',
+    'detailed'  => 'ret_str << "</table></div>"',
   }
 }
 @card_field_descriptors = {
   'CSV'   => {
-    'brief'     => 'puts "Name,Avg_price,Currency,# of auctions,Avg_price,Currency,# of auctions"',
-    'detailed'  => 'puts "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",UUID"'
+    'brief'     => 'ret_str << "Name,Avg_price,Currency,# of auctions,Avg_price,Currency,# of auctions"',
+    'detailed'  => 'ret_str << "\"Name\",\"Rarity\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",\"Currency\",Weighted Average Price,# of Auctions,Average Price,Min price,Lower Quartile,Median,Upper Quartile,Maximum Price,\"Excluded Prices\",UUID"'
   },
   'PDCSV'   => {
     'brief'     => '',
-    'detailed'  => 'puts "Average Price (Plat), Average Price (Gold),\"Name\"'
+    'detailed'  => 'ret_str << "Average Price (Plat), Average Price (Gold),\"Name\"'
   },
   'PSV'   => {
-    'brief'     => 'puts "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
-    'detailed'  => 'puts "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
+    'brief'     => 'ret_str << "Name ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
+    'detailed'  => 'ret_str << "Name|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
   },
   'UUIDPSV'   => {
-    'brief'     => 'puts "Name ... UUID ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
-    'detailed'  => 'puts "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
+    'brief'     => 'ret_str << "Name ... UUID ... Avg_price Currency [# of auctions] ... Avg_price Currency [# of auctions]"',
+    'detailed'  => 'ret_str << "Name|UUID|Rarity|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\"|Currency|Weighted Average Price|# of Auctions|Average Price|Min price|Lower Quartile|Median|Upper Quartile|Maximum Price|\"Excluded Prices\""'
   },
   'JSON'   => {
-    'brief'     => 'puts "{\n\"cards\": [\n"',
-    'detailed'  => 'puts "{\n\"cards\": [\n"',
+    'brief'     => 'ret_str << "{\n\"cards\": [\n"',
+    'detailed'  => 'ret_str << "{\n\"cards\": [\n"',
   },
   'HTML'  => {
-    'brief'     => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
-    'detailed'  => 'puts "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
+    'brief'     => 'ret_str << "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
+    'detailed'  => 'ret_str << "<div class=\'CSSTableGenerator\'><table><tr><th>Card Name</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th><th>Currency</th><th>Avg w/o outliers</th><th>Number of auctions</th><th>Average with outliers</th><th>Min price</th><th>1st quartile price</th><th>Median price</th><th>3rd quartile price</th><th>Max price</th><th>Excluded values</th></tr>"',
   }
 }
 @card_init_string = {
@@ -509,6 +509,13 @@ end
 # General print statement
 def print_card_output(array=nil)
   return if array.nil?
+  puts generate_card_output(array)
+end
+
+def generate_card_output(array=nil)
+  return if array.nil?
+  # Set up return string
+  ret_str = ""
   # Needed for getting draft data
   bar = Hex::Collection.new
   con = bar.get_db_con
@@ -545,7 +552,7 @@ def print_card_output(array=nil)
       end
     end
     eval @card_closing_string[@output_type][@output_detail]
-    puts str
+    ret_str += str
   end
   # Skip unless we've done anything with the draft booster pack prices
   unless draft_pack_value['PLATINUM'] == 0 then
@@ -568,9 +575,10 @@ def print_card_output(array=nil)
       eval @card_details_string[@output_type][@output_detail]
     end
     eval @card_closing_string[@output_type][@output_detail]
-    puts str
+    ret_str += str 
   end
   eval @card_closing_bits[@output_type][@output_detail]
+  return ret_str
 end
 
 # Print out requested cards
