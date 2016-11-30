@@ -29,8 +29,8 @@ end
 exchange_file = "/home/docxstudios/web/hex/sorted_gold_plat_comparisons.txt"
 rates = Array.new
 File.readlines(exchange_file).each do |line|
+  next if line =~ /^\d+ gold per plat Computed Draft Booster Pack\s*$/
   next unless line =~ /^(\d+) gold per plat.* Booster Pack\s*$/
-  next if line =~ /^(\d+) gold per plat Computed Draft Booster Pack\s*$/
   rates << $1
 end
 
@@ -47,6 +47,8 @@ puts "INFO: Using #{avg_exch} gold to 1 plat as conversion rate based on Booster
 puts ""
 
 count_files = Dir.glob("/home/docxstudios/web/hex/*_counts.txt")
+equip_count_file = "/home/docxstudios/web/hex/counts_for_equipment.txt"
+ 
 
 needed = Array.new
 surplus = Array.new
@@ -80,7 +82,8 @@ count_files.each do |count_file|
     end
     # Skip cards we don't care about
     if count > 4
-      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{count - 4} for trade - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{'%3.3s' % (count - 4).to_s} for trade - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
+#      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{count - 4} for trade - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
       surplus << value
     end
     # And skip Epic (aka 'AA' cards for wants)
@@ -104,6 +107,55 @@ count_files.each do |count_file|
     end
   end
 end
+
+# Do equipment as well....
+raw_data = open(equip_count_file).read
+
+# Go through each row.  If we don't have at least one, add the card info to the needed array
+raw_data.lines.each do |row|
+  next unless row =~ /^"([^"]+)",(\d+),"([^"]+)","[^"]*"$/
+  name = $1
+  count = $2.to_i
+  rarity = $3
+  # Shortcut here if we're simply not interested in the cards
+#  next unless rarity =~ /Legendary|Rare|Epic/
+  if name == "Spectral Oak" then
+    next
+  end
+  key = name
+  key.gsub!(/,/, '')
+  price = "NO DATA"
+  gprice = "NO DATA"
+  if not prices[key].nil? then
+    price = prices[key]['plat']
+    gprice  = prices[key]['gold']
+  end
+  # Skip cards we don't care about
+  if count > 1
+    value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Have #{'%3.3s' % (count - 1).to_s} for trade - P: #{'%7.7s' % price} <=> G: #{'%7.7s' % gprice}"
+    surplus << value
+  end
+  # And skip Epic (aka 'AA' cards for wants)
+  next if rarity =~ /Epic/
+  if count < 1
+    pi = price.to_i; gi = gprice.to_i
+    # Put indicator here which is the better value based on exchange rate: gold or plat
+    if (pi * avg_exch) < gi or gi == 0 then
+      # If plat * avg_exch < gold price, then buy using plat
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{1 - count} - P:> #{'%7.7s' % price} <=> G:  #{'%7.7s' % gprice}"
+    elsif (pi * avg_exch) > gi or pi == 0 then
+      # If plat * avg_exch > gold price, then buy using gold
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{1 - count} - P:  #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
+    else
+      # This should not be hit (since we squished everything into 'avg_exch' and went away from high_exch/low_exch)
+      # But leaving here in case we want to go back to this sometime
+      # Otherwise, they're both equally good values
+      value = "#{'%-9.9s' % rarity} - #{'%-40.40s' % name} Want #{1 - count} - P:> #{'%7.7s' % price} <=> G:> #{'%7.7s' % gprice}"
+    end
+    needed << value
+  end
+end
+
 
 puts "========== WANTS ===================================================================="
 needed.sort.each do |row|
