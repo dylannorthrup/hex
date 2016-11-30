@@ -499,6 +499,8 @@ def get_draft_chances(sqlcon, uuid)
   row = results.fetch_row
   if row.nil? then
     return default_value
+  elsif row[0].nil? then
+    return default_value
   else
     chances = row[0]
     value = jsonify_draft_chances(chances)
