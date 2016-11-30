@@ -11,16 +11,10 @@ use File::Copy;
 # Variables
 my $pack_cards = 17;
 my %pick_locs;
-my $log_file;
-my @tournaments;
-my $ingest_dir = "/home/docxstudios/web/hex/code/draft_logs/ingested";
-
-# Make sure we have an argument
-if (defined $ARGV[0]) {
-  $log_file = $ARGV[0];
-} else {
-  die "No log file specified on command line";
-}
+my $tourn_time;
+my $start_time = time();
+my $now_time;
+my $prev_time = $start_time;
 
 
 # Something to print out the probabilities cards will wheel.
@@ -61,14 +55,12 @@ sub stringify_pick_locs {
     # We want ':' between each value, but not after the last (and 17th) pick
     $retvar .= ':' if $p < 17;
   }
-#  print "\n";
 }
 
 # Print out the pick locations for the pack
 sub print_pick_locs {
   my $foo = shift @_;
   my $pl = "";
-#  print ">>$pl<<\n";
   # Go through each spot. If it has a value, print it. If not, print '0'
   for my $p (0..17) {
     if (defined $foo->{$p}){
@@ -80,7 +72,6 @@ sub print_pick_locs {
     $pl .= ':' if $p < 17;
   }
   return $pl;
-#  print ">>$pl<<\n";
 }
 
 # Get database password
@@ -124,11 +115,11 @@ sub merge_picks {
 
 # Get the picks for a particular UUID
 sub update_uuid_picks {
-  my $dbh = shift @_;
+  my $wdbh = shift @_;
   my $uuid = shift @_;
   my $new_picks = shift @_;
   my $query = "SELECT picks FROM draft_data WHERE uuid LIKE '$uuid'";
-  my $sth = $dbh->prepare($query);
+  my $sth = $wdbh->prepare($query);
   $sth->execute();
   # Should only be 1 row
   my $ref = $sth->fetchrow_hashref();
@@ -137,66 +128,72 @@ sub update_uuid_picks {
   # If this is the case, we don't have any data. Go ahead and insert what we have
   if ($picks =~ /^$/) {
     $query = "INSERT INTO draft_data (uuid, picks) values ('$uuid', '$new_picks')";
-#    print "No picks for $uuid. Query to do straight insert.\n$query\n";
   } else {
-#    print "Prior picks exist for $uuid. Doing merge.\n";
-#    print "old picks: $picks\nnew picks: $new_picks\n";
     my $merged_picks = merge_picks($picks, $new_picks);
     $query = "UPDATE draft_data SET picks = '$merged_picks' WHERE uuid like '$uuid'";
-#    print "Merged picks: $merged_picks\n";
   }
-  $dbh->do($query);
+  $wdbh->do($query);
 }
 
-my $dbh = get_dbh();
-#update_uuid_picks($dbh, "123", "1:2:3:4:5:6:7:8:9:10:11:12:13:14:15:16:17");
-#exit;
-
-# Open the log file up for reading
-if ($log_file =~ /\.gz$/) {
-#  print "Doing gunzip on log file $log_file\n";
-  open(DLOG, "gunzip -dc $log_file |") || die "Cannot gunzip $log_file for reading: $!\n";
-} else {
-#  print "Opening log file $log_file\n";
-
-  open(DLOG, $log_file) || die "Can't open $log_file for reading: $!\n";
+sub mark_tournament_processed {
+  my $wdbh = shift @_;
+  #my $query = "UPDATE tournament_data SET processed = true WHERE td LIKE '%\"TournamentType\" : \"Draft\",%' AND insert_time LIKE '$tourn_time'";
+  my $query = "UPDATE tournament_data SET processed = true WHERE insert_time LIKE '$tourn_time'";
+  my $sth = $wdbh->prepare($query);
+  $sth->execute();
+  $sth->finish();
 }
 
-# Read in file and process JSON
-my $json_string = "";
-while(my $line = <DLOG>) {
-  # Test if this is a blank space.  The format of the file is three blank lines separates each tournament
-  if ($line =~ /^$/) {
-    next if ($json_string =~ /^$/);
-    next if ($json_string eq "");
-    # Now we should have a JSON string. Let's decode it and throw it on the tournaments pile
-    my $decoded = decode_json $json_string;
-    push @tournaments, $decoded;
-    # Now, reset the string
-    $json_string = "";
-  } else {
-    # Ignore actual tournament data (which we're not interested in for this application)
-    if ($line =~ /^.*{ "PlayerOne" :/) {
-      if ($line =~ /,$/) {
-        $line = "\"\", \n";
-      } else {
-        $line = "\"\" \n";
-      }
-    }
-    # Do some line trimming here since we just care about the Pick, not the Pack
-    if ($line =~ /^\s+{ "Pack" :/) {
-#      $line =~ s/"Pack" : \[.*\], "Pick"/"Pick"/;
-      $line =~ s/"........-....-....-....-............", /"", /g;
-      $line =~ s/"........-....-....-....-............" \]/"" ] /g;
-    }
-    $json_string .= $line;
-  }
+sub print_timing_message {
+  my $msg = shift @_;
+  $now_time = time();
+  my $diff = $now_time - $prev_time;
+  print "$msg - $diff secs\n";
+  $prev_time = $now_time;
 }
 
-# Go through each tournament and grab out the picks from the players
-foreach my $t (@tournaments) {
-  my $draft = $t->{'Draft'};
+sub get_tournament_data {
+  my $rdbh = shift @_;
+  my $query = "SELECT td, insert_time FROM tournament_data WHERE td LIKE '%\"TournamentType\" : \"Draft\",%' AND processed IS NULL ORDER BY insert_time ASC";
+  my $sth = $rdbh->prepare($query);
+  $sth->execute();
+  # Should only be 1 row
+  while(defined(my $ref = $sth->fetchrow_hashref())) {
+    my $td = $ref->{'td'};
+    $tourn_time = $ref->{'insert_time'};
+    do_other_stuff($td);
+    #return $td
+  } 
+  print "No more unprocessed draft tournaments. Exiting\n";
+  $sth->finish();
+  exit;
+}
+
+# Moving stuff into sub so I can loop over everything
+sub do_other_stuff {
+  my $json_string = shift @_;
+  my $ndbh = get_dbh();
+  print_timing_message("Massaging");
+  $json_string =~ s/"Games" :.*/"_foo" : "_bar"\n}\n/sm;
+  # Adding because, for some reason, we're getting 2x double quotes for some things
+  $json_string =~ s/:\s+""/: "/smg;
+  $json_string =~ s/"",/",/smg;
+  print_timing_message("Decoding");
+  my $t;
+  # Adding this in so we can catch JSON parse errors and investigate them instead of simply dying
+  eval {
+    $t = decode_json $json_string;
+    1;
+  } or do {
+    # If we did run into a problem, show the problematic string and GTFO
+    print "Problem decoding the following 'json' string:\n";
+    print $json_string;
+    return;
+  };
   
+  # Go through each tournament and grab out the picks from the players
+  print_timing_message("Grabbing picks");
+  my $draft = $t->{'Draft'};
   foreach my $d (@$draft) {
     my $picks = $d->{'Picks'}; 
     foreach my $p (@$picks) { 
@@ -207,20 +204,35 @@ foreach my $t (@tournaments) {
       $pick_locs{$p->{'Pick'}}{0} += 1;
     }
   }
-}
-#print Dumper(%pick_locs);
-#pry();
-foreach my $u (keys %pick_locs) {
-#  print "$u:";
-  my $foo = $pick_locs{$u};
-  my $pl = print_pick_locs($foo);
-  update_uuid_picks($dbh, $u, $pl);
-#  print "PL: $pl\n";
-#  print_wheel_probs($foo);
+  
+  $| = 1;
+  # Do the updating of rows in database
+  print_timing_message("Updating UUID picks in database");
+  print "updating rows: ";
+  foreach my $u (keys %pick_locs) {
+    print ".";
+    my $foo = $pick_locs{$u};
+    my $pl = print_pick_locs($foo);
+    update_uuid_picks($ndbh, $u, $pl);
+  #  print "PL: $pl\n";
+  #  print_wheel_probs($foo);
+  }
+  print "\n";
+  
+  print_timing_message("Marking tournament at $tourn_time as processed");
+  mark_tournament_processed($ndbh);
 }
 
-# Now that we've processed the file, move it to the 'ingested' folder
-my $base_log_file = $log_file;
-$base_log_file =~ s#.*/([^/]+)#$1#;
-my $target = "$ingest_dir/$base_log_file";
-move($log_file, $target) || die "Move of $log_file to $target failed: $!\n";
+#### END SUB DEFINITIONS
+
+my $wdbh = get_dbh();
+my $rdbh = get_dbh();
+
+print "=== Beginning draft data update run\n";
+print_timing_message("Getting tournament_data");
+# Select data from tournament_data and process it
+get_tournament_data($rdbh);
+#print "$json_string";
+print_timing_message("Exiting");
+my $run_time = $now_time - $start_time;
+print "Total run time: $run_time secs\n";
