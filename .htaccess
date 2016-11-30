@@ -18,3 +18,4 @@ RewriteRule ^uuid_to_name.rb uuid_to_name.fcgi [QSA,L]
 # Rewrite *.rb requests to be handled by dispatch.cgi.
 # As an FYI, these are all under the code directory
 RewriteRule ^([^/]*.rb)$ dispatch.cgi/$1 [QSA,L]
+RewriteRule ^([^/]*.frb)$ dispatch.fcgi/$1 [QSA,L]
