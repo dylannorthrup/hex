@@ -16,6 +16,7 @@ my $wdbh = get_dbh();
 
 my %data;
 
+print "Beginning draft chance updates\n";
 my $read_query = "SELECT uuid, picks from draft_data";
 my $sth = $rdbh->prepare($read_query);
 $sth->execute();
@@ -24,8 +25,8 @@ while (my $ref = $sth->fetchrow_hashref()) {
   my $wheel_probs = wheel_probs($ref->{'picks'});
   my $update_query = "UPDATE draft_data SET chances = '$wheel_probs' WHERE uuid LIKE '$ref->{'uuid'}'";
   $wdbh->do($update_query);
-#  print "$update_query\n";
 }
+print "Draft chance updates complete\n";
 exit;
 
 # SQL Query: select c.name, d.picks from cards c, draft_data d where c.uuid = d.uuid;
@@ -37,7 +38,4 @@ foreach my $u (keys %data) {
   chomp($name);
   $name = "UNKNOWN" if $name =~ /No value exists for key/;
   print "$u ($name): ";
-  print_wheel_probs($data{$u});
-#  print_data($foo);
-#  print_wheel_probs(@foo);
 }
