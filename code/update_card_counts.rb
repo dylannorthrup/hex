@@ -16,16 +16,17 @@ end
 # step 1: Read in collection file
 counts = Hash.new
 File.readlines('/home/docxstudios/web/hex/code/collection.out').map { |line|
-  next unless line =~ /^(.*) : (\d+) : (\d+)$/
+  next unless line =~ /^(.*) : (\d+) : (\d+)/
   counts[$1] = $2
 }
 
 # step 2: get card data from database
-sets = { 'Shards of Fate' => 'sof', 'Shattered Destiny' => 'sd', 'Armies of Myth' => 'aom', 'Set01_PvE%' => 'pve', 'PvE%Universal_Card_Set' => 'coe1', 'Primal Dawn' => 'primaldawn', 'Herofall' => 'herofall' }
+sets = { 'Shards of Fate' => 'sof', 'Shattered Destiny' => 'sd', 'Armies of Myth' => 'aom', 'Set%_PvE%' => 'pve', 'PvE%Universal_Card_Set' => 'coe1', 'Primal Dawn' => 'primaldawn', 'Herofall' => 'herofall' }
 rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
 # Step 3: merge this information and print it out
 sets.each_pair { |set, name|
+#  puts "Working on #{set}"
   out_string = ""
   rarities.each { |rarity|
     foo = Hex::Collection.new
@@ -44,3 +45,22 @@ sets.each_pair { |set, name|
   fout = File.write(fname, out_string)
 }
 
+# Do Equipment
+#puts "Doing Equipment"
+out_string = ""
+#rarities.each { |rarity|
+  foo = Hex::Collection.new
+  con = foo.get_db_con
+  #foo.load_collection_from_search(con, "type like 'Equipment' and rarity like '#{rarity}' order by name asc")
+  foo.load_collection_from_search(con, "type like 'Equipment' order by name asc")
+#  binding.pry
+  foo.cards.each { |c| 
+    c.color = "Artifact" if c.color =~ /Colorless/
+    if counts[c.uuid].nil? then
+      counts[c.uuid] = "0"
+    end
+    out_string += "\"#{c.name}\",#{counts[c.uuid]},\"#{c.rarity}\",\"#{c.color}\"\n" 
+  }
+#}
+fname = out_dir + "/counts_for_equipment.txt"
+fout = File.write(fname, out_string)
