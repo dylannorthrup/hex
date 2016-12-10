@@ -213,8 +213,8 @@ sub process_tournament {
     my $foo = $pick_locs{$u};
     my $pl = print_pick_locs($foo);
     update_uuid_picks($ndbh, $u, $pl);
-    print "PL: $pl\n";
-    print_wheel_probs($foo);
+#    print "PL: $pl\n";
+#    print_wheel_probs($foo);
   }
   print "\n";
   
