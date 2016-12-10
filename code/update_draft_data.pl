@@ -16,7 +16,6 @@ my $start_time = time();
 my $now_time;
 my $prev_time = $start_time;
 
-
 # Something to print out the probabilities cards will wheel.
 sub print_wheel_probs {
   my $foo = shift @_;
@@ -154,14 +153,14 @@ sub print_timing_message {
 
 sub get_tournament_data {
   my $rdbh = shift @_;
-  my $query = "SELECT td, insert_time FROM tournament_data WHERE td LIKE '%\"TournamentType\" : \"Draft\",%' AND processed IS NULL ORDER BY insert_time ASC";
+  my $query = "SELECT td, insert_time FROM tournament_data WHERE td LIKE '%    \"Draft\" :%' AND processed IS NULL ORDER BY insert_time ASC";
   my $sth = $rdbh->prepare($query);
   $sth->execute();
   # Should only be 1 row
   while(defined(my $ref = $sth->fetchrow_hashref())) {
     my $td = $ref->{'td'};
     $tourn_time = $ref->{'insert_time'};
-    do_other_stuff($td);
+    process_tournament($td);
     #return $td
   } 
   print "No more unprocessed draft tournaments. Exiting\n";
@@ -170,7 +169,7 @@ sub get_tournament_data {
 }
 
 # Moving stuff into sub so I can loop over everything
-sub do_other_stuff {
+sub process_tournament {
   my $json_string = shift @_;
   my $ndbh = get_dbh();
   print_timing_message("Massaging");
@@ -191,7 +190,7 @@ sub do_other_stuff {
     return;
   };
   
-  # Go through each tournament and grab out the picks from the players
+  # Go through the tournament and grab out the player picks
   print_timing_message("Grabbing picks");
   my $draft = $t->{'Draft'};
   foreach my $d (@$draft) {
@@ -214,8 +213,8 @@ sub do_other_stuff {
     my $foo = $pick_locs{$u};
     my $pl = print_pick_locs($foo);
     update_uuid_picks($ndbh, $u, $pl);
-  #  print "PL: $pl\n";
-  #  print_wheel_probs($foo);
+    print "PL: $pl\n";
+    print_wheel_probs($foo);
   }
   print "\n";
   
