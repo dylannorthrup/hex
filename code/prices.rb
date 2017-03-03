@@ -522,7 +522,7 @@ def generate_card_output(array=nil)
   bar = Hex::Collection.new
   con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { 'Herofall' => 3 }
+  draft_format = { 'Herofall' => 1, 'Shards of War' => 2 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
