@@ -10,9 +10,18 @@ require 'mysql'
 require 'date'  # For modifying 'Yesterday' and 'Today' into dates from post information
 require 'fileutils'
 
-@url_prefix = 'http://board.hex.gameforge.com/'
-@url_scheme = "http"
-@url_host = "board.hex.gameforge.com"
+@url_prefix = 'https://forums.hextcg.com/'
+@url_scheme = "https"
+@url_host = "forums.hextcg.com"
+@curl_cmd = "curl -s -L "
+
+@DEBUG=false
+
+def pdebug(str=nil)
+  return if str.nil?
+  return unless @DEBUG == true
+  puts "DEBUG: #{str}"
+end
 
 # Take the URLs in a page and make them into absolute URLs (instead of relative ones)
 def make_urls_absolute(page)
@@ -31,7 +40,7 @@ def make_urls_absolute(page)
       unless (src.nil? or src.empty?)
         uri = URI.parse(src)
         unless uri.host
-  #      puts uri
+        pdebug uri
           uri.scheme = @url_scheme
           uri.host = @url_host
           if uri.path !~ /^\// 
@@ -42,14 +51,17 @@ def make_urls_absolute(page)
       end
     end
   rescue Exception => e
-#    puts "*** Error in trying to massage post URLs: #{e.message}"
+    pdebug "*** Error in trying to massage post URLs: #{e.message}"
   end
   return page
 end
 
 # Get the contents of a specific post
 def retrieve_post(url="")
-  initial_page = Nokogiri::HTML(open(url))
+  pdebug "Getting post from #{url}'"
+  page_text = %x( #{@curl_cmd} '#{url}' )
+  initial_page = Nokogiri::HTML(page_text)
+#  initial_page = Nokogiri::HTML(open(url))
   page = make_urls_absolute(initial_page)
 
   post_id = url[/postID=(\d+)/, 1]
@@ -67,10 +79,12 @@ def get_user_post_list(userid="1")
   # Construct search URL
   #search_url = "http://forums.cryptozoic.com/search.php?do=finduser&userid=#{userid}&contenttype=vBForum_Post&showposts=1"
   search_url = "#{@url_prefix}index.php?search/&types%5B%5D=com.woltlab.wbb.post&userID=#{userid}"
-#  puts "Trying to get '#{search_url}'"
+  pdebug "Trying to get '#{search_url}'"
   # Retrieve page
   begin
-    page = Nokogiri::HTML(open(search_url))
+    page_text = %x( #{@curl_cmd} '#{search_url}' )
+    page = Nokogiri::HTML(page_text)
+  #  page = Nokogiri::HTML(open(search_url))
   rescue OpenURI::HTTPError => e
     if e.message == '404 Not Found' then
       # Likely means they've got no posts
@@ -91,6 +105,7 @@ def get_user_post_list(userid="1")
   body.css('div.containerHeadline > h3 > a').each do |li| 
     return_array << "#{li.values[0]}"
   end
+  pdebug "Got this array of posts: #{return_array}"
   #binding.pry
   return return_array
 end
@@ -114,7 +129,7 @@ def store_post(con = nil, thread_id = nil, post_id = nil, title = nil, orange_id
   #query = "insert into orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}' on duplicate key update thread_id='#{thread_id}', post_date='#{post_date}', title='#{title}', orange_id='#{orange_id}', url='#{url}', contents='#{contents}'"
   query = "REPLACE INTO orange_posts set thread_id='#{thread_id}', post_id='#{post_id}', title='#{title}', orange_id='#{orange_id}', post_date='#{post_date}', url='#{url}', contents='#{contents}'"
   con.query(query)
-#  puts "Stored data for post #{post_id} in thread #{thread_id}"
+  pdebug "Stored data for post #{post_id} in thread #{thread_id}"
 end
 
 # Given a userid and a sql connection, get all of the user's posts and stuff them into the table
@@ -124,13 +139,13 @@ def get_user_posts(orange_id=nil, sql_con=nil)
   posts = get_user_post_list(orange_id)
   return if posts.nil?
   posts.each do |url|
-   # puts "Retrieving #{url}"
+    pdebug "Retrieving #{url}"
     thread_id = url[/thread\/(\d+[^\/]+)/, 1]
     post_id = url[/postID=(\d+)/, 1]
-   # puts "Thread id: #{thread_id} and Post id: #{post_id}"
+    pdebug "Thread id: #{thread_id} and Post id: #{post_id}"
     title, contents, post_date = retrieve_post(url)
-#    puts "Title: #{title} and date: #{post_date}"
-#    puts "Contents: #{contents}"
+    pdebug "Title: #{title} and date: #{post_date}"
+    pdebug "Contents: #{contents}"
     store_post(sql_con, thread_id, post_id, title, orange_id, post_date, url, contents)
 #binding.pry
     sleep 3
@@ -154,7 +169,7 @@ userids = get_orange_ids(sql_con)
 #userids = [ 15 ]      # Testing grabbing Chark's posts
 #userids = [ 10 ]      # Testing grabbing Chark's posts
 userids.each do |uid|
-#  puts uid
+  pdebug uid
   get_user_posts(uid, sql_con)
   sleep 1;
 end
