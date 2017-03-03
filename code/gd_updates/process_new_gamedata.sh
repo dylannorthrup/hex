@@ -17,8 +17,8 @@ if [ ! -f gd.json ] || [ gamedata -nt gd.json ]; then
   fi
   for i in $(ls gamedata*); do 
     gzip -dc $i >> gd.json
-  #  rm -f processed_$i
-  #  mv $i processed_$i
+    rm -f processed_$i
+    mv $i processed_$i
   done
 
   # Get rid of any pre-existing directories so we start with a blank slate
