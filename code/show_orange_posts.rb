@@ -7,7 +7,7 @@ require 'mysql'
 require 'cgi'
 
 # Some useful variables
-@user_info_url = 'http://board.hex.gameforge.com/index.php?user/'
+@user_info_url = 'https://forums.hextcg.com/index.php?user/'
 
 def get_db_con
   pw = File.open("/home/docxstudios/hex.sql.pws").read.chomp
@@ -64,8 +64,10 @@ def show_adsense()
   puts "<tr><td class='post_contents'>
 My In Game Name is 'Dylan'.  If you like this page, the service it provides and are so inclined, feel free to 
 take a look at my <a href='/hex/have-want.txt'>want list</a> and throw me a card or two.  If you don't have 
-any of those, throw some Gold my way (or Plat, if you have any extra).  If you want posts from the old Cryptozoic forums, they're archived <a href='/hex/old_orange_posts.html'>here</a> for posterity.  Thanks and now, on to the reason you're 
-here . . . </td></tr></table></center>"
+any of those, throw some Gold my way (or Plat, if you have any extra).  If you want posts from the old Cryptozoic 
+forums, they're archived <a href='/hex/old_orange_posts.html'>here</a> for posterity.  If you want posts from the GameForge 
+forums, they're archiged <a href='/hex/gf_orange_posts.html'>here</a> for posterity. And if you want the latest and greatest
+from the current forums, enjoy . . . </td></tr></table></center>"
   puts "<p><hr></p>"
 end
 
@@ -114,7 +116,7 @@ puts "<html><head><title>Orange Tracker</title>"
 puts '<link rel="stylesheet" type="text/css" href="/hex/orange_posts.css">'
 puts '<link rel="stylesheet" type="text/css" href="/hex/gf-main.css">'
 puts "</head><body>"
-puts "<h1 class='orange_header'>Orange Tracker (now with 100% more GameForge)</h1>"
+puts "<h1 class='orange_header'>Orange Tracker (now with 100% less GameForge)</h1>"
 show_adsense
 sql_con = get_db_con
 if params['all'][0] =~ /true/
