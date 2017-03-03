@@ -167,6 +167,15 @@ require 'moving_average'
   }
 }
 
+@DEBUG = true
+
+# Utility function to help with debugging
+def pdebug(string=nil)
+  return if string.nil?
+  return unless @DEBUG
+  puts "DEBUG: #{string}"
+end
+
 # Read in AH data from CSV file
 def read_file(fname=nil)
   return if fname.nil?
@@ -228,7 +237,6 @@ def add_no_ah_data_uuid_lines(results)
     sale_date = Time.now.strftime("%Y-%m-%d")
     gline = "'#{name}' [#{rarity}],GOLD,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid},#{type}"
     pline = "'#{name}' [#{rarity}],PLATINUM,0,#{sale_date},#{ah_to_card_rarity[rarity]},#{uuid},#{type}"
-    #puts line
     return_lines << gline
     return_lines << pline
   end
@@ -311,15 +319,17 @@ def parse_lines(lines=nil, html=false)
   # Iterate through the lines and grab interesting info out
   lines.each do |line|
     parsed_line = line.gsub(/\r\n?/, "\n")
+    pdebug "parsed line to be tested against regexp is '#{parsed_line}'"
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),?(.*?),?([a-f0-9-]+)?,?(\w+)?$/)
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(\d{4}-\d{2}-\d{2}),(\d+,)?([a-f0-9-]+),([\w, ]+)?$/)
       name = $1
       currency = $2
       price = $3
       date = $4
-      uuid = $5
-      type = $6
-#      puts "DEBUG: type is #{type} and uuid is #{uuid} for #{parsed_line}"
+      uuid = $6
+      type = $7
+      pdebug "name is #{name}, currency is #{currency}, price is #{price}, date is #{date},"
+      pdebug "type is #{type} and uuid is #{uuid} for #{parsed_line}"
       (year, mon, day) = date.split(/[-\s:]/)
       old = Time.new(year, mon, day)
       age = ((now - old)/3600).to_i
@@ -522,7 +532,7 @@ def generate_card_output(array=nil)
   bar = Hex::Collection.new
   con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { 'Herofall' => 1, 'Shards of War' => 2 }
+  draft_format = { 'Herofall' => 1, 'Scars of War' => 2 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
