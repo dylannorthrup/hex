@@ -34,6 +34,10 @@ File.readlines(exchange_file).each do |line|
   rates << $1
 end
 
+if rates.length == 0
+  rates << 150
+end
+
 #prices.keys.each do |p|
 #  puts "'#{p}' = #{prices[p]['plat']}p and #{prices[p]['gold']}g"
 #end
