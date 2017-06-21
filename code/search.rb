@@ -2,13 +2,24 @@
 #
 # Test out the Hex module
 
+require 'fcgi'
 require 'cgi'
 
 cgi = CGI.new
 params = cgi.params
 
+# Move this up here so we can keep this outside the FCGI block
+$: << "/home/docxstudios/web/hex/code"
+require "Hex_test"
+foo = Hex::Collection.new
+con = foo.get_db_con
+
 # Set default for output format
 output_format = 'html_table'
+
+fcgi_count = 0
+
+FCGI.each_cgi do 
 # See if we were specifically told to use an output_format If so, change output_format variable to that and remove 
 # the parameter from the params hash (so we don't try to use it as a search parameter)
 unless params['output_format'].empty?
@@ -59,6 +70,12 @@ params.each_pair do |k, v_ary|
   end
   v = CGI.unescape v
   v = Mysql.escape_string v
+  # Quick thing to turn 'Common' into '^Common' so we don't accidentally match 'Uncommon' with the regexp
+  if k == "rarity" then
+    if v =~ /common/i then
+      v = "^Common"
+    end
+  end
   query += " AND "
   query += "#{k} regexp '#{v}'"
 #  puts "X-Query-DEBUG: key: #{k} and value: #{v} and query so far: #{query}"
@@ -77,10 +94,10 @@ puts "X-Search-Query: #{query}"
 puts "X-Output-Format: #{output_format}"
 puts ""
 
-$: << "/home/docxstudios/web/hex/code"
-require "Hex"
-foo = Hex::Collection.new
-con = foo.get_db_con
+#$: << "/home/docxstudios/web/hex/code"
+#require "Hex"
+#foo = Hex::Collection.new
+#con = foo.get_db_con
 #search = "rarity regexp 'Legendary' OR rarity regexp 'Rare'"
 foo.load_collection_from_search(con, query)
 
@@ -138,3 +155,4 @@ puts '<a href="/hex/">Search Again?</a>'
 puts "</body>"
 puts "</html>"
 #binding.pry
+end
