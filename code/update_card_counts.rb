@@ -4,9 +4,23 @@
 
 $: << "/home/docxstudios/web/hex/code"
 require 'Hex'
+require 'fileutils'
 require "pry"
 
 out_dir = "/home/docxstudios/web/hex"
+
+@DEBUG = false
+def pdebug (msg=nil) 
+  return if msg.nil?
+  return unless @DEBUG
+  puts "DEBUG: #{msg}"
+end
+
+pdebug "DEBUGGING ENABLED"
+
+if @DEBUG
+  FileUtils.touch('/home/docxstudios/web/hex/code/collection.out')
+end
 
 # step 0: Figure out if collection data is new
 if File.mtime('/home/docxstudios/web/hex/code/collection.out') < File.mtime('/home/docxstudios/web/hex/aom_counts.txt') then
@@ -21,12 +35,12 @@ File.readlines('/home/docxstudios/web/hex/code/collection.out').map { |line|
 }
 
 # step 2: get card data from database
-sets = { 'Shards of Fate' => 'sof', 'Shattered Destiny' => 'sd', 'Armies of Myth' => 'aom', 'Set%_PvE%' => 'pve', 'PvE%Universal_Card_Set' => 'coe1', 'Primal Dawn' => 'primaldawn', 'Herofall' => 'herofall' }
+sets = { 'Shards of Fate' => 'sof', 'Shattered Destiny' => 'sd', 'Armies of Myth' => 'aom', 'Set%_PvE%' => 'pve', 'PvE%Universal_Card_Set' => 'coe1', 'Primal Dawn' => 'primaldawn', 'Herofall' => 'herofall', 'Scars of War' => 'scarsofwar', 'Frostheart' => 'frostheart' }
 rarities = [ 'Epic', 'Legendary', 'Rare', 'Uncommon', 'Common' ]
 
 # Step 3: merge this information and print it out
 sets.each_pair { |set, name|
-#  puts "Working on #{set}"
+  pdebug "Working on #{set}"
   out_string = ""
   rarities.each { |rarity|
     foo = Hex::Collection.new
@@ -46,7 +60,7 @@ sets.each_pair { |set, name|
 }
 
 # Do Equipment
-#puts "Doing Equipment"
+pdebug "Doing Equipment"
 out_string = ""
 #rarities.each { |rarity|
   foo = Hex::Collection.new
