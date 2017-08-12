@@ -6,12 +6,13 @@ use strict;
 use JSON::PP qw(decode_json);
 use DBI;
 use File::Copy;
-#use Data::Dumper;
+use Data::Dumper;
 
 # Variables
 my $pack_cards = 17;
 my %pick_locs;
 my $tourn_time;
+my $id;
 my $start_time = time();
 my $now_time;
 my $prev_time = $start_time;
@@ -136,8 +137,7 @@ sub update_uuid_picks {
 
 sub mark_tournament_processed {
   my $wdbh = shift @_;
-  #my $query = "UPDATE tournament_data SET processed = true WHERE td LIKE '%\"TournamentType\" : \"Draft\",%' AND insert_time LIKE '$tourn_time'";
-  my $query = "UPDATE tournament_data SET processed = true WHERE insert_time LIKE '$tourn_time'";
+  my $query = "UPDATE tournament_data SET draft_processed = true WHERE id = $id";
   my $sth = $wdbh->prepare($query);
   $sth->execute();
   $sth->finish();
@@ -153,19 +153,19 @@ sub print_timing_message {
 
 sub get_tournament_data {
   my $rdbh = shift @_;
-  my $query = "SELECT td, insert_time FROM tournament_data WHERE td LIKE '%    \"Draft\" :%' AND processed IS NULL ORDER BY insert_time ASC";
+  my $query = "SELECT id, td, insert_time FROM tournament_data WHERE td LIKE '%    \"Draft\" :%' AND draft_processed IS NULL ORDER BY insert_time ASC";
   my $sth = $rdbh->prepare($query);
   $sth->execute();
   # Should only be 1 row
   while(defined(my $ref = $sth->fetchrow_hashref())) {
     my $td = $ref->{'td'};
+    $id = $ref->{'id'};
     $tourn_time = $ref->{'insert_time'};
     process_tournament($td);
     #return $td
   } 
-  print "No more unprocessed draft tournaments. Exiting\n";
   $sth->finish();
-  exit;
+  print "No more unprocessed draft tournaments.\n";
 }
 
 # Moving stuff into sub so I can loop over everything
@@ -173,7 +173,7 @@ sub process_tournament {
   my $json_string = shift @_;
   my $ndbh = get_dbh();
   print_timing_message("Massaging");
-  $json_string =~ s/"Games" :.*/"_foo" : "_bar"\n}\n/sm;
+#  $json_string =~ s/"Games" :.*/"_foo" : "_bar"\n}\n/sm;
   # Adding because, for some reason, we're getting 2x double quotes for some things
   $json_string =~ s/:\s+""/: "/smg;
   $json_string =~ s/"",/",/smg;
@@ -203,6 +203,11 @@ sub process_tournament {
       $pick_locs{$p->{'Pick'}}{0} += 1;
     }
   }
+#  foreach my $loc (keys %pick_locs) {
+#    print "$loc $pick_locs{$loc}{0} - ";
+#    system("curl http://doc-x.net/hex/uuid_to_name.rb?$loc");
+#  }
+#exit;
   
   $| = 1;
   # Do the updating of rows in database
@@ -222,6 +227,21 @@ sub process_tournament {
   mark_tournament_processed($ndbh);
 }
 
+sub do_cleanup {
+  my $wdbh = shift @_;
+  print_timing_message( "Mark non-tournament things as processed");
+  my $query = "UPDATE tournament_data SET draft_processed = TRUE WHERE td NOT LIKE '%    \"Draft\" :%' AND draft_processed IS NULL";
+  my $sth = $wdbh->prepare($query);
+  $sth->execute();
+  print_timing_message( "Done cleaing up non-draft tournaments more unprocessed draft tournaments. Removing fully processed lines.");
+  $sth->finish();
+  $query = "DELETE FROM tournament_data WHERE dumped = 1 AND aah_processed = 1 AND draft_processed = 1";
+  $sth = $wdbh->prepare($query);
+  $sth->execute();
+  print_timing_message( "Done removing fully processed lines. Exiting.");
+  $sth->finish();
+}
+
 #### END SUB DEFINITIONS
 
 my $wdbh = get_dbh();
@@ -231,7 +251,7 @@ print "=== Beginning draft data update run\n";
 print_timing_message("Getting tournament_data");
 # Select data from tournament_data and process it
 get_tournament_data($rdbh);
-#print "$json_string";
+do_cleanup($wdbh);
 print_timing_message("Exiting");
 my $run_time = $now_time - $start_time;
 print "Total run time: $run_time secs\n";
