@@ -5,8 +5,9 @@
 #set -x
 
 if [ ! -f gamedata ]; then
-  echo "No gamedata file present. Make sure you copy a new one up here before running again. Exiting"
-  exit 1
+  echo "No gamedata file present. Getting new gamedata from update site."
+#  wget -O gamedata http://fallback.hextcg.com/static/live/win32/Data/gamedata
+  wget -O gamedata http://dl.hextcg.com/api/gamedata
 fi
 
 # Extract text from gzip'd file
@@ -26,8 +27,8 @@ if [ ! -f gd.json ] || [ gamedata -nt gd.json ]; then
   if [ $? -eq 0 ]; then
     echo Removing all old directories
     for f in $(ls -d ./[A-Z]*); do
-      echo removing $f
       if [ -d "$f" ]; then
+        echo removing $f
         rm -rf $f
       fi
     done
@@ -73,6 +74,13 @@ for file in $(ls InventoryItemData/* | egrep -v 'section_split_file'); do
 done
 echo "Linking ChampionTemplate files to central directory"
 for file in $(ls ChampionTemplate/* | egrep -v 'section_split_file'); do
+  name=$(basename $file)
+  #cp $file all/CardDefinitions/$name.json
+  ln $file all/CardDefinitions/$name.json
+done
+echo "Massaging and Linking MercenaryTemplate files to central directory"
+./fix_shard_alignment.pl MercenaryTemplate
+for file in $(ls MercenaryTemplate/* | egrep -v 'section_split_file'); do
   name=$(basename $file)
   #cp $file all/CardDefinitions/$name.json
   ln $file all/CardDefinitions/$name.json
