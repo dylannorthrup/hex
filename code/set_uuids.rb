@@ -3,7 +3,6 @@ module Hex
   class Card
     @@uuid_to_set = {
       'dacf5a9d-4240-4634-8043-2531365edd83' => 'AI Only Cards',
-      '4c88e511-608c-42a7-a90e-ec9c0d24d868' => 'AI_Cards_alternates',
       '24899ce9-4aed-4d26-8b08-3be2894822c5' => 'Campaign Created Champions',
       'fcebe546-2297-4c7a-b84b-60d075084818' => 'Engineering_Oddities',
       '08a39fff-3c9f-4658-a6e3-75dfd566abfa' => 'PvE01_AZ_1_NPCs',
@@ -13,9 +12,7 @@ module Hex
       '1d1ecaea-47c9-4d2a-91a0-9c78fdac49a1' => 'AZ2',
       '4db9936b-7daf-4ede-ab56-fd9d0c9ec479' => 'AZ2 Equipment',
       'ccde3b6a-3425-4403-b366-dba0e2358fae' => 'PvE_AZ1_Created_Effects',
-      '93c6aac5-be5b-40fb-94b7-5f18dfe731cf' => 'PvE_AZ1_Created_Effects_alternates',
       '50347e9d-d0ca-4645-9f4a-4e6be8e9dbd2' => 'PvE_AZ2_Created_Effects',
-      'ccd188bc-8c5f-4f9f-a920-5461bd44a2d3' => 'PvE_AZ2_Created_Effects_alternates',
       '0382f729-7710-432b-b761-13677982dcd2' => 'Shards of Fate',
       '551349b9-dfd2-4e4d-b173-f53ad8164c18' => 'Set001_alternates',
       '582f8d90-d5e6-41e5-b6f9-5de73de140be' => 'Set01_Kickstarter',
@@ -46,6 +43,12 @@ module Hex
       '10739774-906a-42aa-9389-404a6221e254' => 'Set06_PvE_Promo_alternates',
       'fbbac856-2264-4d31-97b0-0d8a646b9597' => 'Scars of War',
       '59df4cb7-3f3e-4484-a95c-1e5d46d763fb' => 'Set06_PvP_alternates',
+      'b9d3bfc7-c1ef-4760-b60c-b22b38419ea6' => 'Set07_PvE_Promo',
+      'b852f88f-8c51-4ecf-9094-363dd9e9b80d' => 'Set07_PvE_Promo_alternates',
+      '326602fa-e183-4dfe-8300-55cc0c7c4ce8' => 'Frostheart',
+      'c4bd8bd9-b944-44bd-abf7-cd73dc7758c7' => 'Frostheart Core Commons',
+      '693b02e8-c3f3-432a-82ba-e5903a5c05f9' => 'Set07_PvP_Core_Commons_alternates',
+      '908bf23d-e747-422d-b735-0068025bc829' => 'Set07_PvP_alternates',
     }
     @@uuid_to_set.default = 'None_Defined'
   end
