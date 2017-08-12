@@ -4,7 +4,7 @@ this_dir=${PWD}
 unset GEM_HOME
 unset GEM_PATH
 export PATH=~/.rbenv/bin:"$PATH"
-eval "$(~/.rbenv/bin/rbenv init -)"
+#eval "$(~/.rbenv/bin/rbenv init -)"
 err_log_file="${this_dir}/log/dispatch_err.log"
 #echo "===========================================" >> "${err_log_file}"
 #echo "this_dir is ${this_dir}" >> "${err_log_file}"
