@@ -11,7 +11,7 @@ end
 
 
 $: << "/home/docxstudios/web/hex/code"
-require "Hex_test"
+require "Hex"
 foo = Hex::Collection.new
 foo.load_set(set_name=ARGV[0])
 
