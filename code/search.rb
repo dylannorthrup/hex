@@ -10,7 +10,7 @@ params = cgi.params
 
 # Move this up here so we can keep this outside the FCGI block
 $: << "/home/docxstudios/web/hex/code"
-require "Hex_test"
+require "Hex"
 foo = Hex::Collection.new
 con = foo.get_db_con
 
