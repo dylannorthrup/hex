@@ -167,7 +167,7 @@ require 'moving_average'
   }
 }
 
-@DEBUG = true
+@DEBUG = false
 
 # Utility function to help with debugging
 def pdebug(string=nil)
@@ -271,19 +271,19 @@ def read_db_with_uuids(sqlcon=nil, filter='')
   cutoff = Time.now - (@cutoff_time_in_hours * 60 * 60)
   sql_date = cutoff.strftime("%Y-%m-%d")
   # Select from database to get all bits. Get non-Epic stuff first
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity NOT LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity NOT LIKE 'Epic' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, do the same thing, but for epic cards and prices
-  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE '5' AND ah.sale_date > '#{sql_date}' #{filter}"
+  query = "SELECT ah.name, ah.currency, ah.price, c.rarity, ah.sale_date, ah.rarity, c.uuid, c.type FROM ah_data ah, cards c WHERE c.parsed_name = ah.name AND c.rarity LIKE 'Epic' AND c.type NOT LIKE 'Champion' AND ah.rarity LIKE 'Epic' AND ah.sale_date > '#{sql_date}' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_uuid_lines(results)
   # Now, get all the non-AA cards and equipment that don't have any auction information
-  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE '5' AND sale_date > '#{sql_date}') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity NOT LIKE 'Epic' AND sale_date > '#{sql_date}') AND type not like 'Champion' AND rarity NOT LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   # Finally, get all of the AA (Epic) cards that don't have any auction info
-  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE '5' AND sale_date > '#{sql_date}') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
+  query = "SELECT c.parsed_name, c.rarity, c.uuid, c.type FROM cards c WHERE c.name IS NOT NULL AND c.parsed_name NOT IN (SELECT distinct(name) FROM ah_data WHERE rarity LIKE 'Epic' AND sale_date > '#{sql_date}') AND rarity LIKE 'Epic' AND c.set_id NOT LIKE '%AI' #{filter}"
   results = sqlcon.query(query)
   lines = lines + add_no_ah_data_uuid_lines(results)
   return lines
@@ -321,7 +321,7 @@ def parse_lines(lines=nil, html=false)
     parsed_line = line.gsub(/\r\n?/, "\n")
     pdebug "parsed line to be tested against regexp is '#{parsed_line}'"
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(\d{4}-\d{2}-\d{2}),(\d+,)?([a-f0-9-]+),([\w, ]+)?$/)
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(\d{4}-\d{2}-\d{2}[\d\-: ]*),(\w+,)?([a-f0-9-]+),([\w, ]+)?$/)
       name = $1
       currency = $2
       price = $3
@@ -532,7 +532,8 @@ def generate_card_output(array=nil)
   bar = Hex::Collection.new
   con = bar.get_db_con
   # Do some bits here to calculate price of a Draft Pack
-  draft_format = { 'Herofall' => 1, 'Scars of War' => 2 }
+  #draft_format = { 'Herofall' => 1, 'Scars of War' => 2 }
+  draft_format = { 'Frostheart' => 3 }
   # We'll calculate 100 plat worth of gold presently and the 100 plat as well
   draft_pack_value = { 'GOLD' => 0, 'PLATINUM' => 0 }
   eval @card_field_descriptors[@output_type][@output_detail]
