@@ -6,7 +6,7 @@ module Hex
   require "json"
   require "erb"
   require "mysql"
-  require 'pry'
+#  require 'pry'
 
   class Card
     attr_accessor :name, :card_number, :set_id, :faction, :socket_count, :color, :cost, :threshold
@@ -170,6 +170,15 @@ module Hex
         @color          = 'Colorless'
         type_not_found      = false
       end
+#binding.pry
+      if ! @card_json['_v'][0]['ParsedMercnary'].nil? && type_not_found then
+        @type = 'Mercenary'
+        @sub_type     = get_json_value(@card_json, 'm_SubType')
+        @health       = get_json_value(@card_json, 'm_BaseHealth')
+        @rarity       = 'Mercenary'
+        @color        = 'Colorless'
+        type_not_found    = false
+      end
       # Test if this is a Champion.
       if ! @card_json['_v'][0]['ChampionTemplate'].nil? && type_not_found then
         # A Champion
@@ -215,7 +224,7 @@ module Hex
         # Not a Gem
         @type       = get_json_value(@card_json, 'm_CardType').gsub(/Action$/, ' Action').gsub(/\|/, ", ")
         @sub_type   = get_json_value(@card_json, 'm_CardSubtype')
-        @health     = get_json_value(@card_json, 'm_BaseHealthValue') 
+        @health     = get_json_value(@card_json, 'm_BaseDefenseValue') 
         @rarity     = get_json_value(@card_json, 'm_CardRarity').gsub(/Land/, 'Non-Collectible')
         @color      = get_json_value(@card_json, 'm_ColorFlags').gsub(/\|/, ', ')
       end
@@ -267,6 +276,7 @@ module Hex
           @threshold << "#{th['m_ThresholdColorRequirement']} #{th['m_ColorFlags']}"
         end
       end
+#binding.pry
     end
 
     # Quick print out of card information
@@ -280,7 +290,7 @@ module Hex
 
     def to_json
       string = "\n\t{
-\t\t\"name\": #{@name.to_json},
+\t\t\"name\": #{@name.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}).to_json},
 \t\t\"cost\": #{@cost.to_json},
 \t\t\"threshold\": #{@threshold.to_json},
 \t\t\"uuid\": #{@uuid.to_json},
@@ -288,11 +298,11 @@ module Hex
 \t\t\"subtype\": #{@sub_type.to_json},
 \t\t\"restriction\": #{@restriction.to_json},
 \t\t\"rarity\": #{@rarity.to_json},
-\t\t\"text\": #{@text.to_json},
-\t\t\"flavor\": #{@flavor.to_json},
+\t\t\"text\": #{@text.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}).to_json},
+\t\t\"flavor\": #{@flavor.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}).to_json},
 \t\t\"atk\": #{@atk.to_json},
 \t\t\"health\": #{@health.to_json},
-\t\t\"artist\": #{@artist.to_json},
+\t\t\"artist\": #{@artist.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}).to_json},
 \t\t\"set_id\": #{@set_id.to_json}
 \t},"
 #      string = "{\"name\": #{@name},\n [Card #{@card_number} from Set #{@set_id}] #{@rarity} #{@color} #{@type} #{@sub_type}"
@@ -447,6 +457,10 @@ EOCARD
     # to this)
     def self.dump_csv_header
       string = 'SET NUMBER|CARD NUMBER|NAME|RARITY|THRESHOLD|TYPE|SUB TYPE|FACTION|SOCKET COUNT|COST|ATK|HEALTH|TEXT|FLAVOR|RESTRICTION|ARTIST|ENTERS PLAY EXHAUSTED|EQUIPMENT STRING|CURRENT RESOURCES ADDED|MAX RESOURCES ADDED|UUID'
+    end
+
+    def to_name_and_threshold
+      string = "#{@name}  ||  #{@cost}  ||  #{@threshold}"
     end
 
     def to_html_table
@@ -616,6 +630,7 @@ EOCARD
           if new_card.set_id !~ /DELETE/
           @cards << new_card
           end
+#binding.pry
         end
       else  # If we DO have a sql connection, load from that
         query = "SELECT * FROM cards where set_id = '#{set_name}'"
