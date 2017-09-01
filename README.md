@@ -1,6 +1,6 @@
 All code here licensed under BSD-3 license
 
-Copyright 2015 Dylan Northrup
+Copyright 2015-present Dylan Northrup
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
