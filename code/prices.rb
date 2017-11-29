@@ -327,7 +327,7 @@ def parse_lines(lines=nil, html=false)
     parsed_line = line.gsub(/\r\n?/, "\n")
     pdebug "parsed line to be tested against regexp is '#{parsed_line}'"
     # Run regexp against line and grab out interesting bits
-    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(\d{4}-\d{2}-\d{2}[\d\-: ]*),(\w+,)?([a-f0-9-]+),([\w, ]+)?$/)
+    if parsed_line.match(/^(.*),(GOLD|PLATINUM),(\d+),(\d{4}-\d{2}-\d{2}[\d\-: ]*),(\w*,)?([a-f0-9-]+),([\w, ]+)?$/)
       name = $1
       currency = $2
       price = $3
