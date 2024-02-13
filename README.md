@@ -1,3 +1,5 @@
+REPO IS ARCHIVED. The game shut down for over three years at this point with no likelihood of resurrection. These tools are unnecessary as anything other than a historical curiosity.
+
 All code here licensed under BSD-3 license
 
 Copyright 2015-present Dylan Northrup
